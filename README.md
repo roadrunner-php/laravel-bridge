@@ -286,6 +286,7 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maint
 [link_create_issue]:https://github.com/spiral/roadrunner-laravel/issues/new/choose
 [link_commits]:https://github.com/spiral/roadrunner-laravel/commits
 [link_pulls]:https://github.com/spiral/roadrunner-laravel/pulls
+[link_license]:https://github.com/spiral/roadrunner-laravel/blob/master/LICENSE
 [getcomposer]:https://getcomposer.org/download/
 [roadrunner]:https://github.com/spiral/roadrunner
 [laravel]:https://laravel.com
