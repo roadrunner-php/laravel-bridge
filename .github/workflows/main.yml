@@ -20,12 +20,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         php: ['7.2', '7.3', '7.4']
         include:
           - php: '7.2'
-            laravel: '5.7'
-          - php: '7.2'
-            laravel: '5.8'
-          - php: '7.2'
-            laravel: '6.*'
-          - php: '7.2'
             setup: 'basic'
             coverage: 'true'
           - php: '7.4'
@@ -64,10 +58,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       - name: Install basic Composer dependencies
         if: matrix.setup == 'basic'
         run: composer update --prefer-dist --no-interaction --no-suggest
-
-      - name: Install Laravel ${{ matrix.laravel }}
-        if: matrix.laravel != 'default'
-        run: composer require --dev --update-with-dependencies --prefer-dist --no-interaction --no-suggest laravel/laravel "${{ matrix.laravel }}"
 
       - name: Show most important packages versions
         run: composer info | grep -e laravel/laravel -e phpunit/phpunit -e phpstan/phpstan
