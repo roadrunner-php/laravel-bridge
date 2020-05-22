@@ -10,7 +10,7 @@ on:
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   tests:
-    name: PHP ${{ matrix.php }} (${{ matrix.setup }} setup, laravel "${{ matrix.laravel }}")
+    name: PHP ${{ matrix.php }} (${{ matrix.setup }} setup)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
@@ -18,8 +18,9 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       matrix:
         setup: ['basic', 'lowest']
         php: ['7.2', '7.3', '7.4']
-        laravel: ['default']
         include:
+          - php: '7.2'
+            laravel: '5.7'
           - php: '7.2'
             laravel: '5.8'
           - php: '7.2'
@@ -64,7 +65,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         if: matrix.setup == 'basic'
         run: composer update --prefer-dist --no-interaction --no-suggest
 
-      - name: Install basic Composer dependencies
+      - name: Install Laravel ${{ matrix.laravel }}
         if: matrix.laravel != 'default'
         run: composer require --dev --update-with-dependencies --prefer-dist --no-interaction --no-suggest laravel/laravel "${{ matrix.laravel }}"
 
