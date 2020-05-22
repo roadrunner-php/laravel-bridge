@@ -32,8 +32,7 @@
         "laravel/laravel": "^5.5 || ~6.0 || ~7.0",
         "mockery/mockery": "^1.3",
         "phpstan/phpstan": "~0.12",
-        "phpunit/phpunit": "^6.4 || ~7.5",
-        "spiral/code-style": "^1.0"
+        "phpunit/phpunit": "^6.4 || ~7.5"
     },
     "autoload": {
         "psr-4": {
@@ -52,8 +51,6 @@
         "phpunit": "@php ./vendor/bin/phpunit --no-coverage --colors=always",
         "phpunit-cover": "@php ./vendor/bin/phpunit",
         "phpstan": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",
-        "cs-check": "@php ./vendor/bin/spiral-cs check ./bin ./src ./tests --ansi",
-        "cs-fix": "@php ./vendor/bin/spiral-cs fix ./bin ./src ./tests --ansi",
         "test": [
             "@phpstan",
             "@phpunit"
