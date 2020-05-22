@@ -18,7 +18,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       matrix:
         setup: ['basic', 'lowest']
         php: ['7.2', '7.3', '7.4']
-        laravel: 'default'
+        laravel: ['default']
         include:
           - php: '7.2'
             laravel: '5.8'
