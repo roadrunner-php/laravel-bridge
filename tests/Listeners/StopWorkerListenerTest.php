@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -52,6 +52,6 @@ class StopWorkerListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory()
     {
-        return new StopWorkerListener;
+        return new StopWorkerListener();
     }
 }

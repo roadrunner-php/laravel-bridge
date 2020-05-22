@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Listeners;
 
@@ -23,7 +23,7 @@ class RebindHttpKernelListener implements ListenerInterface
             /** @var HttpKernel $kernel */
             $kernel = $app->make(HttpKernel::class);
 
-            $closure = function () use ($app) {
+            $closure = function () use ($app): void {
                 $this->{'app'} = $app;
             };
 

@@ -1,14 +1,17 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Events;
 
 use Throwable;
 use Psr\Http\Message\ServerRequestInterface;
+use Spiral\RoadRunnerLaravel\Events\Contracts\WithException;
+use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
+use Spiral\RoadRunnerLaravel\Events\Contracts\WithServerRequest;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 
-final class LoopErrorOccurredEvent implements Contracts\WithApplication, Contracts\WithException, Contracts\WithServerRequest
+final class LoopErrorOccurredEvent implements WithApplication, WithException, WithServerRequest
 {
     /**
      * @var ApplicationContract

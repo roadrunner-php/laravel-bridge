@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Listeners;
 
@@ -34,7 +34,8 @@ class ForceHttpsListener implements ListenerInterface
 
                 $url_generator->forceScheme('https');
 
-                // Set 'HTTPS' server parameter (required for correct working request methods like ::isSecure and others)
+                // Set 'HTTPS' server parameter (required for correct working request methods like ::isSecure
+                // and others)
                 $event->httpRequest()->server->set('HTTPS', 'on');
             }
         }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -16,7 +16,7 @@ class RunGarbageCollectorListenerTest extends AbstractListenerTestCase
      */
     public function testHandle(): void
     {
-        $this->listenerFactory()->handle(new \stdClass);
+        $this->listenerFactory()->handle(new \stdClass());
 
         $this->markTestIncomplete('There is no legal way for handle method testing.');
     }
@@ -26,6 +26,6 @@ class RunGarbageCollectorListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): RunGarbageCollectorListener
     {
-        return new RunGarbageCollectorListener;
+        return new RunGarbageCollectorListener();
     }
 }

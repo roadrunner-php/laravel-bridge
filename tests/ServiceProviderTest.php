@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests;
 
@@ -81,7 +81,7 @@ class ServiceProviderTest extends AbstractTestCase
         $events = $this->app->make(EventsDispatcher::class);
 
         foreach ($config->get('roadrunner.listeners') as $event => $listeners) {
-            if (! empty($listeners)) {
+            if (!empty($listeners)) {
                 $this->assertTrue($events->hasListeners($event), "Event [{$event}] has no listeners");
             }
         }

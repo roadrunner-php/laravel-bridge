@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -35,7 +35,9 @@ class ResetDbConnectionsListenerTest extends AbstractListenerTestCase
         $db_manager->connection($connection_name)->reconnect();
 
         $this->assertInstanceOf(
-            \PDO::class, $db_manager->connection($connection_name)->getPdo(), 'DB not connected'
+            \PDO::class,
+            $db_manager->connection($connection_name)->getPdo(),
+            'DB not connected'
         );
 
         /** @var m\MockInterface|WithApplication $event_mock */
@@ -55,6 +57,6 @@ class ResetDbConnectionsListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): ResetDbConnectionsListener
     {
-        return new ResetDbConnectionsListener;
+        return new ResetDbConnectionsListener();
     }
 }

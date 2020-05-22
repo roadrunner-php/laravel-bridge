@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -38,16 +38,16 @@ class ResetProvidersListenerTest extends AbstractListenerTestCase
 
         $config->set('roadrunner.reset_providers', [$fake_provider = FakeServiceProvider::class]);
 
-        FakeServiceProvider::$onConstructor = function (...$args) use (&$constructor_called) {
+        FakeServiceProvider::$onConstructor = function (...$args) use (&$constructor_called): void {
             $this->assertInstanceOf(Application::class, $args[0]);
             $constructor_called = true;
         };
 
-        FakeServiceProvider::$onRegister = static function () use (&$register_called) {
+        FakeServiceProvider::$onRegister = static function () use (&$register_called): void {
             $register_called = true;
         };
 
-        FakeServiceProvider::$onBoot = static function () use (&$boot_called) {
+        FakeServiceProvider::$onBoot = static function () use (&$boot_called): void {
             $boot_called = true;
         };
 
@@ -70,6 +70,6 @@ class ResetProvidersListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): ResetProvidersListener
     {
-        return new ResetProvidersListener;
+        return new ResetProvidersListener();
     }
 }

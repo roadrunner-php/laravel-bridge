@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -42,6 +42,6 @@ class CloneConfigListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): CloneConfigListener
     {
-        return new CloneConfigListener;
+        return new CloneConfigListener();
     }
 }

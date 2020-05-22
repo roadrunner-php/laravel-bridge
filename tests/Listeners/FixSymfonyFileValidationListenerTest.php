@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -21,7 +21,7 @@ class FixSymfonyFileValidationListenerTest extends AbstractListenerTestCase
         $this->assertFalse(\function_exists($function_location));
         $this->assertFalse(\is_uploaded_file('foo'));
 
-        $this->listenerFactory()->handle(new \stdClass);
+        $this->listenerFactory()->handle(new \stdClass());
 
         $this->assertTrue(\function_exists($function_location));
         $this->assertTrue($function_location('foo'));
@@ -32,6 +32,6 @@ class FixSymfonyFileValidationListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): FixSymfonyFileValidationListener
     {
-        return new FixSymfonyFileValidationListener;
+        return new FixSymfonyFileValidationListener();
     }
 }

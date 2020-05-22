@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -94,6 +94,6 @@ class ForceHttpsListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): ForceHttpsListener
     {
-        return new ForceHttpsListener;
+        return new ForceHttpsListener();
     }
 }

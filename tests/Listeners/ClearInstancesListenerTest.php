@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -38,7 +38,7 @@ class ClearInstancesListenerTest extends AbstractListenerTestCase
             $this->app->instance($abstract, $abstract . '-for-test');
         }
         $this->app->singleton($singleton_abstract, static function () {
-            return new \stdClass;
+            return new \stdClass();
         });
         $singleton = $this->app->make($singleton_abstract);
 
@@ -65,6 +65,6 @@ class ClearInstancesListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): ClearInstancesListener
     {
-        return new ClearInstancesListener;
+        return new ClearInstancesListener();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -54,6 +54,6 @@ class ResetSessionListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): ResetSessionListener
     {
-        return new ResetSessionListener;
+        return new ResetSessionListener();
     }
 }

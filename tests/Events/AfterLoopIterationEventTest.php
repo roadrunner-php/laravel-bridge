@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Events;
 
@@ -36,7 +36,9 @@ class AfterLoopIterationEventTest extends AbstractEventTestCase
     public function testConstructor(): void
     {
         $event = new AfterLoopIterationEvent(
-            $this->app, $request = Request::create('/'), $response = Response::create()
+            $this->app,
+            $request = Request::create('/'),
+            $response = Response::create()
         );
 
         $this->assertSame($this->app, $event->application());

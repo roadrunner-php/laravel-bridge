@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Listeners;
 
@@ -25,7 +25,7 @@ class RebindRouterListener implements ListenerInterface
             /** @var \Illuminate\Routing\Router $router */
             $router  = $app->make('router');
 
-            $closure = function () use ($app, $request) {
+            $closure = function () use ($app, $request): void {
                 $this->{'container'} = $app;
 
                 try {
@@ -34,7 +34,7 @@ class RebindRouterListener implements ListenerInterface
 
                     // rebind resolved controller
                     if (\property_exists($route, $container_property = 'container')) {
-                        $rebind_closure = function () use ($container_property, $app) {
+                        $rebind_closure = function () use ($container_property, $app): void {
                             $this->{$container_property} = $app;
                         };
 

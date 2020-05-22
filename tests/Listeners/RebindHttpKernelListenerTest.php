@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -44,6 +44,6 @@ class RebindHttpKernelListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): RebindHttpKernelListener
     {
-        return new RebindHttpKernelListener;
+        return new RebindHttpKernelListener();
     }
 }

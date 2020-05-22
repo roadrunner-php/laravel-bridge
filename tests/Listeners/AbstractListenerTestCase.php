@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -41,7 +41,7 @@ abstract class AbstractListenerTestCase extends AbstractTestCase
     {
         $result = null;
 
-        $closure = function () use ($property, &$result) {
+        $closure = function () use ($property, &$result): void {
             $result = $this->{$property};
         };
 
@@ -60,7 +60,7 @@ abstract class AbstractListenerTestCase extends AbstractTestCase
      */
     protected function setProperty($object, string $property, $value): void
     {
-        $closure = function () use ($property, &$value) {
+        $closure = function () use ($property, &$value): void {
             $this->{$property} = $value;
         };
 

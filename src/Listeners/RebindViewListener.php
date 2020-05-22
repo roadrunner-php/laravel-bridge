@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Listeners;
 
@@ -22,7 +22,7 @@ class RebindViewListener implements ListenerInterface
             /** @var \Illuminate\View\Factory $view */
             $view = $app->make('view');
 
-            $closure = function () use ($app) {
+            $closure = function () use ($app): void {
                 $this->{'container'}     = $app;
                 $this->{'shared'}['app'] = $app;
             };

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -50,7 +50,7 @@ class SetServerPortListenerTest extends AbstractListenerTestCase
      */
     public function testHandleNothingHappensWhenPortIsSetAsInteger(): void
     {
-        ($request = new Request)->server->set('SERVER_PORT', $port = 80);
+        ($request = new Request())->server->set('SERVER_PORT', $port = 80);
 
         $this->assertSame($port, $request->getPort());
 
@@ -72,7 +72,7 @@ class SetServerPortListenerTest extends AbstractListenerTestCase
      */
     public function testHandleNothingHappensWhenPortIsSetAsString(): void
     {
-        ($request = new Request)->server->set('SERVER_PORT', $port = '443');
+        ($request = new Request())->server->set('SERVER_PORT', $port = '443');
 
         $this->assertSame($port, $request->getPort());
 
@@ -94,7 +94,7 @@ class SetServerPortListenerTest extends AbstractListenerTestCase
      */
     public function testHandlePortSetAs443WhenSchemaIsHttpsAndServerPortIsNull(): void
     {
-        ($request = new Request)->server->set('SERVER_PORT', null);
+        ($request = new Request())->server->set('SERVER_PORT', null);
         $request->server->set('HTTPS', 'on');
 
         $this->assertNull($request->getPort());
@@ -119,7 +119,7 @@ class SetServerPortListenerTest extends AbstractListenerTestCase
      */
     public function testHandlePortSetAs80WhenSchemaIsHttpAndServerPortIsEmptyString(): void
     {
-        ($request = new Request)->server->set('SERVER_PORT', '');
+        ($request = new Request())->server->set('SERVER_PORT', '');
 
         $this->assertSame('', $request->getPort());
 
@@ -143,6 +143,6 @@ class SetServerPortListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): SetServerPortListener
     {
-        return new SetServerPortListener;
+        return new SetServerPortListener();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests;
 
@@ -56,7 +56,7 @@ class WorkerTest extends AbstractTestCase
         parent::setUp();
 
         $this->out              = \fopen('php://memory', 'rb+');
-        $this->requests_factory = new ServerRequestFactory;
+        $this->requests_factory = new ServerRequestFactory();
         $this->rr_worker        = new RRWorker(new StreamRelay(\STDIN, $this->out));
     }
 
@@ -210,7 +210,7 @@ class WorkerTest extends AbstractTestCase
         $worker->start();
 
         foreach ($expected_events as $expected_event) {
-            if (! isset($fired_events[$expected_event])) {
+            if (!isset($fired_events[$expected_event])) {
                 $this->fail("Event [{$expected_event}] was not fired");
             } else {
                 $this->assertSame(
@@ -284,7 +284,7 @@ class WorkerTest extends AbstractTestCase
         $worker->start();
 
         foreach ($expected_events as $expected_event) {
-            if (! isset($fired_events[$expected_event])) {
+            if (!isset($fired_events[$expected_event])) {
                 $this->fail("Event [{$expected_event}] was not fired");
             } else {
                 $this->assertSame(
@@ -400,7 +400,7 @@ class WorkerTest extends AbstractTestCase
         $worker->start();
 
         foreach ($expected_events as $expected_event) {
-            if (! isset($fired_events[$expected_event])) {
+            if (!isset($fired_events[$expected_event])) {
                 $this->fail("Event [{$expected_event}] was not fired");
             } else {
                 $this->assertSame(
@@ -473,10 +473,11 @@ class WorkerTest extends AbstractTestCase
      *
      * @return callable
      */
-    private function getOnceRequestGenerationClosure(string $method = 'GET',
-                                                     string $uri = '/',
-                                                     array $server_params = []): callable
-    {
+    private function getOnceRequestGenerationClosure(
+        string $method = 'GET',
+        string $uri = '/',
+        array $server_params = []
+    ): callable {
         return function () use ($method, $uri, $server_params): ?ServerRequestInterface {
             // Send request into loop only once
             static $sent = false;
@@ -527,7 +528,7 @@ class WorkerTest extends AbstractTestCase
                             ? \get_class($event)
                             : (string) $event;
 
-                        if (! isset($fired_events[$event_class])) {
+                        if (!isset($fired_events[$event_class])) {
                             $fired_events[$event_class] = 1;
                         } else {
                             $fired_events[$event_class]++;

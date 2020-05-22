@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Listeners;
 
@@ -15,7 +15,7 @@ class FixSymfonyFileValidationListener implements ListenerInterface
      */
     public function handle($event): void
     {
-        if (! \function_exists('\\Symfony\\Component\\HttpFoundation\\File\\is_uploaded_file')) {
+        if (!\function_exists('\\Symfony\\Component\\HttpFoundation\\File\\is_uploaded_file')) {
             require __DIR__ . '/../../fixes/fix-symfony-file-validation.php';
         }
     }

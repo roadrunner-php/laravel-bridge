@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Events;
 
@@ -36,7 +36,7 @@ class LoopErrorOccurredTest extends AbstractEventTestCase
     {
         $event = new LoopErrorOccurredEvent(
             $this->app,
-            $request = new ServerRequest,
+            $request = new ServerRequest(),
             $exception = new \Exception('foo')
         );
 

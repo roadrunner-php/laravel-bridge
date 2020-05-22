@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -13,13 +13,13 @@ class SendExceptionToStderrListenerTest extends AbstractListenerTestCase
 {
     public function testHandle(): void
     {
-        $this->listenerFactory()->handle(new \stdClass);
+        $this->listenerFactory()->handle(new \stdClass());
 
         $this->markTestIncomplete('There is no legal way for handle method testing.');
     }
 
     protected function listenerFactory()
     {
-        return new SendExceptionToStderrListener;
+        return new SendExceptionToStderrListener();
     }
 }

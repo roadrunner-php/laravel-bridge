@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -45,6 +45,6 @@ class BindRequestListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): BindRequestListener
     {
-        return new BindRequestListener;
+        return new BindRequestListener();
     }
 }

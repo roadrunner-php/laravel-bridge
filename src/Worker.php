@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel;
 
@@ -157,7 +157,7 @@ class Worker implements WorkerInterface
     {
         $path = \implode(\DIRECTORY_SEPARATOR, [\rtrim($base_path, \DIRECTORY_SEPARATOR), 'bootstrap', 'app.php']);
 
-        if (! \is_file($path)) {
+        if (!\is_file($path)) {
             throw new InvalidArgumentException("Application bootstrap file was not found in [{$path}]");
         }
 
@@ -182,7 +182,7 @@ class Worker implements WorkerInterface
         $bootstrappers = $this->getKernelBootstrappers($http_kernel);
 
         // Insert `SetRequestForConsole` bootstrapper before `RegisterProviders` if it does not exists
-        if (! \in_array(SetRequestForConsole::class, $bootstrappers, true)) {
+        if (!\in_array(SetRequestForConsole::class, $bootstrappers, true)) {
             $register_index = \array_search(RegisterProviders::class, $bootstrappers, true);
 
             if ($register_index !== false) {
@@ -278,7 +278,7 @@ class Worker implements WorkerInterface
      */
     protected function createHttpFactory(): HttpFoundationFactoryInterface
     {
-        return new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+        return new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory();
     }
 
     /**
@@ -287,10 +287,10 @@ class Worker implements WorkerInterface
     protected function createPsr7Factory(): HttpMessageFactoryInterface
     {
         return new PsrHttpFactory(
-            new \Spiral\RoadRunner\Diactoros\ServerRequestFactory,
-            new \Spiral\RoadRunner\Diactoros\StreamFactory,
-            new \Spiral\RoadRunner\Diactoros\UploadedFileFactory,
-            new \Laminas\Diactoros\ResponseFactory
+            new \Spiral\RoadRunner\Diactoros\ServerRequestFactory(),
+            new \Spiral\RoadRunner\Diactoros\StreamFactory(),
+            new \Spiral\RoadRunner\Diactoros\UploadedFileFactory(),
+            new \Laminas\Diactoros\ResponseFactory()
         );
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Events;
 
@@ -33,7 +33,8 @@ class BeforeRequestHandlingEventTest extends AbstractEventTestCase
     public function testConstructor(): void
     {
         $event = new BeforeRequestHandlingEvent(
-            $this->app, $request = Request::create('/')
+            $this->app,
+            $request = Request::create('/')
         );
 
         $this->assertSame($this->app, $event->application());

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -46,6 +46,6 @@ class RebindViewListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): RebindViewListener
     {
-        return new RebindViewListener;
+        return new RebindViewListener();
     }
 }

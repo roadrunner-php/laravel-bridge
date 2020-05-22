@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
@@ -57,6 +57,6 @@ class InjectStatsIntoRequestListenerTest extends AbstractListenerTestCase
      */
     protected function listenerFactory(): InjectStatsIntoRequestListener
     {
-        return new InjectStatsIntoRequestListener;
+        return new InjectStatsIntoRequestListener();
     }
 }
