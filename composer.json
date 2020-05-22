@@ -1,48 +1,82 @@
 {
-  "name": "spiral/roadrunner-laravel",
-  "type": "library",
-  "description": "RoadRunner bridge for Laravel applications",
-  "keywords": [
-    "laravel",
-    "bridge",
-    "roadrunner"
-  ],
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "tarampampam",
-      "homepage": "https://github.com/tarampampam"
+    "name": "spiral/roadrunner-laravel",
+    "type": "library",
+    "description": "RoadRunner bridge for Laravel applications",
+    "keywords": [
+        "laravel",
+        "bridge",
+        "roadrunner"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "tarampampam",
+            "homepage": "https://github.com/tarampampam"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "ext-mbstring": "*",
+        "illuminate/contracts": "^5.5 || ~6.0 || ~7.0",
+        "illuminate/support": "^5.5 || ~6.0 || ~7.0",
+        "illuminate/http": "^5.5 || ~6.0 || ~7.0",
+        "illuminate/routing": "^5.5 || ~6.0 || ~7.0",
+        "spiral/roadrunner": "~1.7",
+        "symfony/psr-http-message-bridge": "^1.2 || ^2.0",
+        "laminas/laminas-diactoros": "^2"
+    },
+    "require-dev": {
+        "ext-pdo": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-sqlite3": "*",
+        "laravel/laravel": "^5.5 || ~6.0 || ~7.0",
+        "mockery/mockery": "^1.3",
+        "phpstan/phpstan": "~0.12",
+        "phpunit/phpunit": "^6.4 || ~7.5",
+        "spiral/code-style": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Spiral\\RoadRunnerLaravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Spiral\\RoadRunnerLaravel\\Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/rr-worker"
+    ],
+    "scripts": {
+        "phpunit": "@php ./vendor/bin/phpunit --no-coverage --colors=always",
+        "phpunit-cover": "@php ./vendor/bin/phpunit",
+        "phpstan": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",
+        "cs-check": "@php ./vendor/bin/spiral-cs check ./bin ./config ./fixes ./src ./tests --ansi",
+        "cs-fix": "@php ./vendor/bin/spiral-cs fix --ansi",
+        "test": [
+            "@phpstan",
+            "@phpunit"
+        ],
+        "test-cover": [
+            "@phpstan",
+            "@phpunit-cover"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Spiral\\RoadRunnerLaravel\\ServiceProvider"
+            ]
+        }
+    },
+    "suggest": {
+        "illuminate/redis": "Required for dropping redis connections",
+        "illuminate/database": "Required for dropping database connections",
+        "avto-dev/stacked-dumper-laravel": "Stacked variables dumper for Laravel-based application"
+    },
+    "support": {
+        "issues": "https://github.com/spiral/roadrunner-laravel/issues",
+        "source": "https://github.com/spiral/roadrunner-laravel"
     }
-  ],
-  "require": {
-    "php": "^7.1.3",
-    "illuminate/contracts": "^5.5 || ~6.0 || ~7.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^6.4 || ~7.5",
-    "mockery/mockery": "^1.3",
-    "spiral/code-style": "^1.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Spiral\\RoadRunnerLaravel\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Spiral\\RoadRunnerLaravel\\Tests\\": "tests/"
-    }
-  },
-  "bin": [
-    "bin/rr-worker"
-  ],
-  "scripts": {
-    "phpunit": "@php ./vendor/bin/phpunit --no-coverage --colors=always",
-    "phpunit-cover": "@php ./vendor/bin/phpunit",
-    "phpstan": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi"
-  },
-  "support": {
-    "issues": "https://github.com/spiral/roadrunner-laravel/issues",
-    "source": "https://github.com/spiral/roadrunner-laravel"
-  }
 }

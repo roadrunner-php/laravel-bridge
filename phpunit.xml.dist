@@ -30,4 +30,8 @@
         <log type="coverage-clover" target="./coverage/clover.xml"/>
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
     </logging>
+    <php>
+        <env name="APP_KEY" value="base64:+hY09mlBag/d7Qhq2SjE/i2iUzZBS1dGObLqcHZU2Ac="/>
+        <env name="APP_URL" value="http://unit-test"/>
+    </php>
 </phpunit>
