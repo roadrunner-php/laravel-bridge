@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v3.4.0
+
+### Added
+
+- Source code style checking using `spiral/code-style` package [#3]
+
+### Changed
+
+- Minimal required PHP version now is `7.2` [#3]
+
+[#3]:https://github.com/spiral/roadrunner-laravel/issues/3
+
 ## v3.3.0
 
 ### Added

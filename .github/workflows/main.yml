@@ -10,16 +10,16 @@ on:
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   tests:
-    name: PHP ${{ matrix.php }}, ${{ matrix.setup }} setup
+    name: PHP ${{ matrix.php }} (${{ matrix.setup }} setup)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
         setup: ['basic', 'lowest']
-        php: ['7.1', '7.2', '7.3', '7.4']
+        php: ['7.2', '7.3', '7.4']
         include:
-          - php: '7.1'
+          - php: '7.2'
             setup: 'basic'
             coverage: 'true'
           - php: '7.4'
@@ -60,7 +60,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: composer update --prefer-dist --no-interaction --no-suggest
 
       - name: Show most important packages versions
-        run: composer info | grep -e laravel/laravel -e phpunit/phpunit -e phpstan/phpstan
+        run: composer info | grep -e laravel -e spiral -e phpunit/phpunit -e phpstan/phpstan
 
       - name: Execute tests
         if: matrix.coverage != 'true'
@@ -76,3 +76,38 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/clover.xml
           fail_ci_if_error: false
+
+  cs-check:
+    name: Check Code Style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: 7.4
+          extensions: mbstring
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer 'hirak/prestissimo' package
+        run: composer global require hirak/prestissimo --update-no-dev
+
+      - name: Install Composer dependencies
+        run: composer update --prefer-dist --no-interaction --no-suggest
+
+      - name: Execute check
+        run: composer cs-check
