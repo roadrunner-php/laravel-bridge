@@ -60,7 +60,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: composer update --prefer-dist --no-interaction --no-suggest
 
       - name: Show most important packages versions
-        run: composer info | grep -e laravel/laravel -e phpunit/phpunit -e phpstan/phpstan
+        run: composer info | grep -e illuminate -e spiral -e phpunit/phpunit -e phpstan/phpstan
 
       - name: Execute tests
         if: matrix.coverage != 'true'
