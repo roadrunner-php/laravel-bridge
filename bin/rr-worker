@@ -1,2 +1,77 @@
 #!/usr/bin/env php
 <?php
+
+declare(strict_types=1);
+
+\define('RR_WORKER_START', \microtime(true));
+
+\ini_set('display_errors', 'stderr');
+
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader
+| for our application. We just need to utilize it! We'll require it
+| into the script here so that we do not have to worry about the
+| loading of any our classes "manually". Feels great to relax.
+|
+*/
+
+$loaded = false;
+
+foreach (['../../..', '../..', '..', 'vendor', '../vendor', '../../vendor'] as $path) {
+    if (\is_file($autoload_file = __DIR__ . '/' . $path . '/autoload.php')) {
+        require $autoload_file;
+        $loaded = true;
+        break;
+    }
+}
+
+if ($loaded !== true) {
+    \fwrite(STDERR, 'Composer autoload file was not found. Try to install project dependencies' . PHP_EOL);
+    exit(10);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Find Application Base Path
+|--------------------------------------------------------------------------
+|
+| This file can be located in package `./bin` directory, used as a symbolic
+| link or something else. In this case we will try to find application
+| base directory using the most obvious application locations.
+|
+*/
+
+$base_path = null;
+
+foreach (['../../../..', '../../..', '../..', '..', '../vendor/laravel/laravel'] as $path) {
+    if (\is_file(__DIR__ . '/' . $path . '/bootstrap/app.php')) {
+        $base_path = \realpath(__DIR__ . '/' . $path);
+        break;
+    }
+}
+
+if (! \is_string($base_path)) {
+    \fwrite(STDERR, 'Cannot find application base path' . PHP_EOL);
+    exit(11);
+}
+
+/*
+|--------------------------------------------------------------------------
+| Create Worker Instance
+|--------------------------------------------------------------------------
+*/
+
+// @todo: Make possible to use another worker class
+$worker = new \Spiral\RoadRunnerLaravel\Worker($base_path);
+
+/*
+|--------------------------------------------------------------------------
+| Start Worker Loop
+|--------------------------------------------------------------------------
+*/
+
+$worker->start((bool) \getenv('APP_REFRESH'));
