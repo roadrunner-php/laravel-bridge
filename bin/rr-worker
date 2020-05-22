@@ -30,7 +30,7 @@ foreach (['../../..', '../..', '..', 'vendor', '../vendor', '../../vendor'] as $
 }
 
 if ($loaded !== true) {
-    \fwrite(STDERR, 'Composer autoload file was not found. Try to install project dependencies' . PHP_EOL);
+    \fwrite(\STDERR, 'Composer autoload file was not found. Try to install project dependencies' . PHP_EOL);
     exit(10);
 }
 
@@ -55,7 +55,7 @@ foreach (['../../../..', '../../..', '../..', '..', '../vendor/laravel/laravel']
 }
 
 if (! \is_string($base_path)) {
-    \fwrite(STDERR, 'Cannot find application base path' . PHP_EOL);
+    \fwrite(\STDERR, 'Cannot find application base path' . PHP_EOL);
     exit(11);
 }
 
