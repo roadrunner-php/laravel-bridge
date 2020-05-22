@@ -1,17 +1,1 @@
-# Composer lock file
-composer.lock
-
-# IDEs
-/nbproject
 /.idea
-/.vscode.vscode
-
-# Vendors
-/vendor
-
-# Temp dirs & trash
-/temp
-/tmp
-/coverage
-.DS_Store
-*.cache

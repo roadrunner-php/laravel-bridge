@@ -1,9 +1,0 @@
-* text=auto
-
-/.github      export-ignore
-/tests        export-ignore
-/[Dd]ocker*   export-ignore
-/.*           export-ignore
-/phpunit.xml* export-ignore
-/phpstan.*    export-ignore
-/Makefile     export-ignore
