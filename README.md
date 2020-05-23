@@ -11,7 +11,7 @@
 [![Downloads count][badge_downloads_count]][link_packagist]
 [![License][badge_license]][link_license]
 
-> Source code of this package was transferred from [avto-dev/roadrunner-laravel](https://github.com/avto-dev/roadrunner-laravel) package by its author. Release `v3.3.0` are same in both packages. Any future releases will be published in this package _(previous package was abandoned)_.
+> Source code of this package was transferred from [avto-dev/roadrunner-laravel](https://github.com/avto-dev/roadrunner-laravel) package by its author. Release `v3.3.0` are same in both packages. Any future releases will be published in this repository _(previous package was abandoned)_.
 
 Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applications.
 
