@@ -7,7 +7,6 @@ namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 use Mockery as m;
 use Spiral\RoadRunnerLaravel\Listeners\EnableHttpMethodParameterOverride;
 use Symfony\Component\HttpFoundation\Request;
-use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 
 /**
@@ -34,7 +33,7 @@ class EnableHttpMethodParameterOverrideTest extends AbstractListenerTestCase
      */
     public function testHandle(): void
     {
-        /** @var m\MockInterface|WithApplication|WithHttpRequest $event */
+        /** @var m\MockInterface|WithHttpRequest $event_mock */
         $event_mock = m::mock(WithHttpRequest::class)
             ->makePartial()
             ->expects('httpRequest')
