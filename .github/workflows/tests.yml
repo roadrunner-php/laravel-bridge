@@ -1,4 +1,4 @@
-name: build
+name: tests
 
 on:
   push:
@@ -7,6 +7,8 @@ on:
     tags-ignore:
       - '**'
   pull_request:
+  schedule:
+    - cron: '0 0 * * 0' # once in a week, docs: <https://git.io/JvxXE#onschedule>
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   tests:
@@ -28,11 +30,9 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
 
       - name: Setup PHP, with composer and extensions
-        uses: shivammathur/setup-php@master # Action page: <https://github.com/shivammathur/setup-php>
+        uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, pdo, pdo_sqlite, sqlite3 # definition is required for php 7.4
@@ -42,22 +42,22 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Cache dependencies # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          key: ${{ runner.os }}-composer-${{ matrix.setup }}-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer 'hirak/prestissimo' package
-        run: composer global require hirak/prestissimo --update-no-dev
+        run: composer global require hirak/prestissimo --update-no-dev --no-progress --ansi
 
       - name: Install lowest Composer dependencies
         if: matrix.setup == 'lowest'
-        run: composer update --prefer-dist --no-interaction --no-suggest --prefer-lowest
+        run: composer update --prefer-dist --no-interaction --no-suggest --prefer-lowest --ansi
 
       - name: Install basic Composer dependencies
         if: matrix.setup == 'basic'
-        run: composer update --prefer-dist --no-interaction --no-suggest
+        run: composer update --prefer-dist --no-interaction --no-suggest --ansi
 
       - name: Show most important packages versions
         run: composer info | grep -e laravel -e spiral -e phpunit/phpunit -e phpstan/phpstan
@@ -83,11 +83,9 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
 
       - name: Setup PHP, with composer and extensions
-        uses: shivammathur/setup-php@master
+        uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
           extensions: mbstring
@@ -97,17 +95,17 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Cache dependencies
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Composer 'hirak/prestissimo' package
-        run: composer global require hirak/prestissimo --update-no-dev
+        run: composer global require hirak/prestissimo --update-no-dev --ansi
 
       - name: Install Composer dependencies
-        run: composer update --prefer-dist --no-interaction --no-suggest
+        run: composer update --prefer-dist --no-interaction --no-suggest --ansi
 
       - name: Execute check
         run: composer cs-check
