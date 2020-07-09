@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\ForceHttpsListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\EnableHttpMethodParameterOverride<extended>
  */
 class EnableHttpMethodParameterOverrideTest extends AbstractListenerTestCase
 {
