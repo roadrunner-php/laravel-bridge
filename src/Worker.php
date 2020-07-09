@@ -183,7 +183,7 @@ class Worker implements WorkerInterface
 
         // Insert `SetRequestForConsole` bootstrapper before `RegisterProviders` if it does not exists
         if (!\in_array(SetRequestForConsole::class, $bootstrappers, true)) {
-            $register_index = \array_search(RegisterProviders::class, $bootstrappers, true);
+            $register_index = (int) \array_search(RegisterProviders::class, $bootstrappers, true);
 
             if ($register_index !== false) {
                 \array_splice($bootstrappers, $register_index, 0, [SetRequestForConsole::class]);

@@ -20,7 +20,7 @@ Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applicat
 Require this package with composer using next command:
 
 ```shell script
-$ composer require spiral/roadrunner-laravel "^3.3"
+$ composer require spiral/roadrunner-laravel "^3.4"
 ```
 
 > Installed `composer` is required ([how to install composer][getcomposer]).
@@ -271,7 +271,7 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maint
 
 [badge_packagist_version]:https://img.shields.io/packagist/v/spiral/roadrunner-laravel.svg?maxAge=180
 [badge_php_version]:https://img.shields.io/packagist/php-v/spiral/roadrunner-laravel.svg?longCache=true
-[badge_build_status]:https://img.shields.io/github/workflow/status/spiral/roadrunner-laravel/build?maxAge=60
+[badge_build_status]:https://img.shields.io/github/workflow/status/spiral/roadrunner-laravel/tests?maxAge=30
 [badge_coverage]:https://img.shields.io/codecov/c/github/spiral/roadrunner-laravel/master.svg?maxAge=180
 [badge_downloads_count]:https://img.shields.io/packagist/dt/spiral/roadrunner-laravel.svg?maxAge=180
 [badge_license]:https://img.shields.io/packagist/l/spiral/roadrunner-laravel.svg?maxAge=256

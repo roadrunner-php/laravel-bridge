@@ -4,7 +4,7 @@ composer.lock
 # IDEs
 /nbproject
 /.idea
-/.vscode.vscode
+/.vscode
 
 # Vendors
 /vendor
