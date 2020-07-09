@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v3.4.1
+
+### Added
+
+- Listener `EnableHttpMethodParameterOverride` for processing hidden field in the html-form `DELETE` or `PUT`
+ request via the `_method` request parameter
+- Added new setting `Listeners\EnableHttpMethodParameterOverride` in `config/roadrunner.php`
+
+### Fixed
+
+-  Sending any form with a `DELETE` or `PUT`, for example, the application ignores the hidden field `_method`
+  and as a result the action necessary for the form does not occur.
+
 ## v3.4.0
 
 ### Added
