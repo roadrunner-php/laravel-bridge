@@ -29,7 +29,6 @@ class RebindRouterListener implements ListenerInterface
                 $this->{'container'} = $app;
 
                 try {
-                    $request->enableHttpMethodParameterOverride();
                     /** @var mixed $route */
                     $route = $this->{'getRoutes'}()->match($request);
 
