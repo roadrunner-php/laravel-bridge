@@ -28,7 +28,7 @@ class EnableHttpMethodParameterOverrideTest extends AbstractListenerTestCase
             ->andReturn($request)
             ->getMock();
 
-        $this->assertFalse($requestt::getHttpMethodParameterOverride());
+        $this->assertFalse($request::getHttpMethodParameterOverride());
 
         $this->listenerFactory()->handle($event_mock);
 
