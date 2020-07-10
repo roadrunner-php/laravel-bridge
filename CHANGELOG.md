@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Fixed
 
-- Sending any form data with a `DELETE` or `PUT` method (the application ignores the hidden field `_method` and as a result the action necessary for the form does not occur) [#9]
+- Sending any form data with a `DELETE` or `PUT` method (the application ignored the hidden field `_method` and as a result the action necessary for the form did not occur) [#9]
 
 [#9]:https://github.com/spiral/roadrunner-laravel/pull/9
 
