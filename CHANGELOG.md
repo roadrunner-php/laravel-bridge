@@ -8,11 +8,11 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Listener `EnableHttpMethodParameterOverride` for forced support of `_method` request parameter (for determining the intended HTTP method) [#9]
+- Listener `EnableHttpMethodParameterOverrideListener` for forced support of `_method` request parameter (for determining the intended HTTP method) [#9]
 
 ### Changed
 
-- Listener `EnableHttpMethodParameterOverride` is enabled by default in the configuration file [#9]
+- Listener `EnableHttpMethodParameterOverrideListener` is enabled by default in the configuration file [#9]
 
 ### Fixed
 

@@ -13,7 +13,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
  * @link https://github.com/spiral/roadrunner-laravel/pull/9
  * @see RebindRouterListener
  */
-class EnableHttpMethodParameterOverride implements ListenerInterface
+class EnableHttpMethodParameterOverrideListener implements ListenerInterface
 {
     /**
      * {@inheritdoc}
