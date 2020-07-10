@@ -4,18 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## v3.4.1
+## v3.5.0
 
 ### Added
 
-- Listener `EnableHttpMethodParameterOverride` for processing hidden field in the html-form `DELETE` or `PUT`
- request via the `_method` request parameter
-- Added new setting `Listeners\EnableHttpMethodParameterOverride` in `config/roadrunner.php`
+- Listener `EnableHttpMethodParameterOverride` for forced support of `_method` request parameter (for determining the intended HTTP method) [#9]
+
+### Changed
+
+- Listener `EnableHttpMethodParameterOverride` is enabled by default in the configuration file [#9]
 
 ### Fixed
 
--  Sending any form with a `DELETE` or `PUT`, for example, the application ignores the hidden field `_method`
-  and as a result the action necessary for the form does not occur.
+- Sending any form data with a `DELETE` or `PUT` method (the application ignores the hidden field `_method` and as a result the action necessary for the form does not occur) [#9]
+
+[#9]:https://github.com/spiral/roadrunner-laravel/pull/9
 
 ## v3.4.0
 
