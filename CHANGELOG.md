@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v3.5.0
+
+### Added
+
+- Listener `EnableHttpMethodParameterOverride` for forced support of `_method` request parameter (for determining the intended HTTP method) [#9]
+
+### Changed
+
+- Listener `EnableHttpMethodParameterOverride` is enabled by default in the configuration file [#9]
+
+### Fixed
+
+- Sending any form data with a `DELETE` or `PUT` method (the application ignored the hidden field `_method` and as a result the action necessary for the form did not occur) [#9]
+
+[#9]:https://github.com/spiral/roadrunner-laravel/pull/9
+
 ## v3.4.0
 
 ### Added

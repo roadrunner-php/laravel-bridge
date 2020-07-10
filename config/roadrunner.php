@@ -64,6 +64,7 @@ return [
         ],
 
         Events\BeforeLoopIterationEvent::class => [
+            Listeners\EnableHttpMethodParameterOverride::class,
             Listeners\RebindHttpKernelListener::class, // Laravel 7 issue: <https://git.io/JvPpf>
             Listeners\RebindViewListener::class,
             Listeners\CloneConfigListener::class,
