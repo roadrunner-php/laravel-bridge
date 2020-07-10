@@ -15,20 +15,6 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 class EnableHttpMethodParameterOverrideTest extends AbstractListenerTestCase
 {
     /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->request = $this->app->make('request');
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function testHandle(): void
@@ -37,7 +23,7 @@ class EnableHttpMethodParameterOverrideTest extends AbstractListenerTestCase
         $event_mock = m::mock(WithHttpRequest::class)
             ->makePartial()
             ->expects('httpRequest')
-            ->andReturn($this->request)
+            ->andReturn($this->app->make('request'))
             ->getMock();
 
         $this->assertFalse($this->request::getHttpMethodParameterOverride());
