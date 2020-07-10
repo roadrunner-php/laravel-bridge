@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
 use Mockery as m;
-use Spiral\RoadRunnerLaravel\Listeners\EnableHttpMethodParameterOverride;
 use Symfony\Component\HttpFoundation\Request;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
+use Spiral\RoadRunnerLaravel\Listeners\EnableHttpMethodParameterOverride;
 
 /**
  * @covers \Spiral\RoadRunnerLaravel\Listeners\EnableHttpMethodParameterOverride<extended>
