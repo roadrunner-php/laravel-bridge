@@ -10,6 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
  * This listener must be registered BEFORE `RebindRouterListener` if you need to process
  * the hidden `_hidden` field when submitted using the HTML form.
  *
+ * @link https://github.com/spiral/roadrunner-laravel/pull/9
  * @see RebindRouterListener
  */
 class EnableHttpMethodParameterOverride implements ListenerInterface
@@ -20,7 +21,7 @@ class EnableHttpMethodParameterOverride implements ListenerInterface
     public function handle($event): void
     {
         if ($event instanceof WithHttpRequest) {
-            $event->httpRequest()->enableHttpMethodParameterOverride();
+            $event->httpRequest()::enableHttpMethodParameterOverride();
         }
     }
 }
