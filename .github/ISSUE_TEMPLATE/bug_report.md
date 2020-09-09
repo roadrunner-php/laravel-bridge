@@ -18,25 +18,32 @@ assignees: tarampampam
 
 > Tell us what happens instead.
 
-### Steps to reproduce the behavior:
+### Steps to reproduce
 
-> Put some code example:
->
-> ```php
-> $some = new \stdClass();
-> echo $some;
->
-> PHP Catchable fatal error:  Object of class stdClass could not be converted to string in Command line code on line 2
-> PHP Stack trace:
-> PHP   1. {main}() Command line code:0
-> ```
+> Describe steps to behavior reproducing.
 
 ## System information
 
 > Please, complete the following information:
 
- - PHP version(s): [e.g. `7.2.6`]
- - Package version(s): [e.g. `3.3.0`]
+Key                     | Value
+----------------------- | ----
+PHP version             | <!-- e.g. `7.2.6` -->
+Current package version | <!-- e.g. `3.6.0` -->
+RoadRunner version      | <!-- e.g. `1.8.3` -->
+Environment             | <!-- e.g. `docker`, `local`, `aws` -->
+
+### RoadRunner configuration file content
+
+```yaml
+# Paste here your `.rr.yaml` file content
+```
+
+### Package configuration file content
+
+```php
+# Paste here your `config/roadrunner.php` file content
+```
 
 ## Additional context
 
