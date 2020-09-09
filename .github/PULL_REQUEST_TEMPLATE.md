@@ -1,8 +1,3 @@
-| Q             | A
-| ------------- | ---
-| Bug fix?      | Yes or No
-| New feature?  | Yes or No
-
 ## Description
 
 <!--
