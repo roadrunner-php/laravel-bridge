@@ -259,7 +259,7 @@ class WorkerTest extends AbstractTestCase
                             ->shouldReceive('error')
                             ->once()
                             ->withArgs(function ($error_text) use ($exception_message): bool {
-                                $this->assertContains($exception_message, $error_text);
+                                $this->assertStringContainsString($exception_message, $error_text);
 
                                 return true;
                             })
@@ -327,7 +327,7 @@ class WorkerTest extends AbstractTestCase
                             ->shouldReceive('error')
                             ->once()
                             ->withArgs(function ($error_text): bool {
-                                $this->assertContains('Internal server error', $error_text);
+                                $this->assertStringContainsString('Internal server error', $error_text);
 
                                 return true;
                             })
@@ -434,7 +434,7 @@ class WorkerTest extends AbstractTestCase
                     ->withArgs(function (ResponseInterface $response): bool {
                         $this->assertSame(404, $response->getStatusCode());
                         $this->assertNotEmpty($response->getHeaders());
-                        $this->assertContains('<html', Str::lower((string) $response->getBody()));
+                        $this->assertStringContainsString('<html', Str::lower((string) $response->getBody()));
 
                         return true;
                     })
@@ -503,7 +503,7 @@ class WorkerTest extends AbstractTestCase
             // Validate application response
             $this->assertSame(200, $response->getStatusCode());
             $this->assertNotEmpty($response->getHeaders());
-            $this->assertContains('<html', Str::lower((string) $response->getBody()));
+            $this->assertStringContainsString('<html', Str::lower((string) $response->getBody()));
 
             return true;
         };
