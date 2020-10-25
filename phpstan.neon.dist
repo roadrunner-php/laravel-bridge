@@ -3,6 +3,7 @@ parameters:
   paths:
     - src
     - bin/rr-worker
+  reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     - message: '#Access to an undefined property.*::\$app#'
       paths: [src/Listeners/RebindHttpKernelListener.php]
