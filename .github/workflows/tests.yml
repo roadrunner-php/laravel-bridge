@@ -94,6 +94,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         with:
           php-version: 7.4
           extensions: mbstring
+          tools: composer:v1 # TODO update composer up to v2
 
       - name: Get Composer Cache Directory
         id: composer-cache
