@@ -3,3 +3,10 @@ parameters:
   paths:
     - src
     - bin/rr-worker
+  ignoreErrors:
+    - message: '#Access to an undefined property.*::\$app#'
+      paths: [src/Listeners/RebindHttpKernelListener.php]
+    - message: '#Access to an undefined property.*::\$container#'
+      paths: [src/Listeners/RebindRouterListener.php]
+    - message: '#Access to an undefined property.*::\$(container|shared)#'
+      paths: [src/Listeners/RebindViewListener.php]
