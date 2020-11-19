@@ -20,24 +20,31 @@ Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applicat
 Require this package with composer using next command:
 
 ```shell script
-$ composer require spiral/roadrunner-laravel "^3.4"
+composer require spiral/roadrunner-laravel
 ```
 
 > Installed `composer` is required ([how to install composer][getcomposer]).
 
 > You need to fix the major version of package.
 
-After that you can "publish" package configuration file (`./config/roadrunner.php`) using next command:
+After that you can "publish" package configuration file (`config/roadrunner.php`) using next command:
 
 ```shell script
-$ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=config
+php artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=config
 ```
 
-And basic RoadRunner configuration file (`./.rr.yaml.dist`):
+And basic RoadRunner configuration file (`.rr.yaml.dist`):
 
 ```shell script
-$ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=rr-config
+php artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=rr-config
 ```
+
+You can also do this through the
+
+```shell script
+artisan vendor:publish
+```
+And publish the resources you need.
 
 After that you can modify configuration files as you wish.
 
@@ -61,12 +68,28 @@ Simple `.rr.yaml` config example:
 
 ```yaml
 env:
+  key: value
   #APP_REFRESH: true
 
 http:
   address: 0.0.0.0:8080
   workers:
-    command: 'php ./vendor/bin/rr-worker'
+    command: 'php vendor/bin/rr-worker'
+
+static:
+  dir: 'public'
+```
+
+For windows:
+```yaml
+env:
+  key: value
+  #APP_REFRESH: true
+
+http:
+  address: 0.0.0.0:8080
+  workers:
+    command: 'php vendor/spiral/roadrunner-laravel/bin/rr-worker'
 
 static:
   dir: 'public'
@@ -75,7 +98,7 @@ static:
 Roadrunner server starting:
 
 ```shell script
-$ rr -c ./.rr.yaml serve -d
+$ rr -c .rr.yaml serve -d
 ```
 
 ### Listeners
