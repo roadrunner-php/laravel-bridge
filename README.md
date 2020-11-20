@@ -72,6 +72,13 @@ static:
   dir: 'public'
 ```
 
+For Windows:
+```yaml
+    command: 'php ./vendor/spiral/roadrunner-laravel/bin/rr-worker pipes'
+```
+
+
+
 Roadrunner server starting:
 
 ```shell script
