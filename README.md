@@ -66,7 +66,7 @@ env:
 http:
   address: 0.0.0.0:8080
   workers:
-    command: 'php ./vendor/bin/rr-worker'
+    command: 'php ./vendor/bin/rr-worker' # for windows: `php vendor/spiral/roadrunner-laravel/bin/rr-worker`
 
 static:
   dir: 'public'
