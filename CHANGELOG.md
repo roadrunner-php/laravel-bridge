@@ -6,10 +6,18 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## UNRELEASED
 
+### Added
+
+- Support PHP `8.x`
+
 ### Changed
 
 - Composer `2.x` is supported now
-- Minimal required PHP version now is `7.3` (`7.2` security support ended 1 Jan 2021)
+- Minimal required PHP version now is `7.3` (`7.2` security support ended January 1st, 2021)
+
+### Removed
+
+- Code-style checking and fixing for local development (packages `spiral/code-style` and `friendsofphp/php-cs-fixer` does not supports PHP `8.x`), but using GitHub this actions keep running
 
 ## v3.6.0
 
