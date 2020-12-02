@@ -25,10 +25,10 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         setup: ['basic', 'lowest']
         php: ['7.3', '7.4', '8.0']
         include:
-          - php: '7.2'
+          - php: '7.3'
             setup: 'basic'
             coverage: 'true'
-          - php: '7.4'
+          - php: '8.0'
             setup: 'basic'
             coverage: 'true'
     steps:
