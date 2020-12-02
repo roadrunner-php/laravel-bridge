@@ -60,7 +60,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         if: matrix.setup == 'basic'
         run: composer update --prefer-dist --no-interaction --no-progress --ansi
 
-      - name: Show most important packages versions
+      - name: Show most important package versions
         run: composer info | grep -e laravel -e spiral -e phpunit/phpunit -e phpstan/phpstan
 
       - name: Execute tests
@@ -103,7 +103,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install required Composer packages
-        run: composer global require 'spiral/code-style:^1.0' -n --no-progress --prefer-dist # `--ignore-platform-reqs` is required only for PHP 8.0
+        run: composer require 'spiral/code-style:^1.0' -n --no-progress --prefer-dist # `--ignore-platform-reqs` is required only for PHP 8.0
 
       - name: Execute check
-        run: spiral-cs check ./bin ./src ./tests --ansi
+        run: php ./vendor/bin/spiral-cs check ./bin ./src ./tests --ansi
