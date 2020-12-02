@@ -40,7 +40,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         with:
           php-version: ${{ matrix.php }}
           extensions: mbstring, pdo, pdo_sqlite, sqlite3 # definition is required for php 7.4
-          tools: composer:v1 # TODO update composer up to v2
 
       - name: Get Composer Cache Directory # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
         id: composer-cache
@@ -58,11 +57,11 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Install lowest Composer dependencies
         if: matrix.setup == 'lowest'
-        run: composer update --prefer-dist --no-interaction --no-suggest --prefer-lowest --ansi
+        run: composer update --prefer-dist --no-interaction --prefer-lowest --ansi
 
       - name: Install basic Composer dependencies
         if: matrix.setup == 'basic'
-        run: composer update --prefer-dist --no-interaction --no-suggest --ansi
+        run: composer update --prefer-dist --no-interaction --ansi
 
       - name: Show most important packages versions
         run: composer info | grep -e laravel -e spiral -e phpunit/phpunit -e phpstan/phpstan
@@ -94,7 +93,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         with:
           php-version: 7.4
           extensions: mbstring
-          tools: composer:v1 # TODO update composer up to v2
 
       - name: Get Composer Cache Directory
         id: composer-cache
@@ -107,11 +105,8 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install Composer 'hirak/prestissimo' package
-        run: composer global require hirak/prestissimo --update-no-dev --ansi
-
       - name: Install Composer dependencies
-        run: composer update --prefer-dist --no-interaction --no-suggest --ansi
+        run: composer update --prefer-dist --no-interaction --ansi
 
       - name: Execute check
         run: composer cs-check

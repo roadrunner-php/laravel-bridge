@@ -17,13 +17,13 @@ build: ## Build docker images, required for current package environment
 	docker-compose build
 
 latest: clean ## Install latest php dependencies
-	docker-compose run $(RUN_APP_ARGS) app composer update -n --ansi --no-suggest --prefer-dist --prefer-stable
+	docker-compose run $(RUN_APP_ARGS) app composer update -n --ansi --prefer-dist --prefer-stable
 
 install: clean ## Install regular php dependencies
-	docker-compose run $(RUN_APP_ARGS) app composer update -n --prefer-dist --no-interaction --no-suggest
+	docker-compose run $(RUN_APP_ARGS) app composer update -n --prefer-dist --no-interaction
 
 lowest: clean ## Install lowest php dependencies
-	docker-compose run $(RUN_APP_ARGS) app composer update -n --ansi --no-suggest --prefer-dist --prefer-lowest
+	docker-compose run $(RUN_APP_ARGS) app composer update -n --ansi --prefer-dist --prefer-lowest
 
 test: ## Execute php tests and linters
 	docker-compose run $(RUN_APP_ARGS) app composer test
