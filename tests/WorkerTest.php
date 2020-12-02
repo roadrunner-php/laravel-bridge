@@ -475,7 +475,7 @@ class WorkerTest extends AbstractTestCase
      */
     private function getOnceRequestGenerationClosure(
         string $method = 'GET',
-        string $uri = '/',
+        string $uri = 'http://unit-test/',
         array $server_params = []
     ): callable {
         return function () use ($method, $uri, $server_params): ?ServerRequestInterface {
