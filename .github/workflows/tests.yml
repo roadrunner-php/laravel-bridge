@@ -54,11 +54,11 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Install lowest Composer dependencies
         if: matrix.setup == 'lowest'
-        run: composer update --prefer-dist --no-interaction --prefer-lowest --ansi
+        run: composer update --prefer-dist --no-interaction --prefer-lowest --no-progress --ansi
 
       - name: Install basic Composer dependencies
         if: matrix.setup == 'basic'
-        run: composer update --prefer-dist --no-interaction --ansi
+        run: composer update --prefer-dist --no-interaction --no-progress --ansi
 
       - name: Show most important packages versions
         run: composer info | grep -e laravel -e spiral -e phpunit/phpunit -e phpstan/phpstan

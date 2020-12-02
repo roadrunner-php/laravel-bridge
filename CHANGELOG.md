@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Composer `2.x` is supported now
 - Minimal required PHP version now is `7.3` (`7.2` security support ended January 1st, 2021)
+- Dev-dependency `mockery/mockery` minimal required version changed from `^1.3.1` to `^1.3.2`
+- Dev-dependency `phpstan/phpstan` minimal required version changed from `~0.12` to `~0.12.34`
 
 ### Removed
 
