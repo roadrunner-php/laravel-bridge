@@ -39,7 +39,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, pdo, pdo_sqlite, sqlite3 # definition is required for php 7.4
+          extensions: mbstring, pdo, pdo_sqlite, sqlite3, xdebug # definition is required for php 7.4
 
       - name: Get Composer Cache Directory # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
         id: composer-cache
@@ -69,6 +69,8 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Execute tests with code coverage
         if: matrix.coverage == 'true'
+        env:
+          XDEBUG_MODE: coverage
         run: composer test-cover
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
@@ -106,6 +108,4 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: composer require 'spiral/code-style:^1.0' -n --no-progress --prefer-dist # `--ignore-platform-reqs` is required only for PHP 8.0
 
       - name: Execute check
-        env:
-          XDEBUG_MODE: coverage
         run: php ./vendor/bin/spiral-cs check ./bin ./src ./tests --ansi
