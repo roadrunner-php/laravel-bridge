@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## UNRELEASED
+## v3.7.0
 
 ### Added
 
@@ -19,7 +19,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Removed
 
-- Code-style checking and fixing for local development (packages `spiral/code-style` and `friendsofphp/php-cs-fixer` does not supports PHP `8.x`), but using GitHub this actions keep running
+- Code-style checking and fixing for local development (packages `spiral/code-style` and `friendsofphp/php-cs-fixer` does not supports PHP `8.x`), but using GitHub this actions still running
 
 ## v3.6.0
 
