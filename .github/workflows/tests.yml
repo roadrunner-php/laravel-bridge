@@ -106,4 +106,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         run: composer require 'spiral/code-style:^1.0' -n --no-progress --prefer-dist # `--ignore-platform-reqs` is required only for PHP 8.0
 
       - name: Execute check
+        env:
+          XDEBUG_MODE: coverage
         run: php ./vendor/bin/spiral-cs check ./bin ./src ./tests --ansi
