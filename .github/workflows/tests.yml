@@ -17,18 +17,18 @@ on:
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   tests:
     name: PHP ${{ matrix.php }} (${{ matrix.setup }} setup)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
         setup: ['basic', 'lowest']
-        php: ['7.2', '7.3', '7.4']
+        php: ['7.3', '7.4', '8.0']
         include:
-          - php: '7.2'
+          - php: '7.3'
             setup: 'basic'
             coverage: 'true'
-          - php: '7.4'
+          - php: '8.0'
             setup: 'basic'
             coverage: 'true'
     steps:
@@ -39,7 +39,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, pdo, pdo_sqlite, sqlite3 # definition is required for php 7.4
+          extensions: mbstring, pdo, pdo_sqlite, sqlite3, xdebug # definition is required for php 7.4
 
       - name: Get Composer Cache Directory # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
         id: composer-cache
@@ -54,13 +54,13 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Install lowest Composer dependencies
         if: matrix.setup == 'lowest'
-        run: composer update --prefer-dist --no-interaction --prefer-lowest --ansi
+        run: composer update --prefer-dist --no-interaction --prefer-lowest --no-progress --ansi
 
       - name: Install basic Composer dependencies
         if: matrix.setup == 'basic'
-        run: composer update --prefer-dist --no-interaction --ansi
+        run: composer update --prefer-dist --no-interaction --no-progress --ansi
 
-      - name: Show most important packages versions
+      - name: Show most important package versions
         run: composer info | grep -e laravel -e spiral -e phpunit/phpunit -e phpstan/phpstan
 
       - name: Execute tests
@@ -69,6 +69,8 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Execute tests with code coverage
         if: matrix.coverage == 'true'
+        env:
+          XDEBUG_MODE: coverage
         run: composer test-cover
 
       - uses: codecov/codecov-action@v1 # Docs: <https://github.com/codecov/codecov-action>
@@ -80,7 +82,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
   cs-check:
     name: Check Code Style
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -102,8 +104,8 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
 
-      - name: Install Composer dependencies
-        run: composer update --prefer-dist --no-interaction --ansi
+      - name: Install required Composer packages
+        run: composer require 'spiral/code-style:^1.0' -n --no-progress --prefer-dist # `--ignore-platform-reqs` is required only for PHP 8.0
 
       - name: Execute check
-        run: composer cs-check
+        run: php ./vendor/bin/spiral-cs check ./bin ./src ./tests --ansi

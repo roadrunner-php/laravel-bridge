@@ -4,11 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## UNRELEASED
+## v3.7.0
+
+### Added
+
+- Support PHP `8.x`
 
 ### Changed
 
 - Composer `2.x` is supported now
+- Minimal required PHP version now is `7.3` (`7.2` security support ended January 1st, 2021)
+- Dev-dependency `mockery/mockery` minimal required version changed from `^1.3.1` to `^1.3.2`
+- Dev-dependency `phpstan/phpstan` minimal required version changed from `~0.12` to `~0.12.34`
+
+### Removed
+
+- Code-style checking and fixing for local development (packages `spiral/code-style` and `friendsofphp/php-cs-fixer` does not supports PHP `8.x`), but using GitHub this actions still running
 
 ## v3.6.0
 

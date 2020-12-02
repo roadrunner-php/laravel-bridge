@@ -11,27 +11,31 @@
          processIsolation="false"
          forceCoversAnnotation="true"
          stopOnFailure="false">
+
     <testsuites>
         <testsuite name="Unit">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+
+    <coverage includeUncoveredFiles="false" processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">./src</directory>
-            <exclude>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-    <logging>
-        <!--log type="coverage-html" target="./coverage/html"/-->
-        <log type="coverage-xml" target="./coverage/xml"/>
-        <log type="coverage-clover" target="./coverage/clover.xml"/>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
-    </logging>
+        </include>
+        <exclude>
+            <directory>./vendor</directory>
+            <directory>./tests</directory>
+        </exclude>
+        <report>
+            <clover outputFile="./coverage/clover.xml"/>
+            <html outputDirectory="./coverage/html"/>
+            <text outputFile="php://stdout" showUncoveredFiles="false"/>
+            <xml outputDirectory="./coverage/xml"/>
+        </report>
+    </coverage>
+
     <php>
-        <env name="APP_KEY" value="base64:+hY09mlBag/d7Qhq2SjE/i2iUzZBS1dGObLqcHZU2Ac="/>
-        <env name="APP_URL" value="http://unit-test"/>
+        <server name="APP_KEY" value="base64:+hY09mlBag/d7Qhq2SjE/i2iUzZBS1dGObLqcHZU2Ac=" force="true"/>
+        <server name="APP_URL" value="http://unit-test" force="true"/>
     </php>
 </phpunit>
