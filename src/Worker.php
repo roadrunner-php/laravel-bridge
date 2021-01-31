@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Spiral\RoadRunnerLaravel;
 
@@ -20,6 +20,7 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Events\Dispatcher as EventsDispatcher;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
+use Spiral\RoadRunnerLaravel\SocketOptions\SocketOptionsInterface;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 
 /**
@@ -35,13 +36,22 @@ class Worker implements WorkerInterface
     protected $base_path;
 
     /**
+     * Parsed options from run command.
+     *
+     * @var SocketOptionsInterface
+     */
+    private $socket_options;
+
+    /**
      * Create a new Worker instance.
      *
-     * @param string $base_path Laravel application base path
+     * @param string       $base_path Laravel application base path
+     * @param array<mixed> $options
      */
-    public function __construct(string $base_path)
+    public function __construct(string $base_path, array $options = [])
     {
-        $this->base_path = $base_path;
+        $this->base_path      = $base_path;
+        $this->socket_options = $this->createSocketOptions($options);
     }
 
     /**
@@ -49,7 +59,7 @@ class Worker implements WorkerInterface
      */
     public function start(bool $refresh_app = false): void
     {
-        $psr7_client  = $this->createPsr7Client($this->createStreamRelay());
+        $psr7_client  = $this->createPsr7Client($this->createRelay());
         $psr7_factory = $this->createPsr7Factory();
         $http_factory = $this->createHttpFactory();
 
@@ -149,15 +159,15 @@ class Worker implements WorkerInterface
      *
      * @param string $base_path
      *
+     * @return ApplicationContract
      * @throws InvalidArgumentException
      *
-     * @return ApplicationContract
      */
     protected function createApplication(string $base_path): ApplicationContract
     {
         $path = \implode(\DIRECTORY_SEPARATOR, [\rtrim($base_path, \DIRECTORY_SEPARATOR), 'bootstrap', 'app.php']);
 
-        if (!\is_file($path)) {
+        if (! \is_file($path)) {
             throw new InvalidArgumentException("Application bootstrap file was not found in [{$path}]");
         }
 
@@ -170,9 +180,9 @@ class Worker implements WorkerInterface
      * @param ApplicationContract $app
      * @param PSR7Client          $psr7_client
      *
+     * @return void
      * @throws RuntimeException
      *
-     * @return void
      */
     protected function bootstrapApplication(ApplicationContract $app, PSR7Client $psr7_client): void
     {
@@ -182,7 +192,7 @@ class Worker implements WorkerInterface
         $bootstrappers = $this->getKernelBootstrappers($http_kernel);
 
         // Insert `SetRequestForConsole` bootstrapper before `RegisterProviders` if it does not exists
-        if (!\in_array(SetRequestForConsole::class, $bootstrappers, true)) {
+        if (! \in_array(SetRequestForConsole::class, $bootstrappers, true)) {
             $register_index = (int) \array_search(RegisterProviders::class, $bootstrappers, true);
 
             if ($register_index !== false) {
@@ -253,6 +263,29 @@ class Worker implements WorkerInterface
     }
 
     /**
+     * @return RelayInterface
+     */
+    protected function createRelay(): RelayInterface
+    {
+        if (
+            $this->socket_options->hasOption('socket-type')
+            && $this->socket_options->hasOption('socket-address')
+        ) {
+            $options = $this->socket_options->getOptions();
+
+            return $this->createSocketRelay(
+                $options['socket-address'],
+                $options['socket-type'] === 'unix',
+                $options['socket-port'] === null
+                    ? null
+                    : (int) $options['socket-port'],
+            );
+        }
+
+        return $this->createStreamRelay();
+    }
+
+    /**
      * @param resource|mixed $in  Must be readable
      * @param resource|mixed $out Must be writable
      *
@@ -261,6 +294,24 @@ class Worker implements WorkerInterface
     protected function createStreamRelay($in = \STDIN, $out = \STDOUT): RelayInterface
     {
         return new \Spiral\Goridge\StreamRelay($in, $out);
+    }
+
+    /**
+     * @param string   $address
+     * @param bool     $is_unix_sock
+     * @param int|null $port
+     *
+     * @return RelayInterface
+     */
+    protected function createSocketRelay(string $address, bool $is_unix_sock, ?int $port = null): RelayInterface
+    {
+        return new \Spiral\Goridge\SocketRelay(
+            $address,
+            $port,
+            $is_unix_sock
+                ? \Spiral\Goridge\SocketRelay::SOCK_UNIX
+                : \Spiral\Goridge\SocketRelay::SOCK_TCP
+        );
     }
 
     /**
@@ -278,7 +329,7 @@ class Worker implements WorkerInterface
      */
     protected function createHttpFactory(): HttpFoundationFactoryInterface
     {
-        return new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory();
+        return new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
     }
 
     /**
@@ -287,10 +338,20 @@ class Worker implements WorkerInterface
     protected function createPsr7Factory(): HttpMessageFactoryInterface
     {
         return new PsrHttpFactory(
-            new \Spiral\RoadRunner\Diactoros\ServerRequestFactory(),
-            new \Spiral\RoadRunner\Diactoros\StreamFactory(),
-            new \Spiral\RoadRunner\Diactoros\UploadedFileFactory(),
-            new \Laminas\Diactoros\ResponseFactory()
+            new \Spiral\RoadRunner\Diactoros\ServerRequestFactory,
+            new \Spiral\RoadRunner\Diactoros\StreamFactory,
+            new \Spiral\RoadRunner\Diactoros\UploadedFileFactory,
+            new \Laminas\Diactoros\ResponseFactory
         );
+    }
+
+    /**
+     * @param array<mixed> $options
+     *
+     * @return SocketOptionsInterface
+     */
+    protected function createSocketOptions(array $options): SocketOptionsInterface
+    {
+        return new \Spiral\RoadRunnerLaravel\SocketOptions\SocketOptions($options);
     }
 }

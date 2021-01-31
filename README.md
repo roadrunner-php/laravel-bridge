@@ -244,6 +244,56 @@ class Middleware
 }
 ```
 
+### Alternative Communication Methods
+
+PHP Workers would utilize standard pipes `STDOUT` and `STDERR` to exchange data frames with `RR` server, echoing any data to this channels will break the communication (i.e. no unbuffered `echo` or `headers`).
+
+If your application must write to `STDOUT` use alternative communication method over `TCP`:
+
+```yaml
+env:
+  #APP_REFRESH: true
+
+http:
+  address: 0.0.0.0:8080
+  workers:
+    command: 'php ./vendor/bin/rr-worker --socket-type=tcp --socket-address=localhost --socket-port=7000'
+    relay: 'tcp://localhost:7000'
+    pool:
+      numWorkers: 4
+      maxJobs: 64 # jobs limitation is important
+
+static:
+  dir: 'public'
+```
+
+Unix sockets:
+
+```yaml
+env:
+  #APP_REFRESH: true
+
+http:
+  address: 0.0.0.0:8080
+  workers:
+    command: 'php ./vendor/bin/rr-worker --socket-type=unix --socket-address=rr.sock'
+    relay: 'unix://rr.sock'
+    pool:
+      numWorkers: 4
+      maxJobs: 64 # jobs limitation is important
+
+static:
+  dir: 'public'
+```
+
+#### Possible parameters:
+
+| Command            | Description                                       |
+|-------------------:|---------------------------------------------------|
+| `--socket-type`    | Supported socket types: tcp, unix                 |
+| `--socket-address` | Socket address. Localhost, ip address or hostname |
+| `--socket-port`    | Socket port. Ignored for UNIX sockets.            |
+
 ### Testing
 
 For package testing we use `phpunit` framework and `docker-ce` + `docker-compose` as develop environment. So, just write into your terminal after repository cloning:
