@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Spiral\RoadRunnerLaravel\SocketOptions;
 
 interface SocketOptionsInterface
@@ -29,4 +31,3 @@ interface SocketOptionsInterface
      */
     public function getOptions(): array;
 }
-
