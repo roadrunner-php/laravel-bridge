@@ -12,6 +12,8 @@ use Spiral\RoadRunner\PSR7Client;
 use Spiral\Goridge\RelayInterface;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
 use Illuminate\Foundation\Bootstrap\RegisterProviders;
 use Illuminate\Foundation\Bootstrap\SetRequestForConsole;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
@@ -20,7 +22,6 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Events\Dispatcher as EventsDispatcher;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
-use Spiral\RoadRunnerLaravel\SocketOptions\SocketOptionsInterface;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 
 /**
@@ -38,20 +39,20 @@ class Worker implements WorkerInterface
     /**
      * Parsed options from run command.
      *
-     * @var SocketOptionsInterface
+     * @var InputInterface
      */
-    private $socket_options;
+    protected $command_arguments;
 
     /**
      * Create a new Worker instance.
      *
      * @param string       $base_path Laravel application base path
-     * @param array<mixed> $options
+     * @param array<mixed> $arguments
      */
-    public function __construct(string $base_path, array $options = [])
+    public function __construct(string $base_path, array $arguments = [])
     {
-        $this->base_path      = $base_path;
-        $this->socket_options = $this->createSocketOptions($options);
+        $this->base_path         = $base_path;
+        $this->command_arguments = $this->createFromCommandArguments($arguments);
     }
 
     /**
@@ -267,18 +268,18 @@ class Worker implements WorkerInterface
      */
     protected function createRelay(): RelayInterface
     {
-        if (
-            $this->socket_options->hasOption('socket-type')
-            && $this->socket_options->hasOption('socket-address')
-        ) {
-            $options = $this->socket_options->getOptions();
+        $socket_type    = $this->command_arguments->getParameterOption('--socket-type', null);
+        $socket_address = $this->command_arguments->getParameterOption('--socket-address', null);
+
+        if ($socket_type !== null && $socket_address !== null) {
+            $port = $this->command_arguments->getParameterOption('--socket-port', null);
 
             return $this->createSocketRelay(
-                $options['socket-address'],
-                $options['socket-type'] === 'unix',
-                $options['socket-port'] === null
+                $socket_address,
+                $socket_type === 'unix',
+                $port === null
                     ? null
-                    : (int) $options['socket-port'],
+                    : (int) $port,
             );
         }
 
@@ -346,12 +347,12 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @param array<mixed> $options
+     * @param string[] $options
      *
-     * @return SocketOptionsInterface
+     * @return InputInterface
      */
-    protected function createSocketOptions(array $options): SocketOptionsInterface
+    protected function createFromCommandArguments(array $options): InputInterface
     {
-        return new \Spiral\RoadRunnerLaravel\SocketOptions\SocketOptions($options);
+        return new ArgvInput($options);
     }
 }
