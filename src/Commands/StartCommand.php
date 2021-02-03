@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Commands;
 
+use Spiral\RoadRunnerLaravel\RunParams;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -39,19 +40,20 @@ class StartCommand extends Command
                 self::OPTION_SOCKET_TYPE,
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Socket type'
+                'Socket type. Default: null'
             )
             ->addOption(
                 self::OPTION_SOCKET_ADDRESS,
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Socket addres (ex. localhost, rr.sock)'
+                'Socket address (ex. localhost, rr.sock). Default: null'
             )
             ->addOption(
                 self::OPTION_SOCKET_PORT,
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Socket port'
+                'Socket port Default: null',
+                null
             );
 
         $this
@@ -59,7 +61,8 @@ class StartCommand extends Command
                 self::OPTION_APP_REFRESH,
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'App refresh (ex. true, false)'
+                'App refresh (ex. true, false)',
+                true
             );
     }
 
@@ -72,15 +75,42 @@ class StartCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $base_path = $input->getOption(self::OPTION_BASE_PATH);
+        $base_path = $this->validateBasePath($input->getOption(self::OPTION_BASE_PATH));
 
+        $run_params = $this->initRunParamsFromInput($input);
+
+        (new \Spiral\RoadRunnerLaravel\Worker($base_path))
+            ->start($run_params->isAppRefresh(), $run_params);
+
+        return 0;
+    }
+
+    /**
+     * @param string|string[]|bool|null $base_path
+     *
+     * @return string
+     * @throws \InvalidArgumentException
+     */
+    protected function validateBasePath($base_path): string
+    {
         if (!\is_string($base_path)) {
             throw new \InvalidArgumentException('Option ' . self::OPTION_BASE_PATH . ' must be string type.');
         }
 
-        (new \Spiral\RoadRunnerLaravel\Worker($base_path))
-            ->start((bool) $input->getOption(self::OPTION_APP_REFRESH));
+        return $base_path;
+    }
 
-        return 0;
+    /**
+     * @param InputInterface $input
+     *
+     * @return RunParams
+     */
+    protected function initRunParamsFromInput(InputInterface $input)
+    {
+        return (new RunParams())
+            ->setAppRefresh((bool) $input->getOption(self::OPTION_APP_REFRESH))
+            ->setSocketAddress($input->getOption(self::OPTION_SOCKET_ADDRESS))
+            ->setSocketType($input->getOption(self::OPTION_SOCKET_TYPE))
+            ->setSocketPort($input->getOption(self::OPTION_SOCKET_PORT));
     }
 }

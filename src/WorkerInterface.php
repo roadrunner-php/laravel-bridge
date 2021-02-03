@@ -9,9 +9,10 @@ interface WorkerInterface
     /**
      * Start worker loop.
      *
-     * @param bool|false $refresh_app
+     * @param bool           $refresh_app
+     * @param RunParams|null $params
      *
      * @return void
      */
-    public function start(bool $refresh_app = false): void;
+    public function start(bool $refresh_app = false, ?RunParams $params = null): void;
 }

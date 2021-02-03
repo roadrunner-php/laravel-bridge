@@ -46,21 +46,20 @@ class Worker implements WorkerInterface
     /**
      * Create a new Worker instance.
      *
-     * @param string       $base_path Laravel application base path
-     * @param array<mixed> $arguments
+     * @param string $base_path Laravel application base path
      */
-    public function __construct(string $base_path, array $arguments = [])
+    public function __construct(string $base_path)
     {
-        $this->base_path         = $base_path;
-        $this->command_arguments = $this->createFromCommandArguments($arguments);
+        $this->base_path = $base_path;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function start(bool $refresh_app = false): void
+    public function start(bool $refresh_app = false, ?RunParams $params = null): void
     {
-        $psr7_client  = $this->createPsr7Client($this->createRelay());
+        /** @var RunParams $params */
+        $psr7_client  = $this->createPsr7Client($this->createRelay($params));
         $psr7_factory = $this->createPsr7Factory();
         $http_factory = $this->createHttpFactory();
 
@@ -264,23 +263,27 @@ class Worker implements WorkerInterface
     }
 
     /**
+     * @param RunParams|null $params
+     *
      * @return RelayInterface
      */
-    protected function createRelay(): RelayInterface
+    protected function createRelay(?\Spiral\RoadRunnerLaravel\RunParams $params = null): RelayInterface
     {
-        $socket_type    = $this->command_arguments->getParameterOption('--socket-type', null);
-        $socket_address = $this->command_arguments->getParameterOption('--socket-address', null);
+        if ($params instanceof RunParams) {
+            $socket_type    = $params->getSocketType();
+            $socket_address = $params->getSocketAddress();
 
-        if ($socket_type !== null && $socket_address !== null) {
-            $port = $this->command_arguments->getParameterOption('--socket-port', null);
+            if ($socket_type !== null && $socket_address !== null) {
+                $port = $params->getSocketPort();
 
-            return $this->createSocketRelay(
-                $socket_address,
-                $socket_type === 'unix',
-                $port === null
-                    ? null
-                    : (int) $port,
-            );
+                return $this->createSocketRelay(
+                    $socket_address,
+                    $socket_type === 'unix',
+                    $port === null
+                        ? null
+                        : (int) $port,
+                );
+            }
         }
 
         return $this->createStreamRelay();
@@ -344,15 +347,5 @@ class Worker implements WorkerInterface
             new \Spiral\RoadRunner\Diactoros\UploadedFileFactory(),
             new \Laminas\Diactoros\ResponseFactory()
         );
-    }
-
-    /**
-     * @param string[] $options
-     *
-     * @return InputInterface
-     */
-    protected function createFromCommandArguments(array $options): InputInterface
-    {
-        return new ArgvInput($options);
     }
 }
