@@ -3,6 +3,10 @@
 
 declare(strict_types=1);
 
+use Spiral\RoadRunnerLaravel\Commands\StartCommand;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputOption;
+
 \define('RR_WORKER_START', \microtime(true));
 
 \ini_set('display_errors', 'stderr');
@@ -65,13 +69,14 @@ if (! \is_string($base_path)) {
 |--------------------------------------------------------------------------
 */
 
-// @todo: Make possible to use another worker class
-$worker = new \Spiral\RoadRunnerLaravel\Worker($base_path, $argv);
-
-/*
-|--------------------------------------------------------------------------
-| Start Worker Loop
-|--------------------------------------------------------------------------
-*/
-
-$worker->start((bool) \getenv('APP_REFRESH'));
+$worker = new Application('Worker', '1.0');
+$worker->add($command = new StartCommand);
+$command->addOption(
+    'base-path',
+    null,
+    InputOption::VALUE_OPTIONAL,
+    'Application Base Path',
+    $base_path
+);
+$worker->setDefaultCommand((string) $command->getName(), true);
+$worker->run();
