@@ -58,12 +58,14 @@ class Worker implements WorkerInterface
      */
     public function start(bool $refresh_app = false, ?RunParams $params = null): void
     {
-        /** @var RunParams $params */
+        $app = $this->createApplication($this->base_path);
+        /** @var ConfigRepository $config */
+        $config = $app->make(ConfigRepository::class);
+
         $psr7_client  = $this->createPsr7Client($this->createRelay($params));
         $psr7_factory = $this->createPsr7Factory();
         $http_factory = $this->createHttpFactory();
 
-        $app = $this->createApplication($this->base_path);
         $this->bootstrapApplication($app, $psr7_client);
 
         $this->fireEvent($app, new Events\BeforeLoopStartedEvent($app));
@@ -82,8 +84,6 @@ class Worker implements WorkerInterface
 
             /** @var HttpKernelContract $http_kernel */
             $http_kernel = $sandbox->make(HttpKernelContract::class);
-            /** @var ConfigRepository $config */
-            $config = $sandbox->make(ConfigRepository::class);
 
             try {
                 $this->fireEvent($sandbox, new Events\BeforeLoopIterationEvent($sandbox, $req));

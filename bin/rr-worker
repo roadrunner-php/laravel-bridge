@@ -1,11 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
-use Spiral\RoadRunnerLaravel\Commands\StartCommand;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\InputOption;
+use Spiral\RoadRunnerLaravel\Commands\StartCommand;
 
 \define('RR_WORKER_START', \microtime(true));
 
@@ -68,15 +67,8 @@ if (! \is_string($base_path)) {
 | Create Worker Instance
 |--------------------------------------------------------------------------
 */
+$application = new Application('Worker', '1.0');
+$application->add($command = (new StartCommand)->setBasePath($base_path));
 
-$worker = new Application('Worker', '1.0');
-$worker->add($command = new StartCommand);
-$command->addOption(
-    'base-path',
-    null,
-    InputOption::VALUE_OPTIONAL,
-    'Application Base Path',
-    $base_path
-);
-$worker->setDefaultCommand((string) $command->getName(), true);
-$worker->run();
+$application->setDefaultCommand((string) $command->getName(), true);
+$application->run();

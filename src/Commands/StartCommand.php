@@ -19,13 +19,31 @@ class StartCommand extends Command
         OPTION_SOCKET_TYPE = 'socket-type',
         OPTION_SOCKET_ADDRESS = 'socket-address',
         OPTION_SOCKET_PORT = 'socket-port',
-        OPTION_APP_REFRESH = 'app-refresh',
-        OPTION_BASE_PATH = 'base-path';
+        OPTION_APP_REFRESH = 'app-refresh';
 
     /**
      * @var string
      */
     protected static $defaultName = 'worker:configure';
+
+    /**
+     * Base path.
+     *
+     * @var string
+     */
+    protected $base_path;
+
+    /**
+     * @param string $base_path
+     *
+     * @return $this
+     */
+    public function setBasePath(string $base_path): self
+    {
+        $this->base_path = $base_path;
+
+        return $this;
+    }
 
     /**
      * Configures the current command.
@@ -75,29 +93,12 @@ class StartCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $base_path = $this->validateBasePath($input->getOption(self::OPTION_BASE_PATH));
-
         $run_params = $this->initRunParamsFromInput($input);
 
-        (new \Spiral\RoadRunnerLaravel\Worker($base_path))
+        (new \Spiral\RoadRunnerLaravel\Worker($this->base_path))
             ->start($run_params->isAppRefresh(), $run_params);
 
         return 0;
-    }
-
-    /**
-     * @param string|string[]|bool|null $base_path
-     *
-     * @return string
-     * @throws \InvalidArgumentException
-     */
-    protected function validateBasePath($base_path): string
-    {
-        if (!\is_string($base_path)) {
-            throw new \InvalidArgumentException('Option ' . self::OPTION_BASE_PATH . ' must be string type.');
-        }
-
-        return $base_path;
     }
 
     /**
@@ -105,7 +106,7 @@ class StartCommand extends Command
      *
      * @return RunParams
      */
-    protected function initRunParamsFromInput(InputInterface $input)
+    protected function initRunParamsFromInput(InputInterface $input): RunParams
     {
         return (new RunParams())
             ->setAppRefresh((bool) $input->getOption(self::OPTION_APP_REFRESH))
