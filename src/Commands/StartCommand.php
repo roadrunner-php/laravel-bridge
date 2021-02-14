@@ -93,10 +93,9 @@ class StartCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $run_params = $this->initRunParamsFromInput($input);
-
-        (new \Spiral\RoadRunnerLaravel\Worker($this->base_path))
-            ->start($run_params->isAppRefresh(), $run_params);
+        (new \Spiral\RoadRunnerLaravel\Worker())->start(
+            $this->initRunParamsFromInput($input)
+        );
 
         return 0;
     }
@@ -112,6 +111,7 @@ class StartCommand extends Command
             ->setAppRefresh((bool) $input->getOption(self::OPTION_APP_REFRESH))
             ->setSocketAddress($input->getOption(self::OPTION_SOCKET_ADDRESS))
             ->setSocketType($input->getOption(self::OPTION_SOCKET_TYPE))
-            ->setSocketPort($input->getOption(self::OPTION_SOCKET_PORT));
+            ->setSocketPort($input->getOption(self::OPTION_SOCKET_PORT))
+            ->setBasePath($this->base_path);
     }
 }

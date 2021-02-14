@@ -30,13 +30,6 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 class Worker implements WorkerInterface
 {
     /**
-     * Laravel application base path.
-     *
-     * @var string
-     */
-    protected $base_path;
-
-    /**
      * Parsed options from run command.
      *
      * @var InputInterface
@@ -44,23 +37,11 @@ class Worker implements WorkerInterface
     protected $command_arguments;
 
     /**
-     * Create a new Worker instance.
-     *
-     * @param string $base_path Laravel application base path
-     */
-    public function __construct(string $base_path)
-    {
-        $this->base_path = $base_path;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function start(bool $refresh_app = false, ?RunParams $params = null): void
+    public function start(RunParams $params): void
     {
-        $app = $this->createApplication($this->base_path);
-        /** @var ConfigRepository $config */
-        $config = $app->make(ConfigRepository::class);
+        $app = $this->createApplication($params->getBasePath());
 
         $psr7_client  = $this->createPsr7Client($this->createRelay($params));
         $psr7_factory = $this->createPsr7Factory();
@@ -73,8 +54,8 @@ class Worker implements WorkerInterface
         while ($req = $psr7_client->acceptRequest()) {
             $responded = false;
 
-            if ($refresh_app === true) {
-                $sandbox = $this->createApplication($this->base_path);
+            if ($params->isAppRefresh() === true) {
+                $sandbox = $this->createApplication($params->getBasePath());
                 $this->bootstrapApplication($sandbox, $psr7_client);
             } else {
                 $sandbox = clone $app;
@@ -84,6 +65,8 @@ class Worker implements WorkerInterface
 
             /** @var HttpKernelContract $http_kernel */
             $http_kernel = $sandbox->make(HttpKernelContract::class);
+            /** @var ConfigRepository $config */
+            $config = $app->make(ConfigRepository::class);
 
             try {
                 $this->fireEvent($sandbox, new Events\BeforeLoopIterationEvent($sandbox, $req));
@@ -263,27 +246,25 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @param RunParams|null $params
+     * @param RunParams $params
      *
      * @return RelayInterface
      */
-    protected function createRelay(?\Spiral\RoadRunnerLaravel\RunParams $params = null): RelayInterface
+    protected function createRelay(RunParams $params): RelayInterface
     {
-        if ($params instanceof RunParams) {
-            $socket_type    = $params->getSocketType();
-            $socket_address = $params->getSocketAddress();
+        $socket_type    = $params->getSocketType();
+        $socket_address = $params->getSocketAddress();
 
-            if ($socket_type !== null && $socket_address !== null) {
-                $port = $params->getSocketPort();
+        if ($socket_type !== null && $socket_address !== null) {
+            $port = $params->getSocketPort();
 
-                return $this->createSocketRelay(
-                    $socket_address,
-                    $socket_type === 'unix',
-                    $port === null
-                        ? null
-                        : (int) $port,
-                );
-            }
+            return $this->createSocketRelay(
+                $socket_address,
+                $socket_type === 'unix',
+                $port === null
+                    ? null
+                    : (int) $port,
+            );
         }
 
         return $this->createStreamRelay();

@@ -9,7 +9,7 @@ class RunParams
     /**
      * @var bool
      */
-    protected $app_refresh;
+    protected $app_refresh = false;
 
     /**
      * @var string|null
@@ -25,6 +25,11 @@ class RunParams
      * @var int|null
      */
     protected $socket_port;
+
+    /**
+     * @var string
+     */
+    protected $base_path;
 
     /**
      * @return bool
@@ -108,6 +113,26 @@ class RunParams
         $this->socket_port = \is_string($socket_port)
             ? (int) $socket_port
             : null;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBasePath(): string
+    {
+        return $this->base_path;
+    }
+
+    /**
+     * @param string $base_path
+     *
+     * @return RunParams
+     */
+    public function setBasePath(string $base_path): RunParams
+    {
+        $this->base_path = $base_path;
 
         return $this;
     }

@@ -69,6 +69,5 @@ if (! \is_string($base_path)) {
 */
 $application = new Application('Worker', '1.0');
 $application->add($command = (new StartCommand)->setBasePath($base_path));
-
 $application->setDefaultCommand((string) $command->getName(), true);
 $application->run();

@@ -11,6 +11,7 @@ use Spiral\Goridge\StreamRelay;
 use Spiral\RoadRunner\PSR7Client;
 use Spiral\RoadRunnerLaravel\Events;
 use Spiral\RoadRunnerLaravel\Worker;
+use Spiral\RoadRunnerLaravel\RunParams;
 use Psr\Http\Message\ResponseInterface;
 use Spiral\RoadRunner\Worker as RRWorker;
 use Psr\Http\Message\ServerRequestInterface;
@@ -84,7 +85,7 @@ class WorkerTest extends AbstractTestCase
     public function testStartWithoutRefreshApp(): void
     {
         /** @var m\MockInterface|Worker $worker */
-        $worker = m::mock(Worker::class, [$this->base_dir])
+        $worker = m::mock(Worker::class)
             ->makePartial()
             ->shouldAllowMockingProtectedMethods()
             ->expects('createPsr7Client')
@@ -116,8 +117,10 @@ class WorkerTest extends AbstractTestCase
             ->once() // <-- important
             ->passthru()
             ->getMock();
+        $params = (new RunParams())
+            ->setBasePath($this->base_dir);
 
-        $worker->start(); // `false` must be by default
+        $worker->start($params); // `false` must be by default
     }
 
     /**
@@ -126,7 +129,7 @@ class WorkerTest extends AbstractTestCase
     public function testStartWithRefreshApp(): void
     {
         /** @var m\MockInterface|Worker $worker */
-        $worker = m::mock(Worker::class, [$this->base_dir])
+        $worker = m::mock(Worker::class)
             ->makePartial()
             ->shouldAllowMockingProtectedMethods()
             ->expects('createPsr7Client')
@@ -163,7 +166,11 @@ class WorkerTest extends AbstractTestCase
             ->passthru()
             ->getMock();
 
-        $worker->start(true);
+        $params = (new RunParams())
+            ->setAppRefresh(true)
+            ->setBasePath($this->base_dir);
+
+        $worker->start($params);
     }
 
     /**
@@ -184,7 +191,7 @@ class WorkerTest extends AbstractTestCase
         ];
 
         /** @var m\MockInterface|Worker $worker */
-        $worker = m::mock(Worker::class, [$this->base_dir])
+        $worker = m::mock(Worker::class)
             ->makePartial()
             ->shouldAllowMockingProtectedMethods()
             ->expects('createPsr7Client')
@@ -207,7 +214,10 @@ class WorkerTest extends AbstractTestCase
             ->passthru()
             ->getMock();
 
-        $worker->start();
+        $params = (new RunParams())
+            ->setBasePath($this->base_dir);
+
+        $worker->start($params);
 
         foreach ($expected_events as $expected_event) {
             if (!isset($fired_events[$expected_event])) {
@@ -239,7 +249,7 @@ class WorkerTest extends AbstractTestCase
         $mock_event_closure = $this->getMockEventsClosure($fired_events);
 
         /** @var m\MockInterface|Worker $worker */
-        $worker = m::mock(Worker::class, [$this->base_dir])
+        $worker = m::mock(Worker::class)
             ->makePartial()
             ->shouldAllowMockingProtectedMethods()
             ->expects('createPsr7Client')
@@ -280,8 +290,10 @@ class WorkerTest extends AbstractTestCase
             })
             ->passthru()
             ->getMock();
+        $params = (new RunParams())
+            ->setBasePath($this->base_dir);
 
-        $worker->start();
+        $worker->start($params);
 
         foreach ($expected_events as $expected_event) {
             if (!isset($fired_events[$expected_event])) {
@@ -307,7 +319,7 @@ class WorkerTest extends AbstractTestCase
         $psr_worker = (new PSR7Client($this->rr_worker))->getWorker();
 
         /** @var m\MockInterface|Worker $worker */
-        $worker = m::mock(Worker::class, [$this->base_dir])
+        $worker = m::mock(Worker::class)
             ->makePartial()
             ->shouldAllowMockingProtectedMethods()
             ->expects('createPsr7Client')
@@ -343,8 +355,10 @@ class WorkerTest extends AbstractTestCase
             ->withArgs($this->getMockEventsClosure($fired_events))
             ->passthru()
             ->getMock();
+        $params = (new RunParams())
+            ->setBasePath($this->base_dir);
 
-        $worker->start();
+        $worker->start($params);
     }
 
     public function testWorkerErrorHandlingAfterRespond(): void
@@ -359,7 +373,7 @@ class WorkerTest extends AbstractTestCase
         $event_closure = $this->getMockEventsClosure($fired_events);
 
         /** @var m\MockInterface|Worker $worker */
-        $worker = m::mock(Worker::class, [$this->base_dir])
+        $worker = m::mock(Worker::class)
             ->makePartial()
             ->shouldAllowMockingProtectedMethods()
             ->expects('createPsr7Client')
@@ -397,7 +411,10 @@ class WorkerTest extends AbstractTestCase
             })
             ->getMock();
 
-        $worker->start();
+        $params = (new RunParams())
+            ->setBasePath($this->base_dir);
+
+        $worker->start($params);
 
         foreach ($expected_events as $expected_event) {
             if (!isset($fired_events[$expected_event])) {
@@ -418,7 +435,7 @@ class WorkerTest extends AbstractTestCase
     public function test404errorResponse(): void
     {
         /** @var m\MockInterface|Worker $worker */
-        $worker = m::mock(Worker::class, [$this->base_dir])
+        $worker = m::mock(Worker::class)
             ->makePartial()
             ->shouldAllowMockingProtectedMethods()
             ->expects('createPsr7Client')
@@ -446,7 +463,10 @@ class WorkerTest extends AbstractTestCase
             ->passthru()
             ->getMock();
 
-        $worker->start();
+        $params = (new RunParams())
+            ->setBasePath($this->base_dir);
+
+        $worker->start($params);
     }
 
     /**
