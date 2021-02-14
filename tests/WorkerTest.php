@@ -7,8 +7,10 @@ namespace Spiral\RoadRunnerLaravel\Tests;
 use Mockery as m;
 use RuntimeException;
 use Illuminate\Support\Str;
+use Spiral\Goridge\SocketRelay;
 use Spiral\Goridge\StreamRelay;
 use Spiral\RoadRunner\PSR7Client;
+use Spiral\Goridge\RelayInterface;
 use Spiral\RoadRunnerLaravel\Events;
 use Spiral\RoadRunnerLaravel\Worker;
 use Spiral\RoadRunnerLaravel\RunParams;
@@ -58,7 +60,7 @@ class WorkerTest extends AbstractTestCase
 
         $this->out              = \fopen('php://memory', 'rb+');
         $this->requests_factory = new ServerRequestFactory();
-        $this->rr_worker        = new RRWorker(new StreamRelay(\STDIN, $this->out));
+        $this->rr_worker        = $this->createWorker(new StreamRelay(\STDIN, $this->out));
     }
 
     /**
@@ -76,7 +78,7 @@ class WorkerTest extends AbstractTestCase
      */
     public function testImplementation(): void
     {
-        $this->assertInstanceOf(WorkerInterface::class, new Worker($this->base_dir));
+        $this->assertInstanceOf(WorkerInterface::class, new Worker());
     }
 
     /**
@@ -361,6 +363,9 @@ class WorkerTest extends AbstractTestCase
         $worker->start($params);
     }
 
+    /**
+     * @return void
+     */
     public function testWorkerErrorHandlingAfterRespond(): void
     {
         /** @var int[] $fired_events Key is event class, value - firing count */
@@ -470,6 +475,72 @@ class WorkerTest extends AbstractTestCase
     }
 
     /**
+     * @return void
+     */
+    public function testWithExceptionInCreateApplication(): void
+    {
+        $exception_message =
+            'Application bootstrap file was not found in [' . $base_path = Str::random() . ']';
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage($exception_message);
+        /** @var m\MockInterface|Worker $worker */
+        $worker = m::mock(Worker::class)
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods()
+            ->shouldReceive('createApplication')
+            ->once()
+            ->passthru()
+            ->getMock();
+
+        $params = (new RunParams())
+            ->setBasePath($base_path);
+
+        $worker->start($params);
+    }
+
+    /**
+     * @return void
+     */
+    public function testWorkerBySocketRelay(): void
+    {
+        /** @var m\MockInterface|Worker $worker */
+        $worker = m::mock(Worker::class)
+            ->makePartial()
+            ->shouldAllowMockingProtectedMethods()
+            ->expects('createPsr7Client')
+            ->andReturn(
+                m::mock(
+                    PSR7Client::class,
+                    [
+                        $this->createWorker(new SocketRelay($address = 'unix.socket', null, SocketRelay::SOCK_UNIX)),
+                    ]
+                )
+                    ->makePartial()
+                    ->shouldReceive('acceptRequest')
+                    ->twice()
+                    ->andReturnUsing($this->getOnceRequestGenerationClosure())
+                    ->getMock()
+                    ->shouldReceive('respond')
+                    ->once()
+                    ->withArgs($this->getHtmlResponseValidationClosure())
+                    ->getMock()
+            )
+            ->getMock()
+            ->shouldReceive('createApplication')
+            ->once()
+            ->passthru()
+            ->getMock();
+
+        $params = (new RunParams())
+            ->setBasePath($this->base_dir)
+            ->setSocketAddress($address)
+            ->setSocketType('unix');
+
+        $worker->start($params);
+    }
+
+    /**
      * This closure should be executed when application was bootstrapped and before worker loop started.
      *
      * @return callable
@@ -561,5 +632,15 @@ class WorkerTest extends AbstractTestCase
 
             return true;
         };
+    }
+
+    /**
+     * @param RelayInterface $relay
+     *
+     * @return RRWorker
+     */
+    private function createWorker(RelayInterface $relay): RRWorker
+    {
+        return new RRWorker($relay);
     }
 }

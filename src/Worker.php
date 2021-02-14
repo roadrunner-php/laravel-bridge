@@ -12,8 +12,6 @@ use Spiral\RoadRunner\PSR7Client;
 use Spiral\Goridge\RelayInterface;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputInterface;
 use Illuminate\Foundation\Bootstrap\RegisterProviders;
 use Illuminate\Foundation\Bootstrap\SetRequestForConsole;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
@@ -30,23 +28,15 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 class Worker implements WorkerInterface
 {
     /**
-     * Parsed options from run command.
-     *
-     * @var InputInterface
-     */
-    protected $command_arguments;
-
-    /**
      * {@inheritdoc}
      */
     public function start(RunParams $params): void
     {
-        $app = $this->createApplication($params->getBasePath());
-
         $psr7_client  = $this->createPsr7Client($this->createRelay($params));
         $psr7_factory = $this->createPsr7Factory();
         $http_factory = $this->createHttpFactory();
 
+        $app = $this->createApplication($params->getBasePath());
         $this->bootstrapApplication($app, $psr7_client);
 
         $this->fireEvent($app, new Events\BeforeLoopStartedEvent($app));
@@ -254,7 +244,6 @@ class Worker implements WorkerInterface
     {
         $socket_type    = $params->getSocketType();
         $socket_address = $params->getSocketAddress();
-
         if ($socket_type !== null && $socket_address !== null) {
             $port = $params->getSocketPort();
 

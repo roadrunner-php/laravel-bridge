@@ -122,7 +122,7 @@ class RunParams
      */
     public function getBasePath(): string
     {
-        return $this->base_path;
+        return $this->base_path ?? '';
     }
 
     /**
