@@ -10,14 +10,14 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 final class BeforeRequestHandlingEvent implements Contracts\WithApplication, Contracts\WithHttpRequest
 {
     /**
-     * @var ApplicationContract
+     * Application instance.
      */
-    private $app;
+    private ApplicationContract $app;
 
     /**
-     * @var Request
+     * Incoming request.
      */
-    private $request;
+    private Request $request;
 
     /**
      * Create a new event instance.

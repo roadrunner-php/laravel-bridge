@@ -9,17 +9,17 @@ class WorkerOptions implements WorkerOptionsInterface
     /**
      * @var string
      */
-    protected $base_path;
+    protected string $base_path;
 
     /**
      * @var bool
      */
-    protected $refresh_app;
+    protected bool $refresh_app;
 
     /**
      * @var string
      */
-    protected $relay_dsn;
+    protected string $relay_dsn;
 
     /**
      * WorkerOptions constructor.

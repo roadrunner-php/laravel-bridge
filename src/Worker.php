@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel;
 
 use Throwable;
-use RuntimeException;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Illuminate\Container\Container;
@@ -15,7 +14,6 @@ use Illuminate\Foundation\Bootstrap\RegisterProviders;
 use Illuminate\Foundation\Bootstrap\SetRequestForConsole;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
-use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Events\Dispatcher as EventsDispatcher;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
@@ -165,8 +163,6 @@ class Worker implements WorkerInterface
      * @param PSR7Worker          $psr7_worker
      *
      * @return void
-     * @throws RuntimeException
-     *
      */
     protected function bootstrapApplication(ApplicationContract $app, PSR7Worker $psr7_worker): void
     {
@@ -184,13 +180,7 @@ class Worker implements WorkerInterface
             }
         }
 
-        // Method `bootstrapWith` declared in interface `\Illuminate\Contracts\Foundation\Application` since
-        // `illuminate/contracts:v5.8` - https://git.io/Jvflt -> https://git.io/JvfOq
-        if (\method_exists($app, $boot_method = 'bootstrapWith')) {
-            $app->{$boot_method}($bootstrappers);
-        } else {
-            throw new RuntimeException("Required method [{$boot_method}] does not exists on application instance");
-        }
+        $app->bootstrapWith($bootstrappers);
 
         // Put PSR7 client into container
         $app->instance(PSR7Worker::class, $psr7_worker);
@@ -262,18 +252,5 @@ class Worker implements WorkerInterface
     protected function createHttpFoundationFactory(): HttpFoundationFactoryInterface
     {
         return new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory();
-    }
-
-    /**
-     * @return HttpMessageFactoryInterface
-     */
-    protected function createPsr7Factory(): HttpMessageFactoryInterface
-    {
-        return new PsrHttpFactory(
-            new \Laminas\Diactoros\ServerRequestFactory(),
-            new \Laminas\Diactoros\StreamFactory(),
-            new \Laminas\Diactoros\UploadedFileFactory(),
-            new \Laminas\Diactoros\ResponseFactory()
-        );
     }
 }

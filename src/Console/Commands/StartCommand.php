@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Console\Commands;
 
 use InvalidArgumentException;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -25,7 +25,7 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
     /**
      * @var string|null
      */
-    protected $laravel_base_path;
+    protected ?string $laravel_base_path;
 
     /**
      * Create a new command instance.
@@ -58,7 +58,10 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
             static::OPTION_RELAY_DSN,
             null,
             InputOption::VALUE_REQUIRED,
-            'Relay DSN (eg.: <comment>' . \implode('</comment>, <comment>', ['pipes', 'tcp://localhost:6001', 'unix:///tmp/rpc.sock']) . '</comment>)',
+            'Relay DSN (eg.: <comment>' . \implode(
+                '</comment>, <comment>',
+                ['pipes', 'tcp://localhost:6001', 'unix:///tmp/rpc.sock']
+            ) . '</comment>)',
             'pipes'
         );
 
@@ -75,11 +78,25 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        (new \Spiral\RoadRunnerLaravel\Worker)->start(new \Spiral\RoadRunnerLaravel\WorkerOptions(
+        $options = new \Spiral\RoadRunnerLaravel\WorkerOptions(
             $this->getLaravelBasePath($input),
             $this->getRefreshApp($input),
             $this->getRelayDSN($input),
-        ));
+        );
+
+        if ($output->isDebug()) {
+            $hints = [
+                'Laravel base path' => $options->getAppBasePath(),
+                'Application refreshing' => $options->getRefreshApp() ? 'yes' : 'no',
+                'Relay DSN' => $options->getRelayDsn(),
+            ];
+
+            foreach ($hints as $key => $value) {
+                $output->writeln(\sprintf('%s: <comment>%s</comment>', $key, $value));
+            }
+        }
+
+        (new \Spiral\RoadRunnerLaravel\Worker())->start($options);
 
         return 0;
     }
@@ -109,24 +126,6 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
     /**
      * @param InputInterface $input
      *
-     * @return string
-     *
-     * @throws InvalidArgumentException
-     */
-    protected function getRelayDSN(InputInterface $input): string
-    {
-        $relay_dsn = $input->getOption(static::OPTION_RELAY_DSN);
-
-        if (\is_string($relay_dsn) && !empty($relay_dsn)) {
-            return $relay_dsn;
-        }
-
-        throw new InvalidArgumentException("Invalid option value for relay DSN");
-    }
-
-    /**
-     * @param InputInterface $input
-     *
      * @return bool
      *
      * @throws InvalidArgumentException
@@ -140,5 +139,23 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
         }
 
         throw new InvalidArgumentException("Invalid option value for app refreshing");
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return string
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function getRelayDSN(InputInterface $input): string
+    {
+        $relay_dsn = $input->getOption(static::OPTION_RELAY_DSN);
+
+        if (\is_string($relay_dsn) && !empty($relay_dsn)) {
+            return $relay_dsn;
+        }
+
+        throw new InvalidArgumentException("Invalid option value for relay DSN");
     }
 }

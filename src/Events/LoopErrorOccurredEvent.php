@@ -14,19 +14,19 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 final class LoopErrorOccurredEvent implements WithApplication, WithException, WithServerRequest
 {
     /**
-     * @var ApplicationContract
+     * Application instance.
      */
-    private $app;
+    private ApplicationContract $app;
 
     /**
-     * @var Throwable
+     * Loop error.
      */
-    private $exception;
+    private Throwable $exception;
 
     /**
-     * @var ServerRequestInterface
+     * Raw server request.
      */
-    private $server_request;
+    private ServerRequestInterface $server_request;
 
     /**
      * Create a new event instance.
