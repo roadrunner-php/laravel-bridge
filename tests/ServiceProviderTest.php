@@ -53,20 +53,6 @@ class ServiceProviderTest extends AbstractTestCase
             IlluminateServiceProvider::$publishGroups['config'][$package_config_src],
             "Publishing group value {$package_config_target} was not found"
         );
-
-        $rr_bin_config_src    = \realpath(__DIR__ . '/../vendor/spiral/roadrunner/.rr.yaml');
-        $rr_bin_config_target = $this->app->basePath('.rr.yaml.dist');
-
-        $this->assertSame(
-            $rr_bin_config_target,
-            IlluminateServiceProvider::$publishes[ServiceProvider::class][$rr_bin_config_src]
-        );
-
-        $this->assertSame(
-            $rr_bin_config_target,
-            IlluminateServiceProvider::$publishGroups['rr-config'][$rr_bin_config_src],
-            "Publishing group value {$rr_bin_config_target} was not found"
-        );
     }
 
     /**

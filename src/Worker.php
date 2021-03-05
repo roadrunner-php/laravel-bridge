@@ -8,10 +8,9 @@ use Throwable;
 use RuntimeException;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
-use Spiral\RoadRunner\PSR7Client;
-use Spiral\Goridge\RelayInterface;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
+use Spiral\RoadRunner\Http\PSR7Worker;
 use Illuminate\Foundation\Bootstrap\RegisterProviders;
 use Illuminate\Foundation\Bootstrap\SetRequestForConsole;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
@@ -28,42 +27,37 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 class Worker implements WorkerInterface
 {
     /**
-     * Laravel application base path.
-     *
-     * @var string
-     */
-    protected $base_path;
-
-    /**
-     * Create a new Worker instance.
-     *
-     * @param string $base_path Laravel application base path
-     */
-    public function __construct(string $base_path)
-    {
-        $this->base_path = $base_path;
-    }
-
-    /**
      * {@inheritdoc}
      */
-    public function start(bool $refresh_app = false): void
+    public function start(WorkerOptionsInterface $options): void
     {
-        $psr7_client  = $this->createPsr7Client($this->createStreamRelay());
-        $psr7_factory = $this->createPsr7Factory();
-        $http_factory = $this->createHttpFactory();
+        $http_foundation_factory = $this->createHttpFoundationFactory();
 
-        $app = $this->createApplication($this->base_path);
-        $this->bootstrapApplication($app, $psr7_client);
+        $http_factory = new PsrHttpFactory(
+            $request_factory = new \Laminas\Diactoros\ServerRequestFactory(),
+            $stream_factory = new \Laminas\Diactoros\StreamFactory(),
+            $uploads_factory = new \Laminas\Diactoros\UploadedFileFactory(),
+            new \Laminas\Diactoros\ResponseFactory()
+        );
+
+        $psr7_worker = new \Spiral\RoadRunner\Http\PSR7Worker(
+            $this->createWorker($options->getRelayDsn()),
+            $request_factory,
+            $stream_factory,
+            $uploads_factory
+        );
+
+        $app = $this->createApplication($options->getAppBasePath());
+        $this->bootstrapApplication($app, $psr7_worker);
 
         $this->fireEvent($app, new Events\BeforeLoopStartedEvent($app));
 
-        while ($req = $psr7_client->acceptRequest()) {
+        while ($req = $psr7_worker->waitRequest()) {
             $responded = false;
 
-            if ($refresh_app === true) {
-                $sandbox = $this->createApplication($this->base_path);
-                $this->bootstrapApplication($sandbox, $psr7_client);
+            if ($options->getRefreshApp()) {
+                $sandbox = $this->createApplication($options->getAppBasePath());
+                $this->bootstrapApplication($sandbox, $psr7_worker);
             } else {
                 $sandbox = clone $app;
             }
@@ -77,21 +71,21 @@ class Worker implements WorkerInterface
 
             try {
                 $this->fireEvent($sandbox, new Events\BeforeLoopIterationEvent($sandbox, $req));
-                $request = Request::createFromBase($http_factory->createRequest($req));
+                $request = Request::createFromBase($http_foundation_factory->createRequest($req));
 
                 $this->fireEvent($sandbox, new Events\BeforeRequestHandlingEvent($sandbox, $request));
                 $response = $http_kernel->handle($request);
                 $this->fireEvent($sandbox, new Events\AfterRequestHandlingEvent($sandbox, $request, $response));
 
-                $psr7_response = $psr7_factory->createResponse($response);
-                $psr7_client->respond($psr7_response);
+                $psr7_response = $http_factory->createResponse($response);
+                $psr7_worker->respond($psr7_response);
                 $responded = true;
                 $http_kernel->terminate($request, $response);
 
                 $this->fireEvent($sandbox, new Events\AfterLoopIterationEvent($sandbox, $request, $response));
             } catch (Throwable $e) {
                 if ($responded !== true) {
-                    $psr7_client->getWorker()->error($this->exceptionToString($e, $this->isDebugModeEnabled($config)));
+                    $psr7_worker->getWorker()->error($this->exceptionToString($e, $this->isDebugModeEnabled($config)));
                 }
 
                 $this->fireEvent($sandbox, new Events\LoopErrorOccurredEvent($sandbox, $req, $e));
@@ -149,9 +143,9 @@ class Worker implements WorkerInterface
      *
      * @param string $base_path
      *
+     * @return ApplicationContract
      * @throws InvalidArgumentException
      *
-     * @return ApplicationContract
      */
     protected function createApplication(string $base_path): ApplicationContract
     {
@@ -168,13 +162,13 @@ class Worker implements WorkerInterface
      * Bootstrap passed application.
      *
      * @param ApplicationContract $app
-     * @param PSR7Client          $psr7_client
-     *
-     * @throws RuntimeException
+     * @param PSR7Worker          $psr7_worker
      *
      * @return void
+     * @throws RuntimeException
+     *
      */
-    protected function bootstrapApplication(ApplicationContract $app, PSR7Client $psr7_client): void
+    protected function bootstrapApplication(ApplicationContract $app, PSR7Worker $psr7_worker): void
     {
         /** @var \Illuminate\Foundation\Http\Kernel $http_kernel */
         $http_kernel = $app->make(HttpKernelContract::class);
@@ -199,7 +193,7 @@ class Worker implements WorkerInterface
         }
 
         // Put PSR7 client into container
-        $app->instance(PSR7Client::class, $psr7_client);
+        $app->instance(PSR7Worker::class, $psr7_worker);
 
         $this->preResolveApplicationAbstracts($app);
     }
@@ -253,30 +247,19 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * @param resource|mixed $in  Must be readable
-     * @param resource|mixed $out Must be writable
+     * @param string $dsn Eg.: `pipes`, `pipes://stdin:stdout`, `tcp://localhost:6001`, `unix:///tmp/rpc.sock`
      *
-     * @return RelayInterface
+     * @return \Spiral\RoadRunner\WorkerInterface
      */
-    protected function createStreamRelay($in = \STDIN, $out = \STDOUT): RelayInterface
+    protected function createWorker(string $dsn): \Spiral\RoadRunner\WorkerInterface
     {
-        return new \Spiral\Goridge\StreamRelay($in, $out);
-    }
-
-    /**
-     * @param RelayInterface $stream_relay
-     *
-     * @return PSR7Client
-     */
-    protected function createPsr7Client(RelayInterface $stream_relay): PSR7Client
-    {
-        return new PSR7Client(new \Spiral\RoadRunner\Worker($stream_relay));
+        return new \Spiral\RoadRunner\Worker(\Spiral\Goridge\Relay::create($dsn));
     }
 
     /**
      * @return HttpFoundationFactoryInterface
      */
-    protected function createHttpFactory(): HttpFoundationFactoryInterface
+    protected function createHttpFoundationFactory(): HttpFoundationFactoryInterface
     {
         return new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory();
     }
@@ -287,9 +270,9 @@ class Worker implements WorkerInterface
     protected function createPsr7Factory(): HttpMessageFactoryInterface
     {
         return new PsrHttpFactory(
-            new \Spiral\RoadRunner\Diactoros\ServerRequestFactory(),
-            new \Spiral\RoadRunner\Diactoros\StreamFactory(),
-            new \Spiral\RoadRunner\Diactoros\UploadedFileFactory(),
+            new \Laminas\Diactoros\ServerRequestFactory(),
+            new \Laminas\Diactoros\StreamFactory(),
+            new \Laminas\Diactoros\UploadedFileFactory(),
             new \Laminas\Diactoros\ResponseFactory()
         );
     }

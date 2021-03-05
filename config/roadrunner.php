@@ -4,7 +4,6 @@ use Spiral\RoadRunnerLaravel\Events;
 use Spiral\RoadRunnerLaravel\Listeners;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Force HTTPS Schema Usage

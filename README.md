@@ -20,7 +20,7 @@ Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applicat
 Require this package with composer using next command:
 
 ```shell script
-$ composer require spiral/roadrunner-laravel "^3.4"
+$ composer require spiral/roadrunner-laravel "^4.0"
 ```
 
 > Installed `composer` is required ([how to install composer][getcomposer]).
@@ -36,12 +36,16 @@ $ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvi
 And basic RoadRunner configuration file (`./.rr.yaml.dist`):
 
 ```shell script
-$ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=rr-config
+$ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=rr-config # REMOVED
 ```
 
 After that you can modify configuration files as you wish.
 
 **Important**: despite the fact that worker allows you to refresh application instance on each HTTP request _(if environment variable `APP_REFRESH` set to `true`)_, we strongly recommend to avoid this for performance reasons. Large applications can be hard to integrate with RoadRunner _(you must decide which of service providers must be reloaded on each request, avoid "static optimization" in some cases)_, but it's worth it.
+
+### Upgrading guide (`v3.x` &rarr; `v4.x`)
+
+_WIP_
 
 ## Usage
 

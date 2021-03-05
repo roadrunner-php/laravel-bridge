@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Listeners;
 
-use Spiral\RoadRunner\PSR7Client;
+use Spiral\RoadRunner\Http\PSR7Worker;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
@@ -20,10 +20,10 @@ class StopWorkerListener implements ListenerInterface
     public function handle($event): void
     {
         if ($event instanceof WithApplication) {
-            /** @var PSR7Client $psr7_client */
-            $psr7_client = $event->application()->make(PSR7Client::class);
+            /** @var PSR7Worker $psr7_worker */
+            $psr7_worker = $event->application()->make(PSR7Worker::class);
 
-            $psr7_client->getWorker()->stop();
+            $psr7_worker->getWorker()->stop();
         }
     }
 }

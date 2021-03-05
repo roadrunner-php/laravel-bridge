@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
 use Mockery as m;
-use Spiral\RoadRunner\PSR7Client;
+use Spiral\RoadRunner\Http\PSR7Worker;
 use Spiral\RoadRunnerLaravel\Listeners\StopWorkerListener;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
@@ -35,7 +35,7 @@ class StopWorkerListenerTest extends AbstractListenerTestCase
             }
         };
 
-        $this->app->instance(PSR7Client::class, $psr7_client_mock);
+        $this->app->instance(PSR7Worker::class, $psr7_client_mock);
 
         $event_mock = m::mock(WithApplication::class)
             ->makePartial()
