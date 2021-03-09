@@ -33,15 +33,7 @@ After that you can "publish" package configuration file (`./config/roadrunner.ph
 $ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=config
 ```
 
-And basic RoadRunner configuration file (`./.rr.yaml.dist`):
-
-```shell script
-$ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=rr-config # REMOVED
-```
-
-After that you can modify configuration files as you wish.
-
-**Important**: despite the fact that worker allows you to refresh application instance on each HTTP request _(if environment variable `APP_REFRESH` set to `true`)_, we strongly recommend to avoid this for performance reasons. Large applications can be hard to integrate with RoadRunner _(you must decide which of service providers must be reloaded on each request, avoid "static optimization" in some cases)_, but it's worth it.
+**Important**: despite the fact that worker allows you to refresh application instance on each HTTP request _(if worker started with option `--refresh-app`, eg.: `php ./vendor/bin/rr-worker start --refresh-app`)_, we strongly recommend avoiding this for performance reasons. Large applications can be hard to integrate with RoadRunner _(you must decide which of service providers must be reloaded on each request, avoid "static optimization" in some cases)_, but it's worth it.
 
 ### Upgrading guide (`v3.x` &rarr; `v4.x`)
 
@@ -49,7 +41,7 @@ _WIP_
 
 ## Usage
 
-After package installation you can use provided "binary" file as RoadRunner worker: `./vendor/bin/rr-worker`. This worker allows you to interact with incoming requests and outcoming responses using [laravel events system][laravel_events]. Also events contains:
+After package installation you can use provided "binary" file as RoadRunner worker: `./vendor/bin/rr-worker`. This worker allows you to interact with incoming requests and outgoing responses using [laravel events system][laravel_events]. Event contains:
 
 Event classname              | Application object | HTTP server request | HTTP request | HTTP response | Exception
 ---------------------------- | :----------------: | :-----------------: | :----------: | :-----------: | :-------:
@@ -61,48 +53,41 @@ Event classname              | Application object | HTTP server request | HTTP r
 `AfterLoopStoppedEvent`      |          ✔         |                     |              |               |
 `LoopErrorOccurredEvent`     |          ✔         |          ✔          |              |               |     ✔
 
-Simple `.rr.yaml` config example:
+Simple `.rr.yaml` config example ([full example can be found here][roadrunner_config]):
+
+> For `windows` path must be full (eg.: `php vendor/spiral/roadrunner-laravel/bin/rr-worker start`)
 
 ```yaml
-env:
-  #APP_REFRESH: true
+server:
+  command: 'php ./vendor/bin/rr-worker start --relay-dsn "/var/run/rr-rpc.sock"'
+  relay: 'unix:///var/run/rr-rpc.sock'
 
 http:
   address: 0.0.0.0:8080
-  workers:
-    command: 'php ./vendor/bin/rr-worker' # for windows: `php vendor/spiral/roadrunner-laravel/bin/rr-worker`
-    pool:
-      numWorkers: 4
-      maxJobs: 64 # jobs limitation is important
-
-static:
-  dir: 'public'
+  pool:
+    num_workers: 4 # count of logical CPUs by default
+    max_jobs: 64 # jobs limitation is important; 0 - no limit
+  static:
+    dir: 'public'
 ```
+
+Socket or TCP port usage is strongly recommended for avoiding problems with `dd()`, `dump()`, `echo()` and other similar functions, that sends data to the IO pipes.
 
 Roadrunner server starting:
 
 ```shell script
-$ rr -c ./.rr.yaml serve -d
+$ rr -c ./.rr.yaml serve -d # `-d` means "debug mode"
 ```
 
 ### Listeners
 
-This package provides event listeners for resetings application state without full application reload _(like cookies, HTTP request, application instance, service-providers and other)_. Some of them already declared in configuration file, but you can declare own without any limitations.
-
-### Environment variables
-
-You can use the following environment variables:
-
-Variable name     | Description
------------------ | -----------
-`APP_FORCE_HTTPS` | _(declared in configuration file)_ Forces application HTTPS schema usage
-`APP_REFRESH`     | Refresh application instance on every request
+This package provides event listeners for resetting application state without full application reload _(like cookies, HTTP request, application instance, service-providers and other)_. Some of them already declared in configuration file, but you can declare own without any limitations.
 
 ### Known issues
 
 #### Controller constructors
 
-You should avoid to use HTTP controller constructors _(created or resolved instances in constructor can be shared between different requests)_. Use dependencies resolving in controller **methods** instead.
+You should avoid to use HTTP controller constructors _(created or resolved instances in a constructor can be shared between different requests)_. Use dependencies resolving in a controller **methods** instead.
 
 Bad:
 
@@ -270,7 +255,7 @@ Changes log can be [found here][link_changes_log].
 [![Issues][badge_issues]][link_issues]
 [![Issues][badge_pulls]][link_pulls]
 
-If you will find any package errors, please, [make an issue][link_create_issue] in current repository.
+If you find any package errors, please, [make an issue][link_create_issue] in a current repository.
 
 ## License
 
@@ -298,6 +283,7 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maint
 [link_license]:https://github.com/spiral/roadrunner-laravel/blob/master/LICENSE
 [getcomposer]:https://getcomposer.org/download/
 [roadrunner]:https://github.com/spiral/roadrunner
+[roadrunner_config]:https://github.com/spiral/roadrunner-binary/blob/master/.rr.yaml
 [laravel]:https://laravel.com
 [laravel_events]:https://laravel.com/docs/events
 [#10]:https://github.com/spiral/roadrunner-laravel/issues/10
