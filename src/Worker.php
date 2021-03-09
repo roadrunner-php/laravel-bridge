@@ -217,7 +217,7 @@ class Worker implements WorkerInterface
      */
     protected function getKernelBootstrappers($kernel): array
     {
-        ($method = (new \ReflectionObject($kernel))->getMethod($name = 'bootstrappers'))->setAccessible(true);
+        ($method = (new \ReflectionObject($kernel))->getMethod('bootstrappers'))->setAccessible(true);
 
         return (array) $method->invoke($kernel);
     }
