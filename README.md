@@ -25,8 +25,6 @@ $ composer require spiral/roadrunner-laravel "^4.0"
 
 > Installed `composer` is required ([how to install composer][getcomposer]).
 
-> You need to fix the major version of package.
-
 After that you can "publish" package configuration file (`./config/roadrunner.php`) using next command:
 
 ```shell script
@@ -37,7 +35,19 @@ $ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvi
 
 ### Upgrading guide (`v3.x` &rarr; `v4.x`)
 
-_WIP_
+- Update current package in your application:
+  - `composer remove spiral/roadrunner-laravel`
+  - `composer require spiral/roadrunner-laravel "^4.0"`
+- Update your `.rr.yaml` config (take a look for sample [here][roadrunner_config]) - a lot of options was changed
+  - Optionally change relay to socket or TCP port:
+    > ```yaml
+    > server:
+    >   command: 'php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-rpc.sock'
+    >   relay: 'unix:///var/run/rr-rpc.sock'
+    > ```
+- Update RR binary file (using [`roadrunner-cli`][roadrunner-cli] or download from [binary releases][roadrunner-binary-releases] page)
+- Update RoadRunner starting (`rr serve ...`) flags - `-v` and `-d` must be not used anymore
+- In your application code replace `Spiral\RoadRunner\PSR7Client` with `Spiral\RoadRunner\Http\PSR7Worker`
 
 ## Usage
 
@@ -59,24 +69,27 @@ Simple `.rr.yaml` config example ([full example can be found here][roadrunner_co
 
 ```yaml
 server:
-  command: 'php ./vendor/bin/rr-worker start --relay-dsn "/var/run/rr-rpc.sock"'
+  command: 'php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-rpc.sock'
   relay: 'unix:///var/run/rr-rpc.sock'
 
 http:
   address: 0.0.0.0:8080
+  middleware: ["headers", "static", "gzip"]
   pool:
-    num_workers: 4 # count of logical CPUs by default
     max_jobs: 64 # jobs limitation is important; 0 - no limit
+    supervisor:
+      exec_ttl: 60s
   static:
-    dir: 'public'
+    dir: "public"
+    forbid: [".php"]
 ```
 
-Socket or TCP port usage is strongly recommended for avoiding problems with `dd()`, `dump()`, `echo()` and other similar functions, that sends data to the IO pipes.
+**Socket** or **TCP port** relay usage is strongly recommended for avoiding problems with `dd()`, `dump()`, `echo()` and other similar functions, that sends data to the IO pipes.
 
 Roadrunner server starting:
 
 ```shell script
-$ rr -c ./.rr.yaml serve -d # `-d` means "debug mode"
+$ rr -c ./.rr.yaml serve
 ```
 
 ### Listeners
@@ -286,4 +299,6 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maint
 [roadrunner_config]:https://github.com/spiral/roadrunner-binary/blob/master/.rr.yaml
 [laravel]:https://laravel.com
 [laravel_events]:https://laravel.com/docs/events
+[roadrunner-cli]:https://github.com/spiral/roadrunner-cli
+[roadrunner-binary-releases]:https://github.com/spiral/roadrunner-binary/releases
 [#10]:https://github.com/spiral/roadrunner-laravel/issues/10

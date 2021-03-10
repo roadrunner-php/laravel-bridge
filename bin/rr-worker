@@ -64,11 +64,11 @@ foreach (['../../../..', '../../..', '../..', '..', '../vendor/laravel/laravel']
 |
 */
 
-$app = new Symfony\Component\Console\Application(
+$app = new \Symfony\Component\Console\Application(
     'RoadRunner worker',
-    Composer\InstalledVersions::getPrettyVersion('spiral/roadrunner-laravel')
+    \Composer\InstalledVersions::getPrettyVersion('spiral/roadrunner-laravel')
 );
 
-$app->add(new Spiral\RoadRunnerLaravel\Console\Commands\StartCommand($base_path));
+$app->add(new \Spiral\RoadRunnerLaravel\Console\Commands\StartCommand($base_path));
 
 $app->run();
