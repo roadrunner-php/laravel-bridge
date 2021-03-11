@@ -67,10 +67,6 @@
             ]
         }
     },
-    "suggest": {
-        "illuminate/redis": "Required for dropping redis connections",
-        "avto-dev/stacked-dumper-laravel": "Stacked variables dumper for Laravel-based application"
-    },
     "support": {
         "issues": "https://github.com/spiral/roadrunner-laravel/issues",
         "source": "https://github.com/spiral/roadrunner-laravel"

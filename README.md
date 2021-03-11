@@ -17,7 +17,7 @@ Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applicat
 
 ## Installation
 
-Require this package with composer using next command:
+Make sure that [RR binary file][roadrunner-binary-releases] already installed on your system (or docker image). Require this package with composer using next command:
 
 ```shell script
 $ composer require spiral/roadrunner-laravel "^4.0"
@@ -76,9 +76,12 @@ http:
   address: 0.0.0.0:8080
   middleware: ["headers", "static", "gzip"]
   pool:
-    max_jobs: 64 # jobs limitation is important; 0 - no limit
+    max_jobs: 64 # feel free to change this
     supervisor:
       exec_ttl: 60s
+  headers:
+    response:
+      X-Powered-By: "RoadRunner"
   static:
     dir: "public"
     forbid: [".php"]
@@ -89,7 +92,7 @@ http:
 Roadrunner server starting:
 
 ```shell script
-$ rr -c ./.rr.yaml serve
+$ rr serve -c ./.rr.yaml
 ```
 
 ### Listeners

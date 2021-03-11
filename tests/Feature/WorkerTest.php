@@ -69,7 +69,7 @@ class WorkerTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
                 break;
 
             case self::RELAY_TYPE_TCP_PORT:
-                $relay_dsn = 'tcp://localhost:6001';
+                $relay_dsn = 'tcp://localhost:' . \random_int(6000, 20000);
                 break;
 
             default:

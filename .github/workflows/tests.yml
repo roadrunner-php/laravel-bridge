@@ -16,7 +16,7 @@ on:
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   tests:
-    name: PHP ${{ matrix.php }} (${{ matrix.setup }} setup)
+    name: PHP ${{ matrix.php }}, RR ${{ matrix.rr }} (${{ matrix.setup }} setup)
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     strategy:

@@ -57,7 +57,7 @@ foreach (['../../../..', '../../..', '../..', '..', '../vendor/laravel/laravel']
 
 /*
 |--------------------------------------------------------------------------
-| Create Console Application
+| Create And Run Console Application
 |--------------------------------------------------------------------------
 |
 | Symfony console component is a nice wrapper around worker CLI options.
@@ -70,7 +70,8 @@ $app = new \Symfony\Component\Console\Application(
 );
 
 $app->add(new \Spiral\RoadRunnerLaravel\Console\Commands\StartCommand(
-    new \Spiral\RoadRunnerLaravel\Worker(), $base_path
+    new \Spiral\RoadRunnerLaravel\Worker(),
+    $base_path
 ));
 
 $app->run();

@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
   - `refresh-app` for application instance refreshing on each incoming HTTP request (instead `APP_REFRESH` env variable)
 - Possibility to use unix socket or TCP port as a relay to communicate with RoadRunner
 - `Spiral\RoadRunnerLaravel\WorkerOptionsInterface` that describes worker starting options
+- Feature tests (`phpunit`) that uses real RR server running
 
 ### Changed
 
