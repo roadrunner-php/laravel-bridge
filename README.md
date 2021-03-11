@@ -45,7 +45,7 @@ $ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvi
     >   command: "php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-rpc.sock"
     >   relay: "unix:///var/run/rr-rpc.sock"
     > ```
-- Update RR binary file (using [`roadrunner-cli`][roadrunner-cli] or download from [binary releases][roadrunner-binary-releases] page)
+- Update RR binary file (using [`roadrunner-cli`][roadrunner-cli] or download from [binary releases][roadrunner-binary-releases] page) up to `v2.x`
 - Update RoadRunner starting (`rr serve ...`) flags - `-v` and `-d` must be not used anymore
 - In your application code replace `Spiral\RoadRunner\PSR7Client` with `Spiral\RoadRunner\Http\PSR7Worker`
 
