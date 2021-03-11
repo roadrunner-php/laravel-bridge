@@ -45,7 +45,7 @@ abstract class AbstractTestCase extends \Illuminate\Foundation\Testing\TestCase
     {
         $path = $this->tmp_dir . DIRECTORY_SEPARATOR . Str::lower(Str::random(6));
 
-        (new Filesystem)->makeDirectory($path, 0755, true);
+        (new Filesystem())->makeDirectory($path, 0755, true);
 
         return \realpath($path);
     }
@@ -57,7 +57,7 @@ abstract class AbstractTestCase extends \Illuminate\Foundation\Testing\TestCase
     {
         parent::tearDown();
 
-        $fs = new Filesystem;
+        $fs = new Filesystem();
 
         if ($fs->exists($path = $this->tmp_dir) && $fs->isDirectory($path)) {
             $fs->deleteDirectory($path, false);

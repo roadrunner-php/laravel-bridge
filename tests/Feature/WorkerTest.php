@@ -105,7 +105,7 @@ endure:
   log_level: warning # do NOT comment this lines - test will fails otherwise O_o
 EOF;
 
-        $wrote = (new Filesystem)->put($config_file_path, $content, true);
+        $wrote = (new Filesystem())->put($config_file_path, $content, true);
 
         $this->assertIsInt($wrote);
         $this->assertSame(Str::length($content), $wrote);
@@ -143,7 +143,8 @@ EOF;
 
         foreach ([self::RELAY_TYPE_SOCKET, self::RELAY_TYPE_PIPES, self::RELAY_TYPE_TCP_PORT] as $relay_type) {
             $rr_proc     = new Process([self::RR_BIN_PATH, 'serve', '-c', $this->createConfigFile(
-                $this->createTemporaryDirectory(), $relay_type
+                $this->createTemporaryDirectory(),
+                $relay_type
             )]);
             $http_client = new \GuzzleHttp\Client(['base_uri' => 'http://127.0.0.1:22622']);
 

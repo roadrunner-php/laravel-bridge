@@ -17,7 +17,7 @@ class BeforeLoopStartedEventTest extends \Spiral\RoadRunnerLaravel\Tests\Abstrac
      */
     public function testInterfacesImplementation(): void
     {
-        foreach ($required_interfaces = [
+        foreach ([
             Contracts\WithApplication::class,
         ] as $interface) {
             $this->assertContains(

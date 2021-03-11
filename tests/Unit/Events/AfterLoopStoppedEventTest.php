@@ -17,9 +17,7 @@ class AfterLoopStoppedEventTest extends \Spiral\RoadRunnerLaravel\Tests\Abstract
      */
     public function testInterfacesImplementation(): void
     {
-        foreach ($required_interfaces = [
-            Contracts\WithApplication::class,
-        ] as $interface) {
+        foreach ([Contracts\WithApplication::class] as $interface) {
             $this->assertContains(
                 $interface,
                 \class_implements(AfterLoopStoppedEvent::class),

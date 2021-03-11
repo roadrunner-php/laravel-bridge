@@ -18,10 +18,7 @@ class BeforeRequestHandlingEventTest extends \Spiral\RoadRunnerLaravel\Tests\Abs
      */
     public function testInterfacesImplementation(): void
     {
-        foreach ($required_interfaces = [
-            Contracts\WithApplication::class,
-            Contracts\WithHttpRequest::class,
-        ] as $interface) {
+        foreach ([Contracts\WithApplication::class, Contracts\WithHttpRequest::class] as $interface) {
             $this->assertContains(
                 $interface,
                 \class_implements(BeforeRequestHandlingEvent::class),

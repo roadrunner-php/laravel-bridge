@@ -18,7 +18,7 @@ class LoopErrorOccurredTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTest
      */
     public function testInterfacesImplementation(): void
     {
-        foreach ($required_interfaces = [
+        foreach ([
             Contracts\WithApplication::class,
             Contracts\WithException::class,
             Contracts\WithServerRequest::class,
