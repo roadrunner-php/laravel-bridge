@@ -19,11 +19,13 @@ class AfterRequestHandlingEventTest extends \Spiral\RoadRunnerLaravel\Tests\Abst
      */
     public function testInterfacesImplementation(): void
     {
-        foreach ([
+        $expected = [
             Contracts\WithApplication::class,
             Contracts\WithHttpRequest::class,
             Contracts\WithHttpResponse::class,
-        ] as $interface) {
+        ];
+
+        foreach ($expected as $interface) {
             $this->assertContains(
                 $interface,
                 \class_implements(AfterRequestHandlingEvent::class),

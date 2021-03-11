@@ -19,11 +19,13 @@ class AfterLoopIterationEventTest extends \Spiral\RoadRunnerLaravel\Tests\Abstra
      */
     public function testInterfacesImplementation(): void
     {
-        foreach ([
+        $expected = [
             Contracts\WithApplication::class,
             Contracts\WithHttpRequest::class,
             Contracts\WithHttpResponse::class,
-        ] as $interface) {
+        ];
+
+        foreach ($expected as $interface) {
             $this->assertContains(
                 $interface,
                 \class_implements(AfterLoopIterationEvent::class),

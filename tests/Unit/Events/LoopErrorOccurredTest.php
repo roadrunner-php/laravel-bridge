@@ -18,11 +18,13 @@ class LoopErrorOccurredTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTest
      */
     public function testInterfacesImplementation(): void
     {
-        foreach ([
+        $expected = [
             Contracts\WithApplication::class,
             Contracts\WithException::class,
             Contracts\WithServerRequest::class,
-        ] as $interface) {
+        ];
+
+        foreach ($expected as $interface) {
             $this->assertContains(
                 $interface,
                 \class_implements(LoopErrorOccurredEvent::class),
