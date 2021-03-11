@@ -24,6 +24,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       matrix:
         setup: ['basic', 'lowest']
         php: ['7.4', '8.0']
+        rr: ['2.0.1']
         include:
           - php: '7.4'
             setup: 'basic'
@@ -34,6 +35,9 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+
+      - name: Install RoadRunner Binary
+        run: docker run --rm -v "/:/rootfs:rw" --entrypoint "" spiralscout/roadrunner:${{ matrix.rr }} cp /usr/bin/rr /rootfs/usr/bin/rr
 
       - name: Setup PHP, with composer and extensions
         uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
