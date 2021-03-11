@@ -9,10 +9,7 @@ namespace Spiral\RoadRunnerLaravel\Tests;
  */
 class WorkerBinaryTest extends AbstractTestCase
 {
-    /**
-     * @var string
-     */
-    protected $binary_location = __DIR__ . '/../bin/rr-worker';
+    protected string $binary_location = __DIR__ . '/../bin/rr-worker';
 
     /**
      * @return void

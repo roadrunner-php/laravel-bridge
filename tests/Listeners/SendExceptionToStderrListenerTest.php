@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Listeners;
 
+use Spiral\RoadRunnerLaravel\Listeners\ListenerInterface;
 use Spiral\RoadRunnerLaravel\Listeners\SendExceptionToStderrListener;
 
 /**
@@ -11,6 +12,9 @@ use Spiral\RoadRunnerLaravel\Listeners\SendExceptionToStderrListener;
  */
 class SendExceptionToStderrListenerTest extends AbstractListenerTestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle(): void
     {
         $this->listenerFactory()->handle(new \stdClass());
@@ -18,7 +22,10 @@ class SendExceptionToStderrListenerTest extends AbstractListenerTestCase
         $this->markTestIncomplete('There is no legal way for handle method testing.');
     }
 
-    protected function listenerFactory()
+    /**
+     * @return SendExceptionToStderrListener
+     */
+    protected function listenerFactory(): ListenerInterface
     {
         return new SendExceptionToStderrListener();
     }

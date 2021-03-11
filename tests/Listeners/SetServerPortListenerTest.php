@@ -46,7 +46,7 @@ class SetServerPortListenerTest extends AbstractListenerTestCase
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function testHandleNothingHappensWhenPortIsSetAsInteger(): void
     {
@@ -68,7 +68,7 @@ class SetServerPortListenerTest extends AbstractListenerTestCase
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function testHandleNothingHappensWhenPortIsSetAsString(): void
     {
@@ -90,7 +90,7 @@ class SetServerPortListenerTest extends AbstractListenerTestCase
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function testHandlePortSetAs443WhenSchemaIsHttpsAndServerPortIsNull(): void
     {
@@ -115,7 +115,7 @@ class SetServerPortListenerTest extends AbstractListenerTestCase
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function testHandlePortSetAs80WhenSchemaIsHttpAndServerPortIsEmptyString(): void
     {

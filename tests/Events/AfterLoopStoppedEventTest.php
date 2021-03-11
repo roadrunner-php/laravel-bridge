@@ -4,28 +4,33 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Events;
 
+use Spiral\RoadRunnerLaravel\Events\Contracts;
+use Spiral\RoadRunnerLaravel\Tests\AbstractTestCase;
 use Spiral\RoadRunnerLaravel\Events\AfterLoopStoppedEvent;
-use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
  * @covers \Spiral\RoadRunnerLaravel\Events\AfterLoopStoppedEvent<extended>
  */
-class AfterLoopStoppedEventTest extends AbstractEventTestCase
+class AfterLoopStoppedEventTest extends AbstractTestCase
 {
     /**
-     * @var string[]
+     * @return void
      */
-    protected $required_interfaces = [
-        WithApplication::class,
-    ];
+    public function testInterfacesImplementation(): void
+    {
+        foreach ($required_interfaces = [
+            Contracts\WithApplication::class,
+        ] as $interface) {
+            $this->assertContains(
+                $interface,
+                \class_implements(AfterLoopStoppedEvent::class),
+                "Event does not implements [{$interface}]"
+            );
+        }
+    }
 
     /**
-     * @var string
-     */
-    protected $event_class = AfterLoopStoppedEvent::class;
-
-    /**
-     * {@inheritdoc}
+     * @return void
      */
     public function testConstructor(): void
     {

@@ -4,33 +4,36 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Events;
 
-use Zend\Diactoros\ServerRequest;
+use Laminas\Diactoros\ServerRequest;
+use Spiral\RoadRunnerLaravel\Events\Contracts;
+use Spiral\RoadRunnerLaravel\Tests\AbstractTestCase;
 use Spiral\RoadRunnerLaravel\Events\LoopErrorOccurredEvent;
-use Spiral\RoadRunnerLaravel\Events\Contracts\WithException;
-use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
-use Spiral\RoadRunnerLaravel\Events\Contracts\WithServerRequest;
 
 /**
  * @covers \Spiral\RoadRunnerLaravel\Events\LoopErrorOccurredEvent<extended>
  */
-class LoopErrorOccurredTest extends AbstractEventTestCase
+class LoopErrorOccurredTest extends AbstractTestCase
 {
     /**
-     * @var string[]
+     * @return void
      */
-    protected $required_interfaces = [
-        WithApplication::class,
-        WithException::class,
-        WithServerRequest::class,
-    ];
+    public function testInterfacesImplementation(): void
+    {
+        foreach ($required_interfaces = [
+            Contracts\WithApplication::class,
+            Contracts\WithException::class,
+            Contracts\WithServerRequest::class,
+        ] as $interface) {
+            $this->assertContains(
+                $interface,
+                \class_implements(LoopErrorOccurredEvent::class),
+                "Event does not implements [{$interface}]"
+            );
+        }
+    }
 
     /**
-     * @var string
-     */
-    protected $event_class = LoopErrorOccurredEvent::class;
-
-    /**
-     * {@inheritdoc}
+     * @return void
      */
     public function testConstructor(): void
     {

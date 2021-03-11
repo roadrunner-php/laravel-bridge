@@ -29,15 +29,7 @@ class ResetProvidersListener implements ListenerInterface
                 /** @var \Illuminate\Support\ServiceProvider $provider */
                 $provider = new $provider_class($app);
 
-                // It seems like not required.
-                //
-                //$closure = function () use ($app) {$this->{'app'} = $app;};
-                //$reseter = $closure->bindTo($provider, $provider);
-                //$reseter();
-
-                if (\method_exists($provider, $register_method = 'register')) {
-                    $provider->{$register_method}();
-                }
+                $provider->register();
 
                 if (\method_exists($provider, $boot_method = 'boot')) {
                     $app->call([$provider, $boot_method]);

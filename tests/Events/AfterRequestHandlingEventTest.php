@@ -6,39 +6,42 @@ namespace Spiral\RoadRunnerLaravel\Tests\Events;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Spiral\RoadRunnerLaravel\Events\Contracts;
+use Spiral\RoadRunnerLaravel\Tests\AbstractTestCase;
 use Spiral\RoadRunnerLaravel\Events\AfterRequestHandlingEvent;
-use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
-use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
-use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpResponse;
 
 /**
  * @covers \Spiral\RoadRunnerLaravel\Events\AfterRequestHandlingEvent<extended>
  */
-class AfterRequestHandlingEventTest extends AbstractEventTestCase
+class AfterRequestHandlingEventTest extends AbstractTestCase
 {
     /**
-     * @var string[]
+     * @return void
      */
-    protected $required_interfaces = [
-        WithApplication::class,
-        WithHttpRequest::class,
-        WithHttpResponse::class,
-    ];
+    public function testInterfacesImplementation(): void
+    {
+        foreach ($required_interfaces = [
+            Contracts\WithApplication::class,
+            Contracts\WithHttpRequest::class,
+            Contracts\WithHttpResponse::class,
+        ] as $interface) {
+            $this->assertContains(
+                $interface,
+                \class_implements(AfterRequestHandlingEvent::class),
+                "Event does not implements [{$interface}]"
+            );
+        }
+    }
 
     /**
-     * @var string
-     */
-    protected $event_class = AfterRequestHandlingEvent::class;
-
-    /**
-     * {@inheritdoc}
+     * @return void
      */
     public function testConstructor(): void
     {
         $event = new AfterRequestHandlingEvent(
             $this->app,
             $request = Request::create('/'),
-            $response = Response::create()
+            $response = new Response()
         );
 
         $this->assertSame($this->app, $event->application());

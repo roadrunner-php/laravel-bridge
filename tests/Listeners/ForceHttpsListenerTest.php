@@ -20,17 +20,17 @@ class ForceHttpsListenerTest extends AbstractListenerTestCase
     /**
      * @var Request
      */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var UrlGenerator
      */
-    protected $url_generator;
+    protected UrlGenerator $url_generator;
 
     /**
      * @var ConfigRepository
      */
-    protected $config;
+    protected ConfigRepository $config;
 
     /**
      * {@inheritdoc}
@@ -69,7 +69,7 @@ class ForceHttpsListenerTest extends AbstractListenerTestCase
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function testHandleWithoutForcing(): void
     {
