@@ -4,12 +4,18 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests;
 
+use Illuminate\Support\Str;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Foundation\Testing\TestCase;
 use Spiral\RoadRunnerLaravel\ServiceProvider;
 
-abstract class AbstractTestCase extends TestCase
+abstract class AbstractTestCase extends \Illuminate\Foundation\Testing\TestCase
 {
+    /**
+     * @var string Path to the directory for temporary content.
+     */
+    private string $tmp_dir = __DIR__ . DIRECTORY_SEPARATOR . 'temp';
+
     /**
      * Creates the application.
      *
@@ -28,5 +34,33 @@ abstract class AbstractTestCase extends TestCase
         $app->register(ServiceProvider::class);
 
         return $app;
+    }
+
+    /**
+     * Create directory for temporary files. Created directory will be automatically removed on ::tearDown().
+     *
+     * @return string Absolute path to the directory
+     */
+    protected function createTemporaryDirectory(): string
+    {
+        $path = $this->tmp_dir . DIRECTORY_SEPARATOR . Str::lower(Str::random(6));
+
+        (new Filesystem)->makeDirectory($path, 0755, true);
+
+        return \realpath($path);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $fs = new Filesystem;
+
+        if ($fs->exists($path = $this->tmp_dir) && $fs->isDirectory($path)) {
+            $fs->deleteDirectory($path, false);
+        }
     }
 }

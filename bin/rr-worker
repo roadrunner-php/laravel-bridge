@@ -69,6 +69,8 @@ $app = new \Symfony\Component\Console\Application(
     \Composer\InstalledVersions::getPrettyVersion('spiral/roadrunner-laravel')
 );
 
-$app->add(new \Spiral\RoadRunnerLaravel\Console\Commands\StartCommand($base_path));
+$app->add(new \Spiral\RoadRunnerLaravel\Console\Commands\StartCommand(
+    new \Spiral\RoadRunnerLaravel\Worker(), $base_path
+));
 
 $app->run();

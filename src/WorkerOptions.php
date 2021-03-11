@@ -30,9 +30,9 @@ class WorkerOptions implements WorkerOptionsInterface
      */
     public function __construct(string $base_path, bool $refresh_app = false, string $relay_dsn = 'pipes')
     {
-        $this->base_path = $base_path;
+        $this->base_path   = $base_path;
         $this->refresh_app = $refresh_app;
-        $this->relay_dsn = $relay_dsn;
+        $this->relay_dsn   = $relay_dsn;
     }
 
     /**

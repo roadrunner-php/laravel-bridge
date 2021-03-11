@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Console\Commands;
 
 use InvalidArgumentException;
+use Spiral\RoadRunnerLaravel\WorkerInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,6 +24,13 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
         OPTION_REFRESH_APP = 'refresh-app';
 
     /**
+     * Worker instance.
+     *
+     * @var WorkerInterface
+     */
+    protected WorkerInterface $worker;
+
+    /**
      * @var string|null
      */
     protected ?string $laravel_base_path;
@@ -30,12 +38,14 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
     /**
      * Create a new command instance.
      *
-     * @var string|null $laravel_base_path
+     * @var WorkerInterface $worker
+     * @var string|null     $laravel_base_path
      */
-    public function __construct(?string $laravel_base_path = null)
+    public function __construct(WorkerInterface $worker, ?string $laravel_base_path = null)
     {
         parent::__construct();
 
+        $this->worker            = $worker;
         $this->laravel_base_path = $laravel_base_path;
     }
 
@@ -96,7 +106,7 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
             }
         }
 
-        (new \Spiral\RoadRunnerLaravel\Worker())->start($options);
+        $this->worker->start($options);
 
         return 0;
     }

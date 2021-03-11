@@ -6,7 +6,10 @@
 
     <testsuites>
         <testsuite name="Unit">
-            <directory suffix="Test.php">./tests</directory>
+            <directory suffix="Test.php">./tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
     </testsuites>
 
@@ -25,6 +28,15 @@
             <xml outputDirectory="./coverage/xml"/>
         </report>
     </coverage>
+
+    <!-- deprecated -->
+    <logging>
+        <log type="coverage-html" target="./coverage/html"/>
+        <log type="coverage-xml" target="./coverage/xml"/>
+        <log type="coverage-clover" target="./coverage/clover.xml"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
+    </logging>
+    <!-- /deprecated -->
 
     <php>
         <server name="APP_KEY" value="base64:+hY09mlBag/d7Qhq2SjE/i2iUzZBS1dGObLqcHZU2Ac=" force="true"/>
