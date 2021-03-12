@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED (v4 candidate)
+
+### Added
+
+- Package "binary" file allows using next options:
+  - `laravel-path` for Laravel application base path changing
+  - `relay-dsn` for RR relay changing (you can set `tcp://localhost:6001`, `unix:///tmp/rpc.sock` and others; `pipes` is used by default)
+  - `refresh-app` for application instance refreshing on each incoming HTTP request (instead `APP_REFRESH` env variable)
+- Possibility to use unix socket or TCP port as a relay to communicate with RoadRunner
+- `Spiral\RoadRunnerLaravel\WorkerOptionsInterface` that describes worker starting options
+- Feature tests (`phpunit`) that uses real RR server running
+
+### Changed
+
+- Minimal required PHP version now is `7.4`
+- Dependency `spiral/roadrunner` (`~1.8`) changed with `spiral/roadrunner-worker` and `spiral/roadrunner-http` (`^2.0`)
+- RR worker instance binding for DI from `Spiral\RoadRunner\PSR7Client` to `Spiral\RoadRunner\Http\PSR7Worker`
+- `Spiral\RoadRunnerLaravel\WorkerInterface::start` accepts `Spiral\RoadRunnerLaravel\WorkerOptionsInterface` now
+
+### Removed
+
+- RR config file (`.rr.yaml`) publishing using `artisan vendor:publish` command
+- Listener `Spiral\RoadRunnerLaravel\Listeners\ResetDbConnectionsListener`
+
 ## v3.7.0
 
 ### Added

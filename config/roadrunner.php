@@ -4,7 +4,6 @@ use Spiral\RoadRunnerLaravel\Events;
 use Spiral\RoadRunnerLaravel\Listeners;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Force HTTPS Schema Usage
@@ -87,7 +86,6 @@ return [
 
         Events\AfterLoopIterationEvent::class => [
             Listeners\ClearInstancesListener::class,
-            // Listeners\ResetDbConnectionsListener::class,
             Listeners\RunGarbageCollectorListener::class,
         ],
 

@@ -79,26 +79,5 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->publishes([
             \realpath(static::getConfigPath()) => config_path(\basename(static::getConfigPath())),
         ], 'config');
-
-        if (\is_string($rr_config = $this->getRoadRunnerSimpleConfigPath())) {
-            $this->publishes([
-                $rr_config => $this->app->basePath() . DIRECTORY_SEPARATOR . '.rr.yaml.dist',
-            ], 'rr-config');
-        }
-    }
-
-    /**
-     * Get path to the RoadRunner simple config file (if it possible).
-     *
-     * @return string|null
-     */
-    protected function getRoadRunnerSimpleConfigPath(): ?string
-    {
-        $vendor = \dirname((string) (new \ReflectionClass(\Composer\Autoload\ClassLoader::class))->getFileName(), 2);
-        $path   = (string) \realpath($vendor . '/spiral/roadrunner/.rr.yaml');
-
-        return \is_file($path)
-            ? $path
-            : null;
     }
 }

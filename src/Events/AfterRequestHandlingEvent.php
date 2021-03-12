@@ -14,19 +14,19 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 final class AfterRequestHandlingEvent implements WithApplication, WithHttpRequest, WithHttpResponse
 {
     /**
-     * @var ApplicationContract
+     * Application instance.
      */
-    private $app;
+    private ApplicationContract $app;
 
     /**
-     * @var Request
+     * Incoming request.
      */
-    private $request;
+    private Request $request;
 
     /**
-     * @var Response
+     * Outgoing response.
      */
-    private $response;
+    private Response $response;
 
     /**
      * Create a new event instance.

@@ -10,14 +10,14 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 final class BeforeLoopIterationEvent implements Contracts\WithApplication, Contracts\WithServerRequest
 {
     /**
-     * @var ApplicationContract
+     * Application instance.
      */
-    private $app;
+    private ApplicationContract $app;
 
     /**
-     * @var ServerRequestInterface
+     * Raw server request.
      */
-    private $request;
+    private ServerRequestInterface $request;
 
     /**
      * Create a new event instance.

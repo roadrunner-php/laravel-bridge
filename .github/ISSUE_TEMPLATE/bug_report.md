@@ -3,7 +3,6 @@ name: Bug report
 about: Create a report to help us improve
 labels: type:bug
 assignees: tarampampam
-
 ---
 
 ## Describe the bug
@@ -28,9 +27,9 @@ assignees: tarampampam
 
 Key                     | Value
 ----------------------- | ----
-PHP version             | <!-- e.g. `7.2.6` -->
-Current package version | <!-- e.g. `3.6.0` -->
-RoadRunner version      | <!-- e.g. `1.8.3` -->
+PHP version             | <!-- e.g. `8.0.3` -->
+Current package version | <!-- e.g. `4.0.0` -->
+RoadRunner version      | <!-- e.g. `2.0.1` -->
 Environment             | <!-- e.g. `docker`, `local`, `aws` -->
 
 ### RoadRunner configuration file content

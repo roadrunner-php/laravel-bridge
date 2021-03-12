@@ -9,9 +9,11 @@ interface WorkerInterface
     /**
      * Start worker loop.
      *
-     * @param bool|false $refresh_app
+     * @param WorkerOptionsInterface $options
      *
      * @return void
+     *
+     * @throws \Throwable
      */
-    public function start(bool $refresh_app = false): void;
+    public function start(WorkerOptionsInterface $options): void;
 }

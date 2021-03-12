@@ -9,9 +9,9 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 final class AfterLoopStoppedEvent implements Contracts\WithApplication
 {
     /**
-     * @var ApplicationContract
+     * Application instance.
      */
-    private $app;
+    private ApplicationContract $app;
 
     /**
      * Create a new event instance.

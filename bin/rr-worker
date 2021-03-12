@@ -31,7 +31,7 @@ foreach (['../../..', '../..', '..', 'vendor', '../vendor', '../../vendor'] as $
 
 if ($loaded !== true) {
     \fwrite(\STDERR, 'Composer autoload file was not found. Try to install project dependencies' . PHP_EOL);
-    exit(10);
+    exit(1);
 }
 
 /*
@@ -45,33 +45,33 @@ if ($loaded !== true) {
 |
 */
 
+/** @var string|null $base_path */
 $base_path = null;
 
 foreach (['../../../..', '../../..', '../..', '..', '../vendor/laravel/laravel'] as $path) {
     if (\is_file(__DIR__ . '/' . $path . '/bootstrap/app.php')) {
-        $base_path = \realpath(__DIR__ . '/' . $path);
+        $base_path = (string) \realpath(__DIR__ . '/' . $path);
         break;
     }
 }
 
-if (! \is_string($base_path)) {
-    \fwrite(\STDERR, 'Cannot find application base path' . PHP_EOL);
-    exit(11);
-}
-
 /*
 |--------------------------------------------------------------------------
-| Create Worker Instance
+| Create And Run Console Application
 |--------------------------------------------------------------------------
+|
+| Symfony console component is a nice wrapper around worker CLI options.
+|
 */
 
-// @todo: Make possible to use another worker class
-$worker = new \Spiral\RoadRunnerLaravel\Worker($base_path);
+$app = new \Symfony\Component\Console\Application(
+    'RoadRunner worker',
+    \Composer\InstalledVersions::getPrettyVersion('spiral/roadrunner-laravel')
+);
 
-/*
-|--------------------------------------------------------------------------
-| Start Worker Loop
-|--------------------------------------------------------------------------
-*/
+$app->add(new \Spiral\RoadRunnerLaravel\Console\Commands\StartCommand(
+    new \Spiral\RoadRunnerLaravel\Worker(),
+    $base_path
+));
 
-$worker->start((bool) \getenv('APP_REFRESH'));
+$app->run();
