@@ -100,9 +100,6 @@ http:
   static:
     dir: "{$static_dir}"
     forbid: [".php"]
-
-endure:
-  log_level: warning # do NOT comment this lines - test will fails otherwise O_o
 EOF;
 
         $wrote = (new Filesystem())->put($config_file_path, $content, true);
@@ -148,7 +145,9 @@ EOF;
             )]);
             $http_client = new \GuzzleHttp\Client(['base_uri' => 'http://127.0.0.1:22622']);
 
-            // $rr_proc->disableOutput(); // @todo: This will fix `endure.log_level` problem, thx 2 @jetexe
+            // is required for preventing child process blocking, thx @jetexe
+            // more info: <https://www.php.net/manual/ru/function.proc-open.php#38870>
+            $rr_proc->disableOutput();
 
             try {
                 // https://symfony.com/doc/current/components/process.html#running-processes-asynchronously

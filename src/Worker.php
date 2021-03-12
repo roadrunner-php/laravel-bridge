@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
@@ -51,6 +52,10 @@ class Worker implements WorkerInterface
         $this->fireEvent($app, new Events\BeforeLoopStartedEvent($app));
 
         while ($req = $psr7_worker->waitRequest()) {
+            if (!($req instanceof ServerRequestInterface)) { // termination request received
+                break;
+            }
+
             $responded = false;
 
             if ($options->getRefreshApp()) {
