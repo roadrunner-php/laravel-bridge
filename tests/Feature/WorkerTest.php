@@ -148,7 +148,7 @@ EOF;
             )]);
             $http_client = new \GuzzleHttp\Client(['base_uri' => 'http://127.0.0.1:22622']);
 
-            // $rr_proc->disableOutput(); // @todo: This will fix `endure.log_level` problem, thx 2 https://github.com/jetexe
+            // $rr_proc->disableOutput(); // @todo: This will fix `endure.log_level` problem, thx 2 @jetexe
 
             try {
                 // https://symfony.com/doc/current/components/process.html#running-processes-asynchronously
