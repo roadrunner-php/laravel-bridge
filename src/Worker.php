@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 use Spiral\RoadRunner\Http\PSR7Worker;
+use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Foundation\Bootstrap\RegisterProviders;
 use Illuminate\Foundation\Bootstrap\SetRequestForConsole;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
