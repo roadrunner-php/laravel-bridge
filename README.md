@@ -11,8 +11,6 @@
 [![Downloads count][badge_downloads_count]][link_packagist]
 [![License][badge_license]][link_license]
 
-> Source code of this package was transferred from [avto-dev/roadrunner-laravel](https://github.com/avto-dev/roadrunner-laravel) package by its author. Release `v3.3.0` are same in both packages. Any future releases will be published in this repository _(previous package was abandoned)_.
-
 Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applications.
 
 ## Installation
@@ -32,6 +30,8 @@ $ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvi
 ```
 
 **Important**: despite the fact that worker allows you to refresh application instance on each HTTP request _(if worker started with option `--refresh-app`, eg.: `php ./vendor/bin/rr-worker start --refresh-app`)_, we strongly recommend avoiding this for performance reasons. Large applications can be hard to integrate with RoadRunner _(you must decide which of service providers must be reloaded on each request, avoid "static optimization" in some cases)_, but it's worth it.
+
+> 🐋 If you want to see an example of a laravel application in a docker container with RoadRunner as a web server - take a look at [this repository](https://github.com/tarampampam/laravel-roadrunner-in-docker).
 
 ### Upgrading guide (`v3.x` &rarr; `v4.x`)
 
