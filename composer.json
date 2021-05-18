@@ -32,7 +32,10 @@
         "mockery/mockery": "^1.3.2",
         "phpstan/phpstan": "~0.12.80",
         "phpunit/phpunit": "^8.0 || ^9.3",
-        "guzzlehttp/guzzle": "^6.3 || ~7.0"
+        "guzzlehttp/guzzle": "^6.3 || ~7.0",
+        "inertiajs/inertia-laravel": "^0.4.2",
+        "laravel/scout": "~8.0 || ~9.0",
+        "laravel/socialite": "^5.0"
     },
     "autoload": {
         "psr-4": {

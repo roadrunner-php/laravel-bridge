@@ -10,9 +10,12 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 
 /**
  * @link https://github.com/swooletw/laravel-swoole/blob/master/src/Server/Resetters/RebindRouterContainer.php
+ * @link https://github.com/laravel/octane/blob/1.x/src/Listeners/GiveNewApplicationInstanceToRouter.php
  */
 class RebindRouterListener implements ListenerInterface
 {
+    use Traits\InvokerTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -23,35 +26,25 @@ class RebindRouterListener implements ListenerInterface
             $request = $event->httpRequest();
 
             /** @var \Illuminate\Routing\Router $router */
-            $router  = $app->make('router');
+            $router = $app->make('router');
 
-            $closure = function () use ($app, $request): void {
-                $this->{'container'} = $app;
+            /**
+             * Method `setContainer` for the Router available since Laravel v8.35.0.
+             *
+             * @link https://git.io/JszyO Source code (v8.35.0)
+             * @see  \Illuminate\Routing\Router::setContainer
+             */
+            if (!$this->invokeMethod($router, 'setContainer', $app)) {
+                $this->setProperty($router, 'container', $app);
+            }
 
-                try {
-                    /** @var mixed $route */
-                    $route = $this->{'getRoutes'}()->match($request);
-
-                    // rebind resolved controller
-                    if (\property_exists($route, $container_property = 'container')) {
-                        $rebind_closure = function () use ($container_property, $app): void {
-                            $this->{$container_property} = $app;
-                        };
-
-                        $rebind = $rebind_closure->bindTo($route, $route);
-                        $rebind();
-                    }
-
-                    // rebind matched route's container
-                    $route->setContainer($app);
-                } catch (HttpException $e) {
-                    // do nothing
+            try {
+                if ($request instanceof \Illuminate\Http\Request && $app instanceof \Illuminate\Container\Container) {
+                    $router->getRoutes()->match($request)->setContainer($app);
                 }
-            };
-
-            // Black magic in action
-            $reset_router = $closure->bindTo($router, $router);
-            $reset_router();
+            } catch (HttpException $e) {
+                // do nothing
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
  * @link https://github.com/swooletw/laravel-swoole/blob/master/src/Server/Resetters/RebindViewContainer.php
+ * @link https://github.com/laravel/octane/blob/1.x/src/Listeners/GiveNewApplicationInstanceToViewFactory.php
  */
 class RebindViewListener implements ListenerInterface
 {
@@ -22,14 +23,8 @@ class RebindViewListener implements ListenerInterface
             /** @var \Illuminate\View\Factory $view */
             $view = $app->make('view');
 
-            $closure = function () use ($app): void {
-                $this->{'container'}     = $app;
-                $this->{'shared'}['app'] = $app;
-            };
-
-            // Black magic in action
-            $resetView = $closure->bindTo($view, $view);
-            $resetView();
+            $view->setContainer($app);
+            $view->share('app', $app);
         }
     }
 }

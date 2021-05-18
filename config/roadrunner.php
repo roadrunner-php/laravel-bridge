@@ -27,23 +27,24 @@ return [
     */
 
     'pre_resolving' => [
-        'view',
-        'files',
-        'session',
-        'session.store',
-        'routes',
-        'db',
-        'db.factory',
+        'auth',
         'cache',
         'cache.store',
         'config',
         'cookie',
+        'db',
+        'db.factory',
         'encrypter',
+        'files',
         'hash',
+        'log',
         'router',
+        'routes',
+        'session',
+        'session.store',
         'translator',
         'url',
-        'log',
+        'view',
     ],
 
     /*
@@ -66,10 +67,24 @@ return [
             Listeners\EnableHttpMethodParameterOverrideListener::class,
             Listeners\RebindHttpKernelListener::class, // Laravel 7 issue: <https://git.io/JvPpf>
             Listeners\RebindViewListener::class,
+            Listeners\RebindAuthorizationGateListener::class,
+            Listeners\RebindBroadcastManagerListener::class,
+            Listeners\RebindDatabaseManagerListener::class,
+            Listeners\RebindMailManagerListener::class,
+            Listeners\RebindNotificationChannelManagerListener::class,
+            Listeners\RebindPipelineHubListener::class,
+            Listeners\RebindQueueManagerListener::class,
+            Listeners\RebindValidationFactoryListener::class,
             Listeners\CloneConfigListener::class,
             Listeners\UnqueueCookiesListener::class,
+            Listeners\FlushAuthenticationStateListener::class,
             Listeners\ResetSessionListener::class,
             Listeners\ResetProvidersListener::class,
+            Listeners\ResetLocaleStateListener::class,
+
+            // Listeners\ResetLaravelScoutListener::class, // for 'laravel/scout' package
+            // Listeners\ResetLaravelSocialiteListener::class, // for 'laravel/socialite' package
+            // Listeners\ResetInertiaListener::class, // for 'inertiajs/inertia-laravel' package
         ],
 
         Events\BeforeRequestHandlingEvent::class => [
@@ -85,6 +100,8 @@ return [
         ],
 
         Events\AfterLoopIterationEvent::class => [
+            Listeners\FlushArrayCacheListener::class,
+            Listeners\ResetDatabaseRecordModificationStateListener::class,
             Listeners\ClearInstancesListener::class,
             Listeners\RunGarbageCollectorListener::class,
         ],
@@ -110,7 +127,7 @@ return [
     */
 
     'clear_instances' => [
-        'auth',
+        'auth', // is not required for Laravel >= v8.35
     ],
 
     /*
@@ -124,8 +141,8 @@ return [
     */
 
     'reset_providers' => [
-        Illuminate\Auth\AuthServiceProvider::class,
+        Illuminate\Auth\AuthServiceProvider::class, // is not required for Laravel >= v8.35
         // App\Your\Custom\AuthServiceProvider::class,
-        Illuminate\Pagination\PaginationServiceProvider::class,
+        Illuminate\Pagination\PaginationServiceProvider::class, // is not required for Laravel >= v8.35
     ],
 ];
