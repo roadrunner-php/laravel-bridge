@@ -12,7 +12,7 @@ on:
     paths-ignore:
       - '**.md'
   schedule:
-    - cron: '0 0 * * 0' # once in a week, docs: <https://git.io/JvxXE#onschedule>
+    - cron: '0 0 * * 1' # once in a week, docs: <https://git.io/JvxXE#onschedule>
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   tests:
