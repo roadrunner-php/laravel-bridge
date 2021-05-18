@@ -12,7 +12,7 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Spiral\RoadRunnerLaravel\Listeners\ResetLocaleStateListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\FlushLocaleStateListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetLocaleStateListener<extended>
  */
 class ResetLocaleStateListenerTest extends AbstractListenerTestCase
 {

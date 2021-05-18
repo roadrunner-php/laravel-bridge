@@ -24,7 +24,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       matrix:
         setup: ['basic', 'lowest']
         php: ['7.4', '8.0']
-        rr: ['2.0.1']
+        rr: ['2.2.1'] # Releases: <https://github.com/spiral/roadrunner-binary/releases>
         include:
           - php: '7.4'
             setup: 'basic'
