@@ -24,13 +24,16 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       matrix:
         setup: ['basic', 'lowest']
         php: ['7.4', '8.0']
-        rr: ['2.2.1'] # Releases: <https://github.com/spiral/roadrunner-binary/releases>
+        rr: ['2.0.0', '2.2.1'] # Releases: <https://github.com/spiral/roadrunner-binary/releases>
         include:
           - php: '7.4'
             setup: 'basic'
             coverage: 'true'
           - php: '8.0'
             setup: 'basic'
+            coverage: 'true'
+          - php: '8.0'
+            setup: 'lowest'
             coverage: 'true'
     steps:
       - name: Check out code
