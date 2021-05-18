@@ -16,7 +16,7 @@ on:
 
 jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-actions>
   tests:
-    name: PHP ${{ matrix.php }}, RR ${{ matrix.rr }} (${{ matrix.setup }} setup)
+    name: PHP ${{ matrix.php }}, RR ${{ matrix.rr }} (${{ matrix.setup }} setup, coverage ${{ matrix.coverage }})
     runs-on: ubuntu-20.04
     timeout-minutes: 10
     strategy:
@@ -25,16 +25,14 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         setup: ['basic', 'lowest']
         php: ['7.4', '8.0']
         rr: ['2.0.0', '2.2.1'] # Releases: <https://github.com/spiral/roadrunner-binary/releases>
+        coverage: ['true']
         include:
           - php: '7.4'
             setup: 'basic'
-            coverage: 'true'
+            coverage: 'false'
           - php: '8.0'
             setup: 'basic'
-            coverage: 'true'
-          - php: '8.0'
-            setup: 'lowest'
-            coverage: 'true'
+            coverage: 'false'
     steps:
       - name: Check out code
         uses: actions/checkout@v2
