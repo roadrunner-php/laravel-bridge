@@ -4,10 +4,10 @@ FROM php:8.0-alpine
 ENV COMPOSER_HOME="/tmp/composer"
 
 # Image page: <https://hub.docker.com/_/composer>
-COPY --from=composer:2.0.11 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.0.13 /usr/bin/composer /usr/bin/composer
 
 # Image page: <https://hub.docker.com/r/spiralscout/roadrunner>
-COPY --from=spiralscout/roadrunner:2.0.1 /usr/bin/rr /usr/bin/rr
+COPY --from=spiralscout/roadrunner:2.2.1 /usr/bin/rr /usr/bin/rr
 
 RUN set -x \
     && apk add --no-cache binutils git \
