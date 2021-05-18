@@ -18,9 +18,13 @@ class RebindMailManagerListenerTest extends AbstractListenerTestCase
      */
     public function testHandle(): void
     {
+        if (!\class_exists(MailManager::class)) {
+            $this->markTestSkipped("MailManager was introduced in laravel >= v7.0");
+        }
+
         $app_clone = clone $this->app;
 
-        /** @var \Illuminate\Mail\MailManager $mail_manager */
+        /* @var \Illuminate\Mail\MailManager $mail_manager */
         $mail_manager = $this->app->make('mail.manager');
 
         $this->setProperty($mail_manager, $app_prop = 'app', $app_clone);

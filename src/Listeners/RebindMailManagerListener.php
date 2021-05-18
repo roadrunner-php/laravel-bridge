@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Listeners;
 
+use Illuminate\Mail\MailManager;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
@@ -18,6 +19,11 @@ class RebindMailManagerListener implements ListenerInterface
      */
     public function handle($event): void
     {
+        // MailManager was introduced in laravel >= v7.0
+        if (!\class_exists(MailManager::class)) {
+            return;
+        }
+
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
@@ -25,7 +31,7 @@ class RebindMailManagerListener implements ListenerInterface
                 return;
             }
 
-            /** @var \Illuminate\Mail\MailManager $mail_manager */
+            /* @var MailManager $mail_manager */
             $mail_manager = $app->make($mail_manager_abstract);
 
             /**
@@ -34,7 +40,7 @@ class RebindMailManagerListener implements ListenerInterface
              * @link https://git.io/JszC5 Source code (v8.35.0)
              * @see  \Illuminate\Mail\MailManager::setApplication
              */
-            if (! $this->invokeMethod($mail_manager, 'setApplication', $app)) {
+            if (!$this->invokeMethod($mail_manager, 'setApplication', $app)) {
                 $this->setProperty($mail_manager, 'app', $app);
             }
 
@@ -44,7 +50,7 @@ class RebindMailManagerListener implements ListenerInterface
              * @link https://git.io/JszWd Source code (v8.35.0)
              * @see  \Illuminate\Mail\MailManager::forgetMailers
              */
-            if (! $this->invokeMethod($mail_manager, 'forgetMailers')) {
+            if (!$this->invokeMethod($mail_manager, 'forgetMailers')) {
                 $this->setProperty($mail_manager, 'mailers', []);
             }
         }

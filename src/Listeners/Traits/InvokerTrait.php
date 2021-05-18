@@ -10,7 +10,7 @@ namespace Spiral\RoadRunnerLaravel\Listeners\Traits;
 trait InvokerTrait
 {
     /**
-     * Invoke the method on object.
+     * Invoke the method on an object.
      *
      * @param object $object
      * @param string $method_name
@@ -18,7 +18,7 @@ trait InvokerTrait
      *
      * @return bool TRUE if the method exists and invoked, FALSE otherwise.
      */
-    protected final function invokeMethod(object $object, string $method_name, ...$args): bool
+    final protected function invokeMethod(object $object, string $method_name, ...$args): bool
     {
         if (\method_exists($object, $method_name)) {
             $object->{$method_name}(...$args);
@@ -38,7 +38,7 @@ trait InvokerTrait
      *
      * @return bool TRUE if the property exists and changed, FALSE otherwise.
      */
-    protected final function setProperty(object $object, string $property_name, $value): bool
+    final protected function setProperty(object $object, string $property_name, $value): bool
     {
         $changed = false;
 
