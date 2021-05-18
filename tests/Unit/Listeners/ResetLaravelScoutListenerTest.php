@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\ResetLaravelScoutListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetLaravelScoutListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetLaravelScoutListener
  */
 class ResetLaravelScoutListenerTest extends AbstractListenerTestCase
 {

@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindBroadcastManagerListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindBroadcastManagerListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindBroadcastManagerListener
  */
 class RebindBroadcastManagerListenerTest extends AbstractListenerTestCase
 {

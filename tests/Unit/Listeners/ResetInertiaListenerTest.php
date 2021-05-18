@@ -11,7 +11,7 @@ use Spiral\RoadRunnerLaravel\Listeners\ResetInertiaListener;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetInertiaListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetInertiaListener
  */
 class ResetInertiaListenerTest extends AbstractListenerTestCase
 {

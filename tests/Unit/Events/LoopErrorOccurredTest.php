@@ -9,7 +9,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts;
 use Spiral\RoadRunnerLaravel\Events\LoopErrorOccurredEvent;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Events\LoopErrorOccurredEvent<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Events\LoopErrorOccurredEvent
  */
 class LoopErrorOccurredTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
 {

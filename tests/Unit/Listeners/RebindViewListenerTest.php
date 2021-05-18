@@ -9,7 +9,7 @@ use Spiral\RoadRunnerLaravel\Listeners\RebindViewListener;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindViewListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindViewListener
  */
 class RebindViewListenerTest extends AbstractListenerTestCase
 {

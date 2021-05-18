@@ -11,7 +11,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\CloneConfigListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\CloneConfigListener
  */
 class CloneConfigListenerTest extends AbstractListenerTestCase
 {

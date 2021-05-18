@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindDatabaseManagerListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindDatabaseManagerListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindDatabaseManagerListener
  */
 class RebindDatabaseManagerListenerTest extends AbstractListenerTestCase
 {

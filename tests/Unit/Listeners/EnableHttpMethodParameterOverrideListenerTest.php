@@ -9,7 +9,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 use Spiral\RoadRunnerLaravel\Listeners\EnableHttpMethodParameterOverrideListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\EnableHttpMethodParameterOverrideListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\EnableHttpMethodParameterOverrideListener
  */
 class EnableHttpMethodParameterOverrideListenerTest extends AbstractListenerTestCase
 {

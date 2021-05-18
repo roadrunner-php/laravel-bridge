@@ -9,7 +9,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts;
 use Spiral\RoadRunnerLaravel\Events\BeforeLoopIterationEvent;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Events\BeforeLoopIterationEvent<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Events\BeforeLoopIterationEvent
  */
 class BeforeLoopIterationEventTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
 {

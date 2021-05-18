@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindHttpKernelListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindHttpKernelListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindHttpKernelListener
  */
 class RebindHttpKernelListenerTest extends AbstractListenerTestCase
 {

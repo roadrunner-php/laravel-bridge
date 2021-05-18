@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindQueueManagerListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindQueueManagerListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindQueueManagerListener
  */
 class RebindQueueManagerListenerTest extends AbstractListenerTestCase
 {

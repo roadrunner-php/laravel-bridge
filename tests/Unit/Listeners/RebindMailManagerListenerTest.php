@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindMailManagerListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindMailManagerListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindMailManagerListener
  */
 class RebindMailManagerListenerTest extends AbstractListenerTestCase
 {

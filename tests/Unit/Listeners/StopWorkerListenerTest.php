@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Listeners\StopWorkerListener;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\StopWorkerListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\StopWorkerListener
  */
 class StopWorkerListenerTest extends AbstractListenerTestCase
 {

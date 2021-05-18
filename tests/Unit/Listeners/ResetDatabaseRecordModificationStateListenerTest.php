@@ -11,7 +11,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\ResetDatabaseRecordModificationStateListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetDatabaseRecordModificationStateListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetDatabaseRecordModificationStateListener
  */
 class ResetDatabaseRecordModificationStateListenerTest extends AbstractListenerTestCase
 {

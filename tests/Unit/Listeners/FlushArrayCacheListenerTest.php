@@ -12,7 +12,7 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Spiral\RoadRunnerLaravel\Listeners\FlushArrayCacheListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\FlushArrayCacheListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\FlushArrayCacheListener
  */
 class FlushArrayCacheListenerTest extends AbstractListenerTestCase
 {

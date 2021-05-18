@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindNotificationChannelManagerListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindNotificationChannelManagerListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindNotificationChannelManagerListener
  */
 class RebindNotificationChannelManagerListenerTest extends AbstractListenerTestCase
 {

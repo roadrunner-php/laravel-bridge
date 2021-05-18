@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindAuthorizationGateListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindAuthorizationGateListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindAuthorizationGateListener
  */
 class RebindAuthorizationGateListenerTest extends AbstractListenerTestCase
 {

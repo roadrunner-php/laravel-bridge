@@ -15,7 +15,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindRouterListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindRouterListener
  */
 class RebindRouterListenerTest extends AbstractListenerTestCase
 {

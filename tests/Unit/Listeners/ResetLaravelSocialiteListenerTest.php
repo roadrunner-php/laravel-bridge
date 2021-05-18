@@ -12,7 +12,7 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Spiral\RoadRunnerLaravel\Listeners\ResetLaravelSocialiteListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetLaravelSocialiteListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetLaravelSocialiteListener
  */
 class ResetLaravelSocialiteListenerTest extends AbstractListenerTestCase
 {

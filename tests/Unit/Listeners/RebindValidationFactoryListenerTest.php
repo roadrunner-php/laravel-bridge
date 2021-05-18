@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindValidationFactoryListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindValidationFactoryListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindValidationFactoryListener
  */
 class RebindValidationFactoryListenerTest extends AbstractListenerTestCase
 {

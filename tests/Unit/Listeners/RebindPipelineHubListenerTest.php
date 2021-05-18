@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindPipelineHubListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindPipelineHubListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RebindPipelineHubListener
  */
 class RebindPipelineHubListenerTest extends AbstractListenerTestCase
 {

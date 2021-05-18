@@ -11,7 +11,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\BindRequestListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\BindRequestListener
  */
 class BindRequestListenerTest extends AbstractListenerTestCase
 {

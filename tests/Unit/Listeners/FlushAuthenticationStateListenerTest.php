@@ -11,7 +11,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\FlushAuthenticationStateListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\FlushAuthenticationStateListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\FlushAuthenticationStateListener
  */
 class FlushAuthenticationStateListenerTest extends AbstractListenerTestCase
 {
