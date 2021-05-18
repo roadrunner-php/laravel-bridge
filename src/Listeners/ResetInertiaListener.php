@@ -8,6 +8,8 @@ use Inertia\ResponseFactory as InertiaResponseFactory;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
+ * Target package: <https://github.com/inertiajs/inertia-laravel>.
+ *
  * @link https://github.com/laravel/octane/blob/1.x/src/Listeners/PrepareInertiaForNextOperation.php
  */
 class ResetInertiaListener implements ListenerInterface

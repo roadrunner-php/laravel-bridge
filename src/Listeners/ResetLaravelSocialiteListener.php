@@ -8,6 +8,8 @@ use Laravel\Socialite\Contracts\Factory as SocialiteFactory;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
+ * Target package: <https://github.com/laravel/socialite/>.
+ *
  * @link https://github.com/laravel/octane/blob/1.x/src/Listeners/PrepareSocialiteForNextOperation.php
  */
 class ResetLaravelSocialiteListener implements ListenerInterface
