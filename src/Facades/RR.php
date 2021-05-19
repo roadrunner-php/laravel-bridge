@@ -8,7 +8,7 @@ namespace Spiral\RoadRunnerLaravel\Facades;
  * @method static void dump($var, ...$vars) Dump passed values
  * @method static void dd(...$vars)
  *
- * @see \Spiral\RoadRunner\RR
+ * @see \Spiral\RoadRunnerLaravel\RR
  */
 final class RR extends \Illuminate\Support\Facades\Facade
 {

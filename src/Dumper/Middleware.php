@@ -48,7 +48,7 @@ class Middleware
             $dumped = '';
 
             foreach ($this->stack->all() as $item) {
-                $dumped .= $this->renderer->dump($item, true) . \PHP_EOL;
+                $dumped = $this->renderer->dump($item, true) . \PHP_EOL . $dumped;
             }
 
             $response->setContent($dumped . $response->getContent());

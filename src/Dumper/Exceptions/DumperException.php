@@ -77,7 +77,7 @@ final class DumperException extends \RuntimeException
         $dumped = '';
 
         foreach ($this->stack->all() as $item) {
-            $dumped .= $this->renderer->dump($item, true) . \PHP_EOL;
+            $dumped = $this->renderer->dump($item, true) . \PHP_EOL . $dumped;
         }
 
         return new Response($this->generateView($dumped), $this->getCode());
@@ -98,6 +98,8 @@ final class DumperException extends \RuntimeException
     <head>
         <meta charset="utf-8"/>
         <meta name="robots" content="noindex, nofollow"/>
+        <style>html, body {background-color: #18171b} body{margin: 0 5% 0 5%}</style>
+        <title>Dumper::dd()</title>
     </head>
     <body>
         $content
