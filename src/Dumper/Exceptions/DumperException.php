@@ -102,7 +102,7 @@ final class DumperException extends \RuntimeException
         <title>Dumper::dd()</title>
     </head>
     <body>
-        $content
+        ${content}
     </body>
 </html>
 EOT;

@@ -40,7 +40,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->initializeConfigs();
 
         $this->app->singleton(Dumper\Stack\StackInterface::class, Dumper\Stack\FixedArrayStack::class);
-        $this->app->singleton(RR::class, RR::class);
+        $this->app->singleton(Dumper\Dumper::class, Dumper\Dumper::class);
 
         $this->app
             ->when(Dumper\Dumper::class)
