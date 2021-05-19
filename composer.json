@@ -80,7 +80,10 @@
         "laravel": {
             "providers": [
                 "Spiral\\RoadRunnerLaravel\\ServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "RR": "Spiral\\RoadRunnerLaravel\\Facades\\RR"
+            }
         }
     },
     "support": {
