@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
+- Possibility to "dump" any variables in HTTP context (just call `\rr\dump('foo')` or `\rr\dd('foo')` instead `dump()` or `dd()` in your code) for debugging
+- Function `\rr\worker()` for getting access to the RoadRunner PSR worker instance (available only in HTTP context, of course)
 - Listener `FlushArrayCacheListener` for flushing `array`-based cache storages
 - Listener `FlushAuthenticationStateListener` for authentication state flushing
 - Listener `RebindAuthorizationGateListener` for the authorization gate container rebinding

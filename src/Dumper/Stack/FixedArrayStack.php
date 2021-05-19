@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Dumper\Stack;
 
-use Symfony\Component\VarDumper\Cloner\Data;
-
 /**
  * Last-In First-Out stack implementation.
  *

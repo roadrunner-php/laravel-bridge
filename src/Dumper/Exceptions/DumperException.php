@@ -10,6 +10,9 @@ use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 use Symfony\Component\VarDumper\Dumper\AbstractDumper;
 use Spiral\RoadRunnerLaravel\Dumper\Stack\StackInterface;
 
+/**
+ * @internal
+ */
 final class DumperException extends \RuntimeException
 {
     /**
@@ -29,11 +32,13 @@ final class DumperException extends \RuntimeException
      * @param int             $code
      * @param \Throwable|null $previous
      */
-    public function __construct(string $message = '',
-                                int $code = Response::HTTP_INTERNAL_SERVER_ERROR,
-                                \Throwable $previous = null)
+    public function __construct(
+        string $message = '',
+        int $code = Response::HTTP_INTERNAL_SERVER_ERROR,
+        \Throwable $previous = null
+    )
     {
-        $this->renderer = new HtmlDumper;
+        $this->renderer = new HtmlDumper();
 
         parent::__construct($message, $code, $previous);
     }
@@ -41,7 +46,7 @@ final class DumperException extends \RuntimeException
     /**
      * @param StackInterface $stack
      *
-     * @return static
+     * @return self
      */
     public static function withStack(StackInterface $stack): self
     {
@@ -74,13 +79,18 @@ final class DumperException extends \RuntimeException
      */
     public function render(Request $request): Response
     {
-        $dumped = '';
+        $content = '';
 
-        foreach ($this->stack->all() as $item) {
-            $dumped = $this->renderer->dump($item, true) . \PHP_EOL . $dumped;
+        if ($this->stack->count() > 0) {
+            foreach ($this->stack->all() as $item) {
+                /* @var \Symfony\Component\VarDumper\Cloner\Data $item */
+                $content = $this->renderer->dump($item, true) . \PHP_EOL . $content;
+            }
+        } else {
+            $content .= '(╯°□°)╯︵ ┻━┻';
         }
 
-        return new Response($this->generateView($dumped), $this->getCode());
+        return new Response($this->generateView($content), $this->getCode());
     }
 
     /**

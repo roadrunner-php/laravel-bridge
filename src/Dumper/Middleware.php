@@ -29,7 +29,7 @@ class Middleware
     public function __construct(Stack\StackInterface $stack)
     {
         $this->stack    = $stack;
-        $this->renderer = new HtmlDumper;
+        $this->renderer = new HtmlDumper();
     }
 
     /**
@@ -48,6 +48,7 @@ class Middleware
             $dumped = '';
 
             foreach ($this->stack->all() as $item) {
+                /* @var \Symfony\Component\VarDumper\Cloner\Data $item */
                 $dumped = $this->renderer->dump($item, true) . \PHP_EOL . $dumped;
             }
 
