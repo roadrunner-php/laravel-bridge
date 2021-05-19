@@ -36,8 +36,7 @@ final class DumperException extends \RuntimeException
         string $message = '',
         int $code = Response::HTTP_INTERNAL_SERVER_ERROR,
         \Throwable $previous = null
-    )
-    {
+    ) {
         $this->renderer = new HtmlDumper();
 
         parent::__construct($message, $code, $previous);
