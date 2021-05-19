@@ -2,7 +2,7 @@
   <img src="https://hsto.org/webt/xl/pr/89/xlpr891cyv9ux3gm7dtzwjse_5a.png" alt="logo" width="420" />
 </p>
 
-# [RoadRunner][roadrunner] ⇆ Laravel bridge
+# [RoadRunner][roadrunner] ⇆ [Laravel][laravel] bridge
 
 [![Version][badge_packagist_version]][link_packagist]
 [![Version][badge_php_version]][link_packagist]
