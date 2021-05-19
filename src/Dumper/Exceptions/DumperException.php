@@ -72,11 +72,11 @@ final class DumperException extends \RuntimeException
      *
      * @link https://laravel.com/docs/6.x/errors#renderable-exceptions
      *
-     * @param Request $request
+     * @param Request|null $request
      *
      * @return Response
      */
-    public function render(Request $request): Response
+    public function render(?Request $request = null): Response
     {
         $content = '';
 

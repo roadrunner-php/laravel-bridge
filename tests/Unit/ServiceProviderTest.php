@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit;
 
+use Spiral\RoadRunnerLaravel\Dumper\Dumper;
 use Spiral\RoadRunnerLaravel\ServiceProvider;
+use Spiral\RoadRunnerLaravel\Dumper\Middleware;
+use Illuminate\Contracts\Http\Kernel as HttpKernel;
+use Spiral\RoadRunnerLaravel\Dumper\Stack\StackInterface;
+use Spiral\RoadRunnerLaravel\Dumper\Stack\FixedArrayStack;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Events\Dispatcher as EventsDispatcher;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\ServiceProvider<extended>
+ * @covers \Spiral\RoadRunnerLaravel\ServiceProvider
  */
 class ServiceProviderTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
 {
@@ -71,5 +76,22 @@ class ServiceProviderTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCa
                 $this->assertTrue($events->hasListeners($event), "Event [{$event}] has no listeners");
             }
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function testMiddlewareIsRegistered(): void
+    {
+        $this->assertTrue($this->app->make(HttpKernel::class)->hasMiddleware(Middleware::class));
+    }
+
+    /**
+     * @return void
+     */
+    public function testDumperRegistration(): void
+    {
+        $this->assertInstanceOf(FixedArrayStack::class, $this->app->make(StackInterface::class));
+        $this->assertInstanceOf(Dumper::class, $this->app->make(Dumper::class));
     }
 }

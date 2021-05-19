@@ -14,6 +14,19 @@ use Spiral\RoadRunnerLaravel\Listeners\EnableHttpMethodParameterOverrideListener
 class EnableHttpMethodParameterOverrideListenerTest extends AbstractListenerTestCase
 {
     /**
+     * {@inheritDoc}
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        \Closure::fromCallable(function (): void {
+            /** @see \Symfony\Component\HttpFoundation\Request::$httpMethodParameterOverride */
+            self::$httpMethodParameterOverride = false;
+        })->bindTo($req = new \Symfony\Component\HttpFoundation\Request(), $req)();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function testHandle(): void

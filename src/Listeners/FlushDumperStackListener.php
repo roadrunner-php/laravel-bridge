@@ -8,6 +8,8 @@ use Spiral\RoadRunnerLaravel\Dumper\Stack\StackInterface;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
+ * You should not to register this listener manually.
+ *
  * @see \Spiral\RoadRunnerLaravel\Dumper\Dumper
  */
 class FlushDumperStackListener implements ListenerInterface

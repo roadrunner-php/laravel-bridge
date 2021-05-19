@@ -8,8 +8,6 @@ use Illuminate\Support\Str;
 use Spiral\RoadRunnerLaravel\Dumper\Stack\FixedArrayStack;
 
 /**
- * @group dumper
- *
  * @covers \Spiral\RoadRunnerLaravel\Dumper\Stack\FixedArrayStack
  */
 class FixedArrayStackTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
