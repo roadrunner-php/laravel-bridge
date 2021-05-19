@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts;
 use Spiral\RoadRunnerLaravel\Events\AfterLoopIterationEvent;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Events\AfterLoopIterationEvent<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Events\AfterLoopIterationEvent
  */
 class AfterLoopIterationEventTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
 {

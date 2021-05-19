@@ -8,7 +8,7 @@ use Spiral\RoadRunnerLaravel\Listeners\ListenerInterface;
 use Spiral\RoadRunnerLaravel\Listeners\SendExceptionToStderrListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\SendExceptionToStderrListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\SendExceptionToStderrListener
  */
 class SendExceptionToStderrListenerTest extends AbstractListenerTestCase
 {

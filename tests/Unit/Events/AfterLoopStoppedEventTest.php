@@ -8,7 +8,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts;
 use Spiral\RoadRunnerLaravel\Events\AfterLoopStoppedEvent;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Events\AfterLoopStoppedEvent<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Events\AfterLoopStoppedEvent
  */
 class AfterLoopStoppedEventTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
 {

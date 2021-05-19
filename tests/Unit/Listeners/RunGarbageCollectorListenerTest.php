@@ -7,7 +7,7 @@ namespace Spiral\RoadRunnerLaravel\Tests\Unit\Listeners;
 use Spiral\RoadRunnerLaravel\Listeners\RunGarbageCollectorListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\RunGarbageCollectorListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\RunGarbageCollectorListener
  */
 class RunGarbageCollectorListenerTest extends AbstractListenerTestCase
 {

@@ -9,7 +9,7 @@ use Spiral\RoadRunnerLaravel\Listeners\ResetSessionListener;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetSessionListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetSessionListener
  */
 class ResetSessionListenerTest extends AbstractListenerTestCase
 {

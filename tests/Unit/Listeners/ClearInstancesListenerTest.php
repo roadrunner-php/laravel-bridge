@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Listeners\ClearInstancesListener;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\ClearInstancesListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\ClearInstancesListener
  */
 class ClearInstancesListenerTest extends AbstractListenerTestCase
 {

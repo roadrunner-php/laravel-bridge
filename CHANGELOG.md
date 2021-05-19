@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Listener `FlushArrayCacheListener` for flushing `array`-based cache storages
+- Listener `FlushAuthenticationStateListener` for authentication state flushing
+- Listener `RebindAuthorizationGateListener` for the authorization gate container rebinding
+- Listener `RebindBroadcastManagerListener` for the broadcast manager container rebinding
+- Listener `RebindDatabaseManagerListener` for the database manager container rebinding
+- Listener `RebindMailManagerListener` for the mail manager container rebinding and resolved mailer instances clearing
+- Listener `RebindNotificationChannelManagerListener` for the notification channel manager container rebinding and resolved driver instances clearing
+- Listener `RebindPipelineHubListener` for the pipeline hub container rebinding
+- Listener `RebindQueueManagerListener` for the queue manager container rebinding
+- Listener `RebindValidationFactoryListener` for the validator container rebinding
+- Listener `ResetDatabaseRecordModificationStateListener` for resetting the database record modification state
+- Listener `ResetLocaleStateListener` for the translator locale resetting
+- Integration with [inertiajs](https://inertiajs.com/) (package [inertiajs/inertia-laravel](https://github.com/inertiajs/inertia-laravel)) is supported now (just enable `ResetInertiaListener` for `BeforeLoopIterationEvent`)
+- Integration with [Laravel Scout](https://laravel.com/docs/master/scout/) is supported now (just enable `ResetLaravelScoutListener` for `BeforeLoopIterationEvent`)
+- Integration with [Laravel Socialite](https://github.com/laravel/socialite/) is supported now (just enable `ResetLaravelSocialiteListener` for `BeforeLoopIterationEvent`)
+
+### Changed
+
+- Listeners `RebindHttpKernelListener`, `RebindRouterListener`, `RebindViewListener` and `UnqueueCookiesListener` improved
+
 ## v4.0.1
 
 ### Fixed

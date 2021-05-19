@@ -11,7 +11,7 @@ use Spiral\RoadRunnerLaravel\Listeners\ResetProvidersListener;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetProvidersListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\ResetProvidersListener
  */
 class ResetProvidersListenerTest extends AbstractListenerTestCase
 {

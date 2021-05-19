@@ -8,7 +8,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts;
 use Spiral\RoadRunnerLaravel\Events\BeforeLoopStartedEvent;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Events\BeforeLoopStartedEvent<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Events\BeforeLoopStartedEvent
  */
 class BeforeLoopStartedEventTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
 {

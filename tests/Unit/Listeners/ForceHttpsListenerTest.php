@@ -13,7 +13,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\ForceHttpsListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\ForceHttpsListener
  */
 class ForceHttpsListenerTest extends AbstractListenerTestCase
 {

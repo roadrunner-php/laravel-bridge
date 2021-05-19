@@ -7,7 +7,7 @@ namespace Spiral\RoadRunnerLaravel\Tests\Unit\Listeners;
 use Spiral\RoadRunnerLaravel\Listeners\FixSymfonyFileValidationListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\FixSymfonyFileValidationListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\FixSymfonyFileValidationListener
  */
 class FixSymfonyFileValidationListenerTest extends AbstractListenerTestCase
 {

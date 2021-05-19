@@ -16,23 +16,39 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
+        "composer-runtime-api": "^2.0",
+        "illuminate/auth": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/broadcasting": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/cache": "~6.0 || ~7.0 || ~8.0",
         "illuminate/contracts": "~6.0 || ~7.0 || ~8.0",
-        "illuminate/support": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/cookie": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/database": "~6.0 || ~7.0 || ~8.0",
         "illuminate/http": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/mail": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/notifications": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/pipeline": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/queue": "~6.0 || ~7.0 || ~8.0",
         "illuminate/routing": "~6.0 || ~7.0 || ~8.0",
-        "spiral/roadrunner-worker": "^2.0",
-        "spiral/roadrunner-http": "^2.0",
-        "symfony/psr-http-message-bridge": "^1.2 || ^2.0",
+        "illuminate/session": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/support": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/translation": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/validation": "~6.0 || ~7.0 || ~8.0",
+        "illuminate/view": "~6.0 || ~7.0 || ~8.0",
         "laminas/laminas-diactoros": "^2",
+        "spiral/roadrunner-http": "^2.0",
+        "spiral/roadrunner-worker": "^2.0",
         "symfony/console": "^4.3.4 || ^5.0",
-        "composer-runtime-api": "^2.0"
+        "symfony/psr-http-message-bridge": "^1.2 || ^2.0"
     },
     "require-dev": {
+        "guzzlehttp/guzzle": "^6.3 || ~7.0",
+        "inertiajs/inertia-laravel": "^0.4.2",
         "laravel/laravel": "~6.0 || ~7.0 || ~8.0",
+        "laravel/scout": "~8.0 || ~9.0",
+        "laravel/socialite": "^5.0",
         "mockery/mockery": "^1.3.2",
         "phpstan/phpstan": "~0.12.80",
-        "phpunit/phpunit": "^8.0 || ^9.3",
-        "guzzlehttp/guzzle": "^6.3 || ~7.0"
+        "phpunit/phpunit": "^8.0 || ^9.3"
     },
     "autoload": {
         "psr-4": {
@@ -48,7 +64,7 @@
         "bin/rr-worker"
     ],
     "scripts": {
-        "phpunit": "@php ./vendor/bin/phpunit --no-coverage --colors=always",
+        "phpunit": "@php ./vendor/bin/phpunit --no-coverage",
         "phpunit-cover": "@php ./vendor/bin/phpunit",
         "phpstan": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",
         "test": [

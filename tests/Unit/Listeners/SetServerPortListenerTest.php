@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Listeners\SetServerPortListener;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\SetServerPortListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\SetServerPortListener
  */
 class SetServerPortListenerTest extends AbstractListenerTestCase
 {

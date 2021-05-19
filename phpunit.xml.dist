@@ -6,10 +6,10 @@
 
     <testsuites>
         <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
+            <directory>./tests/Unit</directory>
         </testsuite>
         <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
+            <directory>./tests/Feature</directory>
         </testsuite>
     </testsuites>
 
@@ -22,10 +22,10 @@
             <directory>./tests</directory>
         </exclude>
         <report>
-            <clover outputFile="./coverage/clover.xml"/>
             <html outputDirectory="./coverage/html"/>
-            <text outputFile="php://stdout" showUncoveredFiles="false"/>
             <xml outputDirectory="./coverage/xml"/>
+            <clover outputFile="./coverage/clover.xml"/>
+            <text outputFile="php://stdout" showUncoveredFiles="false"/>
         </report>
     </coverage>
 
@@ -36,6 +36,11 @@
         <log type="coverage-clover" target="./coverage/clover.xml"/>
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
     </logging>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
     <!-- /deprecated -->
 
     <php>

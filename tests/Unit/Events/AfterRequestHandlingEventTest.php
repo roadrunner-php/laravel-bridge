@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts;
 use Spiral\RoadRunnerLaravel\Events\AfterRequestHandlingEvent;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Events\AfterRequestHandlingEvent<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Events\AfterRequestHandlingEvent
  */
 class AfterRequestHandlingEventTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
 {

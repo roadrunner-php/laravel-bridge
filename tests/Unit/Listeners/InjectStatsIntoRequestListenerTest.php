@@ -10,7 +10,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 use Spiral\RoadRunnerLaravel\Listeners\InjectStatsIntoRequestListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\InjectStatsIntoRequestListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\InjectStatsIntoRequestListener
  */
 class InjectStatsIntoRequestListenerTest extends AbstractListenerTestCase
 {

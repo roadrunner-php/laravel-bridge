@@ -9,7 +9,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts;
 use Spiral\RoadRunnerLaravel\Events\BeforeRequestHandlingEvent;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Events\BeforeRequestHandlingEvent<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Events\BeforeRequestHandlingEvent
  */
 class BeforeRequestHandlingEventTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
 {

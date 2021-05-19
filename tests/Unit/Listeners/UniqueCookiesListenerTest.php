@@ -9,7 +9,7 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\UnqueueCookiesListener;
 
 /**
- * @covers \Spiral\RoadRunnerLaravel\Listeners\UnqueueCookiesListener<extended>
+ * @covers \Spiral\RoadRunnerLaravel\Listeners\UnqueueCookiesListener
  */
 class UniqueCookiesListenerTest extends AbstractListenerTestCase
 {

@@ -9,9 +9,12 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
  * @link https://github.com/swooletw/laravel-swoole/blob/master/src/Server/Resetters/RebindKernelContainer.php
+ * @link https://github.com/laravel/octane/blob/1.x/src/Listeners/GiveNewApplicationInstanceToHttpKernel.php
  */
 class RebindHttpKernelListener implements ListenerInterface
 {
+    use Traits\InvokerTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -23,13 +26,15 @@ class RebindHttpKernelListener implements ListenerInterface
             /** @var HttpKernel $kernel */
             $kernel = $app->make(HttpKernel::class);
 
-            $closure = function () use ($app): void {
-                $this->{'app'} = $app;
-            };
-
-            // Black magic in action
-            $reseter = $closure->bindTo($kernel, $kernel);
-            $reseter();
+            /**
+             * Method `setApplication` for the HTTP kernel available since Laravel v8.35.0.
+             *
+             * @link https://git.io/JszZM Source code (v8.35.0)
+             * @see  \Illuminate\Foundation\Http\Kernel::setApplication
+             */
+            if (! $this->invokeMethod($kernel, 'setApplication', $app)) {
+                $this->setProperty($kernel, 'app', $app);
+            }
         }
     }
 }
