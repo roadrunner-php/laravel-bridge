@@ -12,6 +12,8 @@ if (!\function_exists('\\rr\\dump')) {
     /**
      * Dump passed values.
      *
+     * USE THIS FUNCTION ONLY FOR DEBUGGING.
+     *
      * @param mixed $var
      * @param mixed ...$vars
      *
@@ -30,7 +32,9 @@ if (!\function_exists('\\rr\\dump')) {
 
 if (!\function_exists('\\rr\\dd')) {
     /**
-     * Dump passed values and stop the execution (die).
+     * Dump passed values and stop the execution (exit).
+     *
+     * USE THIS FUNCTION ONLY FOR DEBUGGING.
      *
      * @param mixed ...$vars
      *
@@ -50,6 +54,8 @@ if (!\function_exists('\\rr\\dd')) {
 if (!\function_exists('\\rr\\worker')) {
     /**
      * Get the RoadRunner PSR worker.
+     *
+     * USE THIS FUNCTION ONLY FOR DEBUGGING.
      *
      * @return PSR7Worker
      *
