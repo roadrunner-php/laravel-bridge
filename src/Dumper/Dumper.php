@@ -54,7 +54,9 @@ class Dumper
 
         foreach ([$var, ...$vars] as $item) {
             if ($ran_using_cli) {
+                // @codeCoverageIgnoreStart
                 VarDumper::dump($item);
+                // @codeCoverageIgnoreEnd
             } else {
                 $this->stack->push($this->cloner->cloneVar($item));
             }
@@ -74,6 +76,7 @@ class Dumper
     public function dd(...$vars)
     {
         if ($this->ranUsingCLI()) {
+            // @codeCoverageIgnoreStart
             try {
                 foreach ($vars as $item) {
                     VarDumper::dump($item);
@@ -81,6 +84,7 @@ class Dumper
             } finally {
                 $this->stopper->stop();
             }
+            // @codeCoverageIgnoreEnd
         } else {
             $stack = new Stack\FixedArrayStack();
 

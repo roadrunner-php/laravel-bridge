@@ -63,4 +63,24 @@ abstract class AbstractTestCase extends \Illuminate\Foundation\Testing\TestCase
             $fs->deleteDirectory($path, false);
         }
     }
+
+    /**
+     * Enable CLI mode emulation (useful for Dumper tests).
+     */
+    protected function enableCliModeEmulation(): void
+    {
+        \putenv('RR_MODE'); // unset
+        \putenv('RR_RPC'); // unset
+        \putenv('RR_RELAY'); // unset
+    }
+
+    /**
+     * Disable CLI mode emulation (useful for Dumper tests).
+     */
+    protected function disableCliModeEmulation(): void
+    {
+        \putenv('RR_MODE=http');
+        \putenv('RR_RPC=tcp://127.0.0.1:9001');
+        \putenv('RR_RELAY=pipes');
+    }
 }

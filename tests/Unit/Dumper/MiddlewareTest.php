@@ -21,9 +21,7 @@ class MiddlewareTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
      */
     protected function setUp(): void
     {
-        \putenv('RR_MODE=http');
-        \putenv('RR_RPC=tcp://127.0.0.1:9001');
-        \putenv('RR_RELAY=pipes');
+        $this->disableCliModeEmulation();
 
         parent::setUp();
 
@@ -37,9 +35,7 @@ class MiddlewareTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
     {
         parent::tearDown();
 
-        \putenv('RR_MODE');
-        \putenv('RR_RPC');
-        \putenv('RR_RELAY');
+        $this->enableCliModeEmulation();
     }
 
     public function testDumpWithMiddlewareWorking(): void
