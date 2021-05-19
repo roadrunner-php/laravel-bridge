@@ -53,7 +53,10 @@
     "autoload": {
         "psr-4": {
             "Spiral\\RoadRunnerLaravel\\": "src/"
-        }
+        },
+        "files": [
+            "helpers/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

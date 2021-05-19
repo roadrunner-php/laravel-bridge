@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
+- Possibility to "dump" (using [Symfony VarDumper](https://github.com/symfony/var-dumper)) any variables in HTTP context (just call `\rr\dump(...)` or `\rr\dd(...)` instead `dump(...)` or `dd(...)` in your code)
+- Function `\rr\worker()` for easy access to the RoadRunner PSR worker instance (available only in HTTP context, of course)
 - Listener `FlushArrayCacheListener` for flushing `array`-based cache storages
 - Listener `FlushAuthenticationStateListener` for authentication state flushing
 - Listener `RebindAuthorizationGateListener` for the authorization gate container rebinding

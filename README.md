@@ -13,6 +13,8 @@
 
 Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applications.
 
+> 🐋 If you want to see an example of a laravel application in a docker container with RoadRunner as a web server - take a look at [this repository](https://github.com/tarampampam/laravel-roadrunner-in-docker).
+
 ## Installation
 
 Make sure that [RR binary file][roadrunner-binary-releases] already installed on your system (or docker image). Require this package with composer using next command:
@@ -30,8 +32,6 @@ $ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvi
 ```
 
 **Important**: despite the fact that worker allows you to refresh application instance on each HTTP request _(if worker started with option `--refresh-app`, eg.: `php ./vendor/bin/rr-worker start --refresh-app`)_, we strongly recommend avoiding this for performance reasons. Large applications can be hard to integrate with RoadRunner _(you must decide which of service providers must be reloaded on each request, avoid "static optimization" in some cases)_, but it's worth it.
-
-> 🐋 If you want to see an example of a laravel application in a docker container with RoadRunner as a web server - take a look at [this repository](https://github.com/tarampampam/laravel-roadrunner-in-docker).
 
 ### Upgrading guide (`v3.x` &rarr; `v4.x`)
 
@@ -98,6 +98,16 @@ $ rr serve -c ./.rr.yaml
 ### Listeners
 
 This package provides event listeners for resetting application state without full application reload _(like cookies, HTTP request, application instance, service-providers and other)_. Some of them already declared in configuration file, but you can declare own without any limitations.
+
+### Helpers
+
+This package provides the following helpers:
+
+Name            | Description
+--------------- | -----------
+`\rr\dump(...)` | Dump passed values (dumped result will be available in the HTTP response)
+`\rr\dd(...)`   | Dump passed values and stop the execution
+`\rr\worker()`  | Easy access to the RoadRunner PSR worker instance
 
 ### Known issues
 
