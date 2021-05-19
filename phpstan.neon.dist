@@ -1,6 +1,9 @@
 parameters:
   level: 'max'
   paths:
-    - src
     - bin/rr-worker
+    - config
+    - fixes
+    - helpers
+    - src
   reportUnmatchedIgnoredErrors: true
