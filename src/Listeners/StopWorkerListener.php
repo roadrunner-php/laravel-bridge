@@ -8,7 +8,7 @@ use Spiral\RoadRunner\Http\PSR7Worker;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
- * Common usage - stop worker on unhandled error occurring.
+ * Common usage - the worker stopping on an unhandled error occurring.
  *
  * @link https://roadrunner.dev/docs/php-restarting
  */

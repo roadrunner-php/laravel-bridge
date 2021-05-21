@@ -2,6 +2,7 @@
 
 use Spiral\RoadRunnerLaravel\Events;
 use Spiral\RoadRunnerLaravel\Listeners;
+use Spiral\RoadRunnerLaravel\Listeners\BuiltIn as BuiltInListeners;
 
 return [
     /*
@@ -10,7 +11,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Set this value to `true` if your application uses HTTPS (required for
-    | example for correct links generation).
+    | correct links generation, for example).
     |
     */
 
@@ -18,11 +19,61 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Containers Pre Resolving
+    | Event Listeners
     |--------------------------------------------------------------------------
     |
-    | Declared here abstractions will be resolved before events loop will be
-    | started.
+    | Worker provided by this package allows to interacts with request
+    | processing loop using application events.
+    |
+    | Feel free to add your own event listeners.
+    |
+    */
+
+    'listeners' => [
+        Events\BeforeLoopStartedEvent::class => [
+            ...BuiltInListeners::beforeLoopStarted(),
+        ],
+
+        Events\BeforeLoopIterationEvent::class => [
+            ...BuiltInListeners::beforeLoopIteration(),
+            // Listeners\ResetLaravelScoutListener::class,     // for <https://github.com/laravel/scout>
+            // Listeners\ResetLaravelSocialiteListener::class, // for <https://github.com/laravel/socialite>
+            // Listeners\ResetInertiaListener::class,          // for <https://github.com/inertiajs/inertia-laravel>
+        ],
+
+        Events\BeforeRequestHandlingEvent::class => [
+            ...BuiltInListeners::beforeRequestHandling(),
+        ],
+
+        Events\AfterRequestHandlingEvent::class => [
+            ...BuiltInListeners::afterRequestHandling(),
+        ],
+
+        Events\AfterLoopIterationEvent::class => [
+            ...BuiltInListeners::afterLoopIteration(),
+            Listeners\RunGarbageCollectorListener::class, // keep the memory usage low
+        ],
+
+        Events\AfterLoopStoppedEvent::class => [
+            ...BuiltInListeners::afterLoopStopped(),
+        ],
+
+        Events\LoopErrorOccurredEvent::class => [
+            ...BuiltInListeners::loopErrorOccurred(),
+            Listeners\SendExceptionToStderrListener::class,
+            Listeners\StopWorkerListener::class,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Containers Pre Resolving / Clearing
+    |--------------------------------------------------------------------------
+    |
+    | The bindings listed below will be resolved before the events loop
+    | starting (see `WarmContainersListener` sources). Clearing a binding
+    | will force the container to resolve that binding again when asked (see
+    | `ClearInstancesListener` sources).
     |
     */
 
@@ -47,85 +98,6 @@ return [
         'view',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Event Listeners
-    |--------------------------------------------------------------------------
-    |
-    | Worker provided by this package allows to interacts with request
-    | processing loop using application events. Feel free to add your own event
-    | listeners.
-    |
-    */
-
-    'listeners' => [
-        Events\BeforeLoopStartedEvent::class => [
-            Listeners\FixSymfonyFileValidationListener::class,
-        ],
-
-        Events\BeforeLoopIterationEvent::class => [
-            Listeners\EnableHttpMethodParameterOverrideListener::class,
-            Listeners\RebindHttpKernelListener::class, // Laravel 7 issue: <https://git.io/JvPpf>
-            Listeners\RebindViewListener::class,
-            Listeners\RebindAuthorizationGateListener::class,
-            Listeners\RebindBroadcastManagerListener::class,
-            Listeners\RebindDatabaseManagerListener::class,
-            Listeners\RebindMailManagerListener::class,
-            Listeners\RebindNotificationChannelManagerListener::class,
-            Listeners\RebindPipelineHubListener::class,
-            Listeners\RebindQueueManagerListener::class,
-            Listeners\RebindValidationFactoryListener::class,
-            Listeners\CloneConfigListener::class,
-            Listeners\UnqueueCookiesListener::class,
-            Listeners\FlushAuthenticationStateListener::class,
-            Listeners\ResetSessionListener::class,
-            Listeners\ResetProvidersListener::class,
-            Listeners\ResetLocaleStateListener::class,
-
-            // Listeners\ResetLaravelScoutListener::class, // for 'laravel/scout' package
-            // Listeners\ResetLaravelSocialiteListener::class, // for 'laravel/socialite' package
-            // Listeners\ResetInertiaListener::class, // for 'inertiajs/inertia-laravel' package
-        ],
-
-        Events\BeforeRequestHandlingEvent::class => [
-            Listeners\RebindRouterListener::class,
-            Listeners\InjectStatsIntoRequestListener::class,
-            Listeners\BindRequestListener::class,
-            Listeners\ForceHttpsListener::class,
-            Listeners\SetServerPortListener::class,
-        ],
-
-        Events\AfterRequestHandlingEvent::class => [
-            //
-        ],
-
-        Events\AfterLoopIterationEvent::class => [
-            Listeners\FlushArrayCacheListener::class,
-            Listeners\ResetDatabaseRecordModificationStateListener::class,
-            Listeners\ClearInstancesListener::class,
-            Listeners\RunGarbageCollectorListener::class,
-        ],
-
-        Events\AfterLoopStoppedEvent::class => [
-            //
-        ],
-
-        Events\LoopErrorOccurredEvent::class => [
-            Listeners\SendExceptionToStderrListener::class,
-            Listeners\StopWorkerListener::class,
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Instances Clearing
-    |--------------------------------------------------------------------------
-    |
-    | Instances described here will be cleared on every request (if
-    | `ClearInstancesListener` is enabled).
-    |
-    */
-
     'clear_instances' => [
         'auth', // is not required for Laravel >= v8.35
     ],
@@ -135,8 +107,8 @@ return [
     | Reset Providers
     |--------------------------------------------------------------------------
     |
-    | Providers that will be registered on every request (if
-    | `ResetProvidersListener` is enabled).
+    | Providers that will be registered on every request (see
+    | `ResetProvidersListener` sources).
     |
     */
 
