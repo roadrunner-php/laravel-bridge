@@ -55,15 +55,17 @@ class Worker implements WorkerInterface
      */
     public function __construct()
     {
-        $this->app_factory = new Application\Factory();
-
+        $this->app_factory          = new Application\Factory();
         $this->http_factory_symfony = new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory();
 
+        $psr17_factory         = new \Nyholm\Psr7\Factory\Psr17Factory();
+        $this->request_factory = $this->stream_factory = $this->uploads_factory = $psr17_factory;
+
         $this->http_factory_psr7 = new \Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory(
-            $this->request_factory = new \Laminas\Diactoros\ServerRequestFactory(),
-            $this->stream_factory = new \Laminas\Diactoros\StreamFactory(),
-            $this->uploads_factory = new \Laminas\Diactoros\UploadedFileFactory(),
-            new \Laminas\Diactoros\ResponseFactory()
+            $this->request_factory,
+            $this->stream_factory,
+            $this->uploads_factory,
+            $psr17_factory
         );
     }
 

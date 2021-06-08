@@ -34,7 +34,7 @@
         "illuminate/translation": "~6.0 || ~7.0 || ~8.0",
         "illuminate/validation": "~6.0 || ~7.0 || ~8.0",
         "illuminate/view": "~6.0 || ~7.0 || ~8.0",
-        "laminas/laminas-diactoros": "^2",
+        "nyholm/psr7": "^1.2",
         "spiral/roadrunner-http": "^2.0",
         "spiral/roadrunner-worker": "^2.0",
         "symfony/console": "^4.3.4 || ^5.0",
