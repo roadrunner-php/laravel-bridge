@@ -36,11 +36,19 @@ class Worker implements WorkerInterface
     protected \Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface $http_factory_psr7;
 
     /**
-     * Another PSR-7 factories.
+     * PSR-7 request factory.
      */
     protected \Psr\Http\Message\ServerRequestFactoryInterface $request_factory;
-    protected \Psr\Http\Message\StreamFactoryInterface        $stream_factory;
-    protected \Psr\Http\Message\UploadedFileFactoryInterface  $uploads_factory;
+
+    /**
+     * PSR-7 stream factory.
+     */
+    protected \Psr\Http\Message\StreamFactoryInterface $stream_factory;
+
+    /**
+     * PSR-7 uploads factory.
+     */
+    protected \Psr\Http\Message\UploadedFileFactoryInterface $uploads_factory;
 
     /**
      * Worker constructor.
@@ -125,6 +133,26 @@ class Worker implements WorkerInterface
     }
 
     /**
+     * Create an Laravel application instance and bind all required instances.
+     *
+     * @param WorkerOptionsInterface $options
+     * @param PSR7Worker             $psr7_worker
+     *
+     * @return ApplicationContract
+     *
+     * @throws Throwable
+     */
+    protected function createApplication(WorkerOptionsInterface $options, PSR7Worker $psr7_worker): ApplicationContract
+    {
+        $app = $this->app_factory->create($options->getAppBasePath());
+
+        // Put PSR7 client into container
+        $app->instance(PSR7Worker::class, $psr7_worker);
+
+        return $app;
+    }
+
+    /**
      * @param Throwable $e
      * @param bool      $is_debug
      *
@@ -163,26 +191,6 @@ class Worker implements WorkerInterface
 
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication($app);
-    }
-
-    /**
-     * Create an Laravel application instance and bind all required instances.
-     *
-     * @param WorkerOptionsInterface $options
-     * @param PSR7Worker             $psr7_worker
-     *
-     * @return ApplicationContract
-     *
-     * @throws Throwable
-     */
-    protected function createApplication(WorkerOptionsInterface $options, PSR7Worker $psr7_worker): ApplicationContract
-    {
-        $app = $this->app_factory->create($options->getAppBasePath());
-
-        // Put PSR7 client into container
-        $app->instance(PSR7Worker::class, $psr7_worker);
-
-        return $app;
     }
 
     /**
