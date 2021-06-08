@@ -34,6 +34,7 @@ final class Defaults
             Listeners\RebindAuthorizationGateListener::class,
             Listeners\RebindBroadcastManagerListener::class,
             Listeners\RebindDatabaseManagerListener::class,
+            Listeners\RebindDatabaseSessionHandlerListener::class,
             Listeners\RebindMailManagerListener::class,
             Listeners\RebindNotificationChannelManagerListener::class,
             Listeners\RebindPipelineHubListener::class,
