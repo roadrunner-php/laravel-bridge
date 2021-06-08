@@ -70,7 +70,7 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
             InputOption::VALUE_REQUIRED,
             'Relay DSN (eg.: <comment>' . \implode(
                 '</comment>, <comment>',
-                ['pipes', 'tcp://localhost:6001', 'unix:///tmp/rpc.sock']
+                ['pipes', 'tcp://localhost:6001', 'unix:///tmp/relay.sock']
             ) . '</comment>)',
             'pipes'
         );

@@ -42,8 +42,8 @@ $ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvi
   - Optionally change relay to socket or TCP port:
     > ```yaml
     > server:
-    >   command: "php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-rpc.sock"
-    >   relay: "unix:///var/run/rr-rpc.sock"
+    >   command: "php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-relay.sock"
+    >   relay: "unix:///var/run/rr-relay.sock"
     > ```
 - Update RR binary file (using [`roadrunner-cli`][roadrunner-cli] or download from [binary releases][roadrunner-binary-releases] page) up to `v2.x`
 - Update RoadRunner starting (`rr serve ...`) flags - `-v` and `-d` must be not used anymore
@@ -69,8 +69,8 @@ Simple `.rr.yaml` config example ([full example can be found here][roadrunner_co
 
 ```yaml
 server:
-  command: "php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-rpc.sock"
-  relay: "unix:///var/run/rr-rpc.sock"
+  command: "php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-relay.sock"
+  relay: "unix:///var/run/rr-relay.sock"
 
 http:
   address: 0.0.0.0:8080
