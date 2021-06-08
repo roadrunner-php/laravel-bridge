@@ -13,8 +13,6 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
  */
 class ResetProvidersListener implements ListenerInterface
 {
-    use Traits\InvokerTrait;
-
     /**
      * {@inheritdoc}
      */

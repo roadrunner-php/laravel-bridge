@@ -9,4 +9,4 @@ parameters:
   reportUnmatchedIgnoredErrors: true
   ignoreErrors:
     - message: '#Call to protected method bootstrappers\(\) of class.+Kernel#'
-      paths: [src/ApplicationFactory.php]
+      paths: [src/Application/Factory.php]
