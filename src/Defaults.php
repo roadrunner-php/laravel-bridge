@@ -7,11 +7,9 @@ namespace Spiral\RoadRunnerLaravel;
 final class Defaults
 {
     /**
-     * Returns an array of built-in listeners for the BeforeLoopStartedEvent.
+     * Returns an array of built-in listeners for the {@see Events\BeforeLoopStartedEvent}.
      *
      * @return array<class-string>
-     *
-     * @see Events\BeforeLoopStartedEvent
      */
     public static function beforeLoopStarted(): array
     {
@@ -22,11 +20,9 @@ final class Defaults
     }
 
     /**
-     * Returns an array of built-in listeners for the BeforeLoopIterationEvent.
+     * Returns an array of built-in listeners for the {@see Events\BeforeLoopIterationEvent}.
      *
      * @return array<class-string>
-     *
-     * @see Events\BeforeLoopIterationEvent
      */
     public static function beforeLoopIteration(): array
     {
@@ -52,11 +48,9 @@ final class Defaults
     }
 
     /**
-     * Returns an array of built-in listeners for the BeforeRequestHandlingEvent.
+     * Returns an array of built-in listeners for the {@see Events\BeforeRequestHandlingEvent}.
      *
      * @return array<class-string>
-     *
-     * @see Events\BeforeRequestHandlingEvent
      */
     public static function beforeRequestHandling(): array
     {
@@ -70,11 +64,9 @@ final class Defaults
     }
 
     /**
-     * Returns an array of built-in listeners for the AfterRequestHandlingEvent.
+     * Returns an array of built-in listeners for the {@see Events\AfterRequestHandlingEvent}.
      *
      * @return array<class-string>
-     *
-     * @see Events\AfterRequestHandlingEvent
      */
     public static function afterRequestHandling(): array
     {
@@ -82,11 +74,9 @@ final class Defaults
     }
 
     /**
-     * Returns an array of built-in listeners for the AfterLoopIterationEvent.
+     * Returns an array of built-in listeners for the {@see Events\AfterLoopIterationEvent}.
      *
      * @return array<class-string>
-     *
-     * @see Events\AfterLoopIterationEvent
      */
     public static function afterLoopIteration(): array
     {
@@ -99,11 +89,9 @@ final class Defaults
     }
 
     /**
-     * Returns an array of built-in listeners for the AfterLoopStoppedEvent.
+     * Returns an array of built-in listeners for the {@see Events\AfterLoopStoppedEvent}.
      *
      * @return array<class-string>
-     *
-     * @see Events\AfterLoopStoppedEvent
      */
     public static function afterLoopStopped(): array
     {
@@ -111,11 +99,9 @@ final class Defaults
     }
 
     /**
-     * Returns an array of built-in listeners for the LoopErrorOccurredEvent.
+     * Returns an array of built-in listeners for the {@see Events\LoopErrorOccurredEvent}.
      *
      * @return array<class-string>
-     *
-     * @see Events\LoopErrorOccurredEvent
      */
     public static function loopErrorOccurred(): array
     {
