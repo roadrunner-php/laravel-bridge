@@ -21,7 +21,7 @@ class WarmInstancesListener implements ListenerInterface
             /** @var ConfigRepository $config */
             $config = $app->make(ConfigRepository::class);
 
-            foreach ((array) $config->get(ServiceProvider::getConfigRootKey() . '.pre_resolving', []) as $abstract) {
+            foreach ((array) $config->get(ServiceProvider::getConfigRootKey() . '.warm', []) as $abstract) {
                 if (\is_string($abstract) && $app->bound($abstract)) {
                     $app->make($abstract);
                 }

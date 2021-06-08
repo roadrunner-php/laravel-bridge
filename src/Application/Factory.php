@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Spiral\RoadRunnerLaravel;
+namespace Spiral\RoadRunnerLaravel\Application;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Foundation\Bootstrap\RegisterProviders;
@@ -15,7 +15,7 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 /**
  * @internal
  */
-final class ApplicationFactory
+final class Factory implements FactoryInterface
 {
     /**
      * @param string $base_path
@@ -49,7 +49,7 @@ final class ApplicationFactory
      */
     protected function bootstrap(ApplicationContract $app): void
     {
-        /** @var \Illuminate\Foundation\Http\Kernel $http_kernel */
+        /** @var HttpKernel $http_kernel */
         $http_kernel = $app->make(HttpKernelContract::class);
 
         $bootstrappers = $this->getKernelBootstrappers($http_kernel);

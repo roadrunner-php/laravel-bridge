@@ -1,8 +1,8 @@
 <?php
 
 use Spiral\RoadRunnerLaravel\Events;
+use Spiral\RoadRunnerLaravel\Defaults;
 use Spiral\RoadRunnerLaravel\Listeners;
-use Spiral\RoadRunnerLaravel\Listeners\BuiltIn as BuiltInListeners;
 
 return [
     /*
@@ -31,35 +31,35 @@ return [
 
     'listeners' => [
         Events\BeforeLoopStartedEvent::class => [
-            ...BuiltInListeners::beforeLoopStarted(),
+            ...Defaults::beforeLoopStarted(),
         ],
 
         Events\BeforeLoopIterationEvent::class => [
-            ...BuiltInListeners::beforeLoopIteration(),
+            ...Defaults::beforeLoopIteration(),
             // Listeners\ResetLaravelScoutListener::class,     // for <https://github.com/laravel/scout>
             // Listeners\ResetLaravelSocialiteListener::class, // for <https://github.com/laravel/socialite>
             // Listeners\ResetInertiaListener::class,          // for <https://github.com/inertiajs/inertia-laravel>
         ],
 
         Events\BeforeRequestHandlingEvent::class => [
-            ...BuiltInListeners::beforeRequestHandling(),
+            ...Defaults::beforeRequestHandling(),
         ],
 
         Events\AfterRequestHandlingEvent::class => [
-            ...BuiltInListeners::afterRequestHandling(),
+            ...Defaults::afterRequestHandling(),
         ],
 
         Events\AfterLoopIterationEvent::class => [
-            ...BuiltInListeners::afterLoopIteration(),
+            ...Defaults::afterLoopIteration(),
             Listeners\RunGarbageCollectorListener::class, // keep the memory usage low
         ],
 
         Events\AfterLoopStoppedEvent::class => [
-            ...BuiltInListeners::afterLoopStopped(),
+            ...Defaults::afterLoopStopped(),
         ],
 
         Events\LoopErrorOccurredEvent::class => [
-            ...BuiltInListeners::loopErrorOccurred(),
+            ...Defaults::loopErrorOccurred(),
             Listeners\SendExceptionToStderrListener::class,
             Listeners\StopWorkerListener::class,
         ],
@@ -71,34 +71,19 @@ return [
     |--------------------------------------------------------------------------
     |
     | The bindings listed below will be resolved before the events loop
-    | starting (see `WarmContainersListener` sources). Clearing a binding
-    | will force the container to resolve that binding again when asked (see
-    | `ClearInstancesListener` sources).
+    | starting. Clearing a binding will force the container to resolve that
+    | binding again when asked.
+    |
+    | Feel free to add your own bindings here.
     |
     */
 
-    'pre_resolving' => [
-        'auth',
-        'cache',
-        'cache.store',
-        'config',
-        'cookie',
-        'db',
-        'db.factory',
-        'encrypter',
-        'files',
-        'hash',
-        'log',
-        'router',
-        'routes',
-        'session',
-        'session.store',
-        'translator',
-        'url',
-        'view',
+    'warm' => [
+        ...Defaults::servicesToWarm(),
     ],
 
-    'clear_instances' => [
+    'clear' => [
+        ...Defaults::servicesToClear(),
         'auth', // is not required for Laravel >= v8.35
     ],
 
@@ -107,14 +92,15 @@ return [
     | Reset Providers
     |--------------------------------------------------------------------------
     |
-    | Providers that will be registered on every request (see
-    | `ResetProvidersListener` sources).
+    | Providers that will be registered on every request.
+    |
+    | Feel free to add your service-providers here.
     |
     */
 
     'reset_providers' => [
-        Illuminate\Auth\AuthServiceProvider::class, // is not required for Laravel >= v8.35
-        // App\Your\Custom\AuthServiceProvider::class,
+        ...Defaults::providersToReset(),
+        Illuminate\Auth\AuthServiceProvider::class,             // is not required for Laravel >= v8.35
         Illuminate\Pagination\PaginationServiceProvider::class, // is not required for Laravel >= v8.35
     ],
 ];
