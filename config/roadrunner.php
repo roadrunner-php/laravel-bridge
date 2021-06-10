@@ -43,6 +43,7 @@ return [
 
         Events\BeforeRequestHandlingEvent::class => [
             ...Defaults::beforeRequestHandling(),
+            Listeners\InjectStatsIntoRequestListener::class,
         ],
 
         Events\AfterRequestHandlingEvent::class => [

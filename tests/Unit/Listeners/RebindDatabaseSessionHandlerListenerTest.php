@@ -52,6 +52,7 @@ class RebindDatabaseSessionHandlerListenerTest extends AbstractListenerTestCase
             ->getMock();
 
         $this->listenerFactory()->handle($event_mock);
+
         $this->assertSame($this->app, $this->getProperty($handler, $container_prop));
     }
 

@@ -57,7 +57,6 @@ final class Defaults
     {
         return [
             Listeners\RebindRouterListener::class,
-            Listeners\InjectStatsIntoRequestListener::class,
             Listeners\BindRequestListener::class,
             Listeners\ForceHttpsListener::class,
             Listeners\SetServerPortListener::class,
