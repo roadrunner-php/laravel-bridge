@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Listeners;
 
 use Mockery as m;
-use Illuminate\Contracts\Pipeline\Hub;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 use Spiral\RoadRunnerLaravel\Listeners\RebindQueueManagerListener;
 
