@@ -19,8 +19,8 @@ namespace Symfony\Component\HttpFoundation\File {
      * @param string $from The filename of the uploaded file
      * @param string $to   The destination of the moved file
      *
-     * @return bool If filename is a valid file, but cannot be moved for some reason, no action will occur, and will
-     * return false.
+     * @return bool If filename is a valid file, but cannot be moved for some
+     *              reason, no action will occur, and will return false.
      *
      * @see   \Symfony\Component\HttpFoundation\File\UploadedFile::move
      *
