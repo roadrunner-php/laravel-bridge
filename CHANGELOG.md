@@ -8,12 +8,12 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Listener `RebindDatabaseSessionHandlerListener` for the database session driver container rebinding
+- Listener `RebindDatabaseSessionHandlerListener` for the database session driver container rebinding [[octane#300](https://github.com/laravel/octane/issues/300)]
 - Listener `WarmInstancesListener` for instances pre-resolving
 
 ### Changed
 
-- Most important configuration properties (such as event listeners) now defined in `Spiral\RoadRunnerLaravel\Defaults` class and used by the package configuration file (in the future, you will not need to update your config file manually)
+- Most important configuration values (such as event listeners) now defined in `Spiral\RoadRunnerLaravel\Defaults` class and used by the package configuration file (in the future, you will not need to update your config file manually when new "core" listeners will be added)
 - Dependency `laminas/laminas-diactoros` replaced with [`nyholm/psr7`](https://github.com/Nyholm/psr7) (lightweight PSR-7 implementation, strict and fast)
 - Config option `pre_resolving` replaced with `warm`
 - Config option `clear_instances` replaced with `clear`
