@@ -33,7 +33,13 @@ $ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvi
 
 **Important**: despite the fact that worker allows you to refresh application instance on each HTTP request _(if worker started with option `--refresh-app`, eg.: `php ./vendor/bin/rr-worker start --refresh-app`)_, we strongly recommend avoiding this for performance reasons. Large applications can be hard to integrate with RoadRunner _(you must decide which of service providers must be reloaded on each request, avoid "static optimization" in some cases)_, but it's worth it.
 
-### Upgrading guide (`v3.x` &rarr; `v4.x`)
+### Upgrading guide
+
+#### **v4.x** &rarr; **v5.x**
+
+- Update package configuration file (`roadrunner.php`; take a look for actual example in current repository)
+
+#### **v3.x** &rarr; **v4.x**
 
 - Update current package in your application:
   - `composer remove spiral/roadrunner-laravel`
@@ -74,7 +80,7 @@ server:
 
 http:
   address: 0.0.0.0:8080
-  middleware: ["headers", "static", "gzip"]
+  middleware: ["headers", "gzip"]
   pool:
     max_jobs: 64 # feel free to change this
     supervisor:
