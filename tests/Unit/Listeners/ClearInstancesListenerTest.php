@@ -49,7 +49,7 @@ class ClearInstancesListenerTest extends AbstractListenerTestCase
         }
 
         // Set config value for instances clearing
-        $config->set('roadrunner.clear_instances', \array_merge($abstracts, [$singleton_abstract]));
+        $config->set('roadrunner.clear', \array_merge($abstracts, [$singleton_abstract]));
 
         $this->listenerFactory()->handle($event_mock);
 

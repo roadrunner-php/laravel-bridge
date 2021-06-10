@@ -6,18 +6,13 @@ namespace Spiral\RoadRunnerLaravel;
 
 use Throwable;
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 use Spiral\RoadRunner\Http\PSR7Worker;
 use Psr\Http\Message\ServerRequestInterface;
-use Illuminate\Foundation\Bootstrap\RegisterProviders;
-use Illuminate\Foundation\Bootstrap\SetRequestForConsole;
-use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Events\Dispatcher as EventsDispatcher;
-use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 
 /**
@@ -26,28 +21,67 @@ use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 class Worker implements WorkerInterface
 {
     /**
+     * Laravel application factory.
+     */
+    protected Application\FactoryInterface $app_factory;
+
+    /**
+     * PSR-7 Request/Response --> Symfony Request/Response.
+     */
+    protected \Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface $http_factory_symfony;
+
+    /**
+     * Symfony Request/Response --> PSR-7 Request/Response.
+     */
+    protected \Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface $http_factory_psr7;
+
+    /**
+     * PSR-7 request factory.
+     */
+    protected \Psr\Http\Message\ServerRequestFactoryInterface $request_factory;
+
+    /**
+     * PSR-7 stream factory.
+     */
+    protected \Psr\Http\Message\StreamFactoryInterface $stream_factory;
+
+    /**
+     * PSR-7 uploads factory.
+     */
+    protected \Psr\Http\Message\UploadedFileFactoryInterface $uploads_factory;
+
+    /**
+     * Worker constructor.
+     */
+    public function __construct()
+    {
+        $this->app_factory          = new Application\Factory();
+        $this->http_factory_symfony = new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory();
+
+        $psr17_factory         = new \Nyholm\Psr7\Factory\Psr17Factory();
+        $this->request_factory = $this->stream_factory = $this->uploads_factory = $psr17_factory;
+
+        $this->http_factory_psr7 = new \Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory(
+            $this->request_factory,
+            $this->stream_factory,
+            $this->uploads_factory,
+            $psr17_factory
+        );
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function start(WorkerOptionsInterface $options): void
     {
-        $http_foundation_factory = $this->createHttpFoundationFactory();
-
-        $http_factory = new PsrHttpFactory(
-            $request_factory = new \Laminas\Diactoros\ServerRequestFactory(),
-            $stream_factory = new \Laminas\Diactoros\StreamFactory(),
-            $uploads_factory = new \Laminas\Diactoros\UploadedFileFactory(),
-            new \Laminas\Diactoros\ResponseFactory()
-        );
-
         $psr7_worker = new \Spiral\RoadRunner\Http\PSR7Worker(
-            $this->createWorker($options->getRelayDsn()),
-            $request_factory,
-            $stream_factory,
-            $uploads_factory
+            new \Spiral\RoadRunner\Worker(\Spiral\Goridge\Relay::create($options->getRelayDsn())),
+            $this->request_factory,
+            $this->stream_factory,
+            $this->uploads_factory
         );
 
-        $app = $this->createApplication($options->getAppBasePath());
-        $this->bootstrapApplication($app, $psr7_worker);
+        $app = $this->createApplication($options, $psr7_worker);
 
         $this->fireEvent($app, new Events\BeforeLoopStartedEvent($app));
 
@@ -59,8 +93,7 @@ class Worker implements WorkerInterface
             $responded = false;
 
             if ($options->getRefreshApp()) {
-                $sandbox = $this->createApplication($options->getAppBasePath());
-                $this->bootstrapApplication($sandbox, $psr7_worker);
+                $sandbox = $this->createApplication($options, $psr7_worker);
             } else {
                 $sandbox = clone $app;
             }
@@ -74,14 +107,13 @@ class Worker implements WorkerInterface
 
             try {
                 $this->fireEvent($sandbox, new Events\BeforeLoopIterationEvent($sandbox, $req));
-                $request = Request::createFromBase($http_foundation_factory->createRequest($req));
+                $request = Request::createFromBase($this->http_factory_symfony->createRequest($req));
 
                 $this->fireEvent($sandbox, new Events\BeforeRequestHandlingEvent($sandbox, $request));
                 $response = $http_kernel->handle($request);
                 $this->fireEvent($sandbox, new Events\AfterRequestHandlingEvent($sandbox, $request, $response));
 
-                $psr7_response = $http_factory->createResponse($response);
-                $psr7_worker->respond($psr7_response);
+                $psr7_worker->respond($this->http_factory_psr7->createResponse($response));
                 $responded = true;
                 $http_kernel->terminate($request, $response);
 
@@ -100,6 +132,26 @@ class Worker implements WorkerInterface
         }
 
         $this->fireEvent($app, new Events\AfterLoopStoppedEvent($app));
+    }
+
+    /**
+     * Create an Laravel application instance and bind all required instances.
+     *
+     * @param WorkerOptionsInterface $options
+     * @param PSR7Worker             $psr7_worker
+     *
+     * @return ApplicationContract
+     *
+     * @throws Throwable
+     */
+    protected function createApplication(WorkerOptionsInterface $options, PSR7Worker $psr7_worker): ApplicationContract
+    {
+        $app = $this->app_factory->create($options->getAppBasePath());
+
+        // Put PSR7 client into container
+        $app->instance(PSR7Worker::class, $psr7_worker);
+
+        return $app;
     }
 
     /**
@@ -126,6 +178,8 @@ class Worker implements WorkerInterface
     }
 
     /**
+     * Set the current application in the container.
+     *
      * @param ApplicationContract $app
      *
      * @return void
@@ -142,120 +196,16 @@ class Worker implements WorkerInterface
     }
 
     /**
-     * Create the new application instance.
-     *
-     * @param string $base_path
-     *
-     * @return ApplicationContract
-     * @throws InvalidArgumentException
-     *
-     */
-    protected function createApplication(string $base_path): ApplicationContract
-    {
-        $path = \implode(\DIRECTORY_SEPARATOR, [\rtrim($base_path, \DIRECTORY_SEPARATOR), 'bootstrap', 'app.php']);
-
-        if (!\is_file($path)) {
-            throw new InvalidArgumentException("Application bootstrap file was not found in [{$path}]");
-        }
-
-        return require $path;
-    }
-
-    /**
-     * Bootstrap passed application.
-     *
-     * @param ApplicationContract $app
-     * @param PSR7Worker          $psr7_worker
-     *
-     * @return void
-     */
-    protected function bootstrapApplication(ApplicationContract $app, PSR7Worker $psr7_worker): void
-    {
-        /** @var \Illuminate\Foundation\Http\Kernel $http_kernel */
-        $http_kernel = $app->make(HttpKernelContract::class);
-
-        $bootstrappers = $this->getKernelBootstrappers($http_kernel);
-
-        // Insert `SetRequestForConsole` bootstrapper before `RegisterProviders` if it does not exists
-        if (!\in_array(SetRequestForConsole::class, $bootstrappers, true)) {
-            $register_index = (int) \array_search(RegisterProviders::class, $bootstrappers, true);
-
-            if ($register_index !== false) {
-                \array_splice($bootstrappers, $register_index, 0, [SetRequestForConsole::class]);
-            }
-        }
-
-        $app->bootstrapWith($bootstrappers);
-
-        // Put PSR7 client into container
-        $app->instance(PSR7Worker::class, $psr7_worker);
-
-        $this->preResolveApplicationAbstracts($app);
-    }
-
-    /**
-     * Make configured abstracts pre-resolving.
-     *
-     * @param ApplicationContract $app
-     *
-     * @return void
-     */
-    protected function preResolveApplicationAbstracts(ApplicationContract $app): void
-    {
-        /** @var ConfigRepository $config */
-        $config = $app->make(ConfigRepository::class);
-
-        // Pre-resolve instances
-        foreach ((array) $config->get(ServiceProvider::getConfigRootKey() . '.pre_resolving', []) as $abstract) {
-            if (\is_string($abstract) && $app->bound($abstract)) {
-                $app->make($abstract);
-            }
-        }
-    }
-
-    /**
-     * Get HTTP or Console kernel bootstrappers.
-     *
-     * @param \Illuminate\Foundation\Http\Kernel|\Illuminate\Foundation\Console\Kernel $kernel
-     *
-     * @return string[] Bootstrappers class names
-     */
-    protected function getKernelBootstrappers($kernel): array
-    {
-        ($method = (new \ReflectionObject($kernel))->getMethod('bootstrappers'))->setAccessible(true);
-
-        return (array) $method->invoke($kernel);
-    }
-
-    /**
      * @param ApplicationContract $app
      * @param object              $event
      *
      * @return void
      */
-    protected function fireEvent(ApplicationContract $app, $event): void
+    protected function fireEvent(ApplicationContract $app, object $event): void
     {
         /** @var EventsDispatcher $events */
         $events = $app->make(EventsDispatcher::class);
 
         $events->dispatch($event);
-    }
-
-    /**
-     * @param string $dsn Eg.: `pipes`, `pipes://stdin:stdout`, `tcp://localhost:6001`, `unix:///tmp/rpc.sock`
-     *
-     * @return \Spiral\RoadRunner\WorkerInterface
-     */
-    protected function createWorker(string $dsn): \Spiral\RoadRunner\WorkerInterface
-    {
-        return new \Spiral\RoadRunner\Worker(\Spiral\Goridge\Relay::create($dsn));
-    }
-
-    /**
-     * @return HttpFoundationFactoryInterface
-     */
-    protected function createHttpFoundationFactory(): HttpFoundationFactoryInterface
-    {
-        return new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory();
     }
 }

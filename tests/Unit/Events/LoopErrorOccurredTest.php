@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Events;
 
-use Laminas\Diactoros\ServerRequest;
 use Spiral\RoadRunnerLaravel\Events\Contracts;
 use Spiral\RoadRunnerLaravel\Events\LoopErrorOccurredEvent;
 
@@ -40,7 +39,7 @@ class LoopErrorOccurredTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTest
     {
         $event = new LoopErrorOccurredEvent(
             $this->app,
-            $request = new ServerRequest(),
+            $request = (new \Nyholm\Psr7\Factory\Psr17Factory())->createServerRequest('GET', 'https://testing'),
             $exception = new \Exception('foo')
         );
 

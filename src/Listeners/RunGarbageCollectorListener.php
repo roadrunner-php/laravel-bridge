@@ -11,6 +11,6 @@ class RunGarbageCollectorListener implements ListenerInterface
      */
     public function handle($event): void
     {
-        \gc_collect_cycles(); // keep the memory low (this will slow down your application a bit)
+        \gc_collect_cycles(); // keep the memory usage low (this will slow down your application a bit)
     }
 }

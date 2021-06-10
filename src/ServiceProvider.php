@@ -71,28 +71,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     protected function bootEventListeners(ConfigRepository $config, EventsDispatcher $events): void
     {
-        $hashmap = \array_merge_recursive(
-            $this->builtInEventListeners(),
-            (array) $config->get(static::getConfigRootKey() . '.listeners')
-        );
-
-        foreach ($hashmap as $event => $listeners) {
+        foreach ((array) $config->get(static::getConfigRootKey() . '.listeners') as $event => $listeners) {
             foreach (\array_filter(\array_unique($listeners)) as $listener) {
                 $events->listen($event, $listener);
             }
         }
-    }
-
-    /**
-     * @return array<string, array<string>>
-     */
-    protected function builtInEventListeners(): array
-    {
-        return [
-            Events\AfterLoopIterationEvent::class => [
-                Listeners\FlushDumperStackListener::class,
-            ],
-        ];
     }
 
     /**
