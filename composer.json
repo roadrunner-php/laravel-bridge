@@ -1,7 +1,7 @@
 {
     "name": "spiral/roadrunner-laravel",
     "type": "library",
-    "description": "RoadRunner bridge for Laravel applications",
+    "description": "RoadRunner: Bridge for Laravel applications",
     "keywords": [
         "laravel",
         "bridge",
