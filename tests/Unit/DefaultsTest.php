@@ -18,15 +18,17 @@ class DefaultsTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
     {
         $defined = [];
 
-        foreach ([
-                     Defaults::beforeLoopStarted(),
-                     Defaults::beforeLoopIteration(),
-                     Defaults::beforeRequestHandling(),
-                     Defaults::afterRequestHandling(),
-                     Defaults::afterLoopIteration(),
-                     Defaults::afterLoopStopped(),
-                     Defaults::loopErrorOccurred(),
-                 ] as $list) {
+        $sets = [
+            Defaults::beforeLoopStarted(),
+            Defaults::beforeLoopIteration(),
+            Defaults::beforeRequestHandling(),
+            Defaults::afterRequestHandling(),
+            Defaults::afterLoopIteration(),
+            Defaults::afterLoopStopped(),
+            Defaults::loopErrorOccurred(),
+        ];
+
+        foreach ($sets as $list) {
             foreach ($list as $listener_class) {
                 $this->assertTrue(\class_exists($listener_class));
 
