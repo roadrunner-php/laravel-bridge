@@ -27,9 +27,13 @@ class FixSymfonyFileMovingListenerTest extends AbstractListenerTestCase
         $this->assertTrue(\function_exists($function_location));
 
         $tmp_dir = $this->createTemporaryDirectory();
-        \file_put_contents($old_file_path = $tmp_dir . DIRECTORY_SEPARATOR . Str::random(), '');
-        $this->assertTrue($function_location($old_file_path, $new_file_path = $tmp_dir . DIRECTORY_SEPARATOR . Str::random()));
-        $this->assertFalse($function_location($tmp_dir . DIRECTORY_SEPARATOR . Str::random(), $tmp_dir . DIRECTORY_SEPARATOR . Str::random()));
+        $old_file_path = $tmp_dir . DIRECTORY_SEPARATOR . Str::random();
+        $new_file_path = $tmp_dir . DIRECTORY_SEPARATOR . Str::random();
+        \file_put_contents($old_file_path, '');
+        $this->assertTrue($function_location($old_file_path, $new_file_path));
+        $rnd_file_path1 = $tmp_dir . DIRECTORY_SEPARATOR . Str::random();
+        $rnd_file_path2 = $tmp_dir . DIRECTORY_SEPARATOR . Str::random();
+        $this->assertFalse($function_location($rnd_file_path1, $rnd_file_path2));
         $this->assertFileExists($new_file_path);
         $this->assertFileNotExists($old_file_path);
     }
