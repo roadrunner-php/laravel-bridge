@@ -8,28 +8,29 @@ namespace Symfony\Component\HttpFoundation\File {
      * ***************************************************************************
      * *******                                                             *******
      * *******        THIS FUNCTION OVERLOADING IS NECESSARY MEASURE       *******
-     * *******   https://github.com/avto-dev/roadrunner-laravel/issues/10  *******
-     * *******        https://github.com/spiral/roadrunner/issues/133      *******
+     * *******    https://github.com/spiral/roadrunner-laravel/issues/43   *******
      * *******                                                             *******
      * ***************************************************************************.
      *
-     * Tells whether the file was uploaded via HTTP POST.
+     * Moves an uploaded file to a new location.
      *
-     * @link  https://php.net/manual/en/function.is-uploaded-file.php
+     * @link  https://php.net/manual/en/function.move-uploaded-file.php
      *
-     * @param string $filename The filename being checked
+     * @param string $from The filename of the uploaded file
+     * @param string $to   The destination of the moved file
      *
-     * @return bool always true
+     * @return bool If filename is a valid file, but cannot be moved for some
+     *              reason, no action will occur, and will return false.
      *
-     * @see   \Symfony\Component\HttpFoundation\File\UploadedFile::isValid
+     * @see   \Symfony\Component\HttpFoundation\File\UploadedFile::move
      *
      * @since 4.0.3
      * @since 5.0
      * @since 7.0
      * @since 8.0
      */
-    function is_uploaded_file(string $filename): bool
+    function move_uploaded_file(string $from, string $to): bool
     {
-        return true;
+        return \is_file($from) && \rename($from, $to);
     }
 }

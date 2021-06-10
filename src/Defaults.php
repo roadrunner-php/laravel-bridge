@@ -15,6 +15,7 @@ final class Defaults
     {
         return [
             Listeners\FixSymfonyFileValidationListener::class,
+            Listeners\FixSymfonyFileMovingListener::class,
             Listeners\WarmInstancesListener::class,
         ];
     }
