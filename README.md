@@ -74,6 +74,9 @@ Simple `.rr.yaml` config example ([full example can be found here][roadrunner_co
 > For `windows` path must be full (eg.: `php vendor/spiral/roadrunner-laravel/bin/rr-worker start`)
 
 ```yaml
+rpc:
+  listen: tcp://127.0.0.1:6001
+  
 server:
   command: "php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-relay.sock"
   relay: "unix:///var/run/rr-relay.sock"
