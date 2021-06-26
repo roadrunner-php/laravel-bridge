@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.0.2
+
+### Fixed
+
+- Dumper CLI mode detection [#47]
+
+[#47]:https://github.com/spiral/roadrunner-laravel/pull/47
+
 ## v5.0.1
 
 ### Fixed

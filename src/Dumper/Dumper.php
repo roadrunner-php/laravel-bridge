@@ -102,7 +102,7 @@ class Dumper
     protected function ranUsingCLI(): bool
     {
         /** @link https://roadrunner.dev/docs/php-environment */
-        if (Env::get('RR_MODE') !== null && Env::get('RR_RPC') !== null && Env::get('RR_RELAY') !== null) {
+        if (Env::get('RR_MODE') !== null && Env::get('RR_RELAY') !== null) {
             return false;
         }
 
