@@ -83,6 +83,7 @@ final class Defaults
     {
         return [
             Listeners\FlushDumperStackListener::class,
+            Listeners\FlushLogContextListener::class,
             Listeners\FlushArrayCacheListener::class,
             Listeners\ResetDatabaseRecordModificationStateListener::class,
             Listeners\ClearInstancesListener::class,
