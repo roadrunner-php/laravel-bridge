@@ -39,8 +39,7 @@ class FlushLogContextListenerTest extends AbstractListenerTestCase
                     ->andReturn($logger)
                     ->getMock()
             )
-            ->getMock()
-        );
+            ->getMock());
 
         /** @var m\MockInterface|WithApplication $event_mock */
         $event_mock = m::mock(WithApplication::class)
