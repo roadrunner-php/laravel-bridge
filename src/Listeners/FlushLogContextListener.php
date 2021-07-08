@@ -25,11 +25,11 @@ class FlushLogContextListener implements ListenerInterface
                 return;
             }
 
-            /** @var \Illuminate\Log\LogManager $log */
-            $log = $app->make($log_abstract);
+            /** @var \Illuminate\Log\LogManager $log_manager */
+            $log_manager = $app->make($log_abstract);
 
-            /** @var \Illuminate\Log\Logger $logger */
-            $logger = $log->driver();
+            /** @var \Psr\Log\LoggerInterface|\Illuminate\Log\Logger $logger */
+            $logger = $log_manager->driver();
 
             /**
              * Method `withoutContext` for the Logger available since Laravel v8.49.0.
