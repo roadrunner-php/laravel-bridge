@@ -23,6 +23,10 @@ class FlushLogContextListenerTest extends AbstractListenerTestCase
 
         $logger = $log_manager->driver();
 
+        if (! \method_exists($logger, 'withoutContext')) {
+            $this->markTestSkipped('Current illuminate/log package version does now supports ::withoutContext()');
+        }
+
         $this->app->instance('log', m::mock($log_manager)
             ->makePartial()
             ->expects('driver')
