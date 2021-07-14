@@ -12,8 +12,6 @@ use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
  * @covers \Spiral\RoadRunnerLaravel\Listeners\SetupTelescopeListener
- *
- * @group foo
  */
 class SetupTelescopeListenerTest extends AbstractListenerTestCase
 {
@@ -45,12 +43,33 @@ class SetupTelescopeListenerTest extends AbstractListenerTestCase
         $this->assertCount(2, Telescope::$entriesQueue);
 
         Telescope::flushEntries();
+
         $this->listenerFactory()->handle($event_mock);
 
         $this->assertEmpty(Telescope::$entriesQueue);
         Telescope::recordEvent($event);
         Telescope::recordRequest($request);
         $this->assertEmpty(Telescope::$entriesQueue);
+
+        Telescope::recordBatch($any_another_entry = new IncomingEntry([]));
+        Telescope::recordCache($any_another_entry);
+        Telescope::recordCommand($any_another_entry);
+        Telescope::recordDump($any_another_entry);
+        Telescope::recordEvent($any_another_entry);
+        Telescope::recordException($any_another_entry);
+        Telescope::recordGate($any_another_entry);
+        Telescope::recordJob($any_another_entry);
+        Telescope::recordLog($any_another_entry);
+        Telescope::recordMail($any_another_entry);
+        Telescope::recordNotification($any_another_entry);
+        Telescope::recordQuery($any_another_entry);
+        Telescope::recordModelEvent($any_another_entry);
+        Telescope::recordRedis($any_another_entry);
+        Telescope::recordRequest($any_another_entry);
+        Telescope::recordScheduledCommand($any_another_entry);
+        Telescope::recordView($any_another_entry);
+        Telescope::recordClientRequest($any_another_entry);
+        $this->assertCount(18, Telescope::$entriesQueue);
     }
 
     /**
@@ -59,5 +78,15 @@ class SetupTelescopeListenerTest extends AbstractListenerTestCase
     protected function listenerFactory(): SetupTelescopeListener
     {
         return new SetupTelescopeListener();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function tearDown(): void
+    {
+        Telescope::flushEntries();
+
+        parent::tearDown();
     }
 }
