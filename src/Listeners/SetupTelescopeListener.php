@@ -28,16 +28,18 @@ class SetupTelescopeListener implements ListenerInterface
             }
 
             Telescope::filter(static function (IncomingEntry $entry): bool {
-                if ($entry->type === EntryType::EVENT) { // ignore current package events
-                    if (Str::startsWith(($entry->content['name'] ?? ''), 'Spiral\\RoadRunnerLaravel\\')) {
-                        return false;
-                    }
-                }
+                switch ($entry->type) {
+                    case EntryType::EVENT:
+                        if (Str::startsWith(($entry->content['name'] ?? ''), 'Spiral\\RoadRunnerLaravel\\')) {
+                            return false;
+                        }
+                        break;
 
-                if ($entry->type === EntryType::REQUEST) { // ignore telescope HTTP requests
-                    if (Str::startsWith(($entry->content['controller_action'] ?? ''), 'Laravel\\Telescope\\')) {
-                        return false;
-                    }
+                    case EntryType::REQUEST:
+                        if (Str::startsWith(($entry->content['controller_action'] ?? ''), 'Laravel\\Telescope\\')) {
+                            return false;
+                        }
+                        break;
                 }
 
                 return true;
