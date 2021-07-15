@@ -32,7 +32,7 @@ return [
     'listeners' => [
         Events\BeforeLoopStartedEvent::class => [
             ...Defaults::beforeLoopStarted(),
-            // Listeners\SetupTelescopeListener::class,        // for <https://github.com/laravel/telescope>
+            // Listeners\SetupTelescopeListener::class, // for <https://github.com/laravel/telescope>
         ],
 
         Events\BeforeLoopIterationEvent::class => [
