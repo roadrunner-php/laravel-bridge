@@ -8,13 +8,17 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Integration with [Laravel Telescope](https://github.com/laravel/telescope/) is supported now (just enable `SetupTelescopeListener` for `BeforeLoopStartedEvent`)
+- Integration with [Laravel Telescope](https://github.com/laravel/telescope/) is supported now (just enable `SetupTelescopeListener` for `BeforeLoopStartedEvent`) [#53]
+
+[#53]:https://github.com/spiral/roadrunner-laravel/issues/53
 
 ## v5.1.0
 
 ### Added
 
-- Listener `FlushLogContextListener` for the logger context flushing
+- Listener `FlushLogContextListener` for the logger context flushing [#51]
+
+[#51]:https://github.com/spiral/roadrunner-laravel/pull/51
 
 ## v5.0.2
 
