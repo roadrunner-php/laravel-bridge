@@ -41,8 +41,8 @@ class SetupTelescopeListenerTest extends AbstractListenerTestCase
         Telescope::recordEvent($event = new IncomingEntry(['name' => 'Spiral\\RoadRunnerLaravel\\']));
         Telescope::recordRequest($request = new IncomingEntry(['controller_action' => 'Laravel\\Telescope\\']));
         Telescope::recordView($view = new IncomingEntry(['name' => 'telescope::foo']));
-        Telescope::recordRedis($redis1 = new IncomingEntry(['command' => 'get laravel_cache:telescope:pause-recording']));
-        Telescope::recordRedis($redis2 = new IncomingEntry(['command' => 'get laravel_cache:telescope:dump-watcher']));
+        Telescope::recordRedis($redis1 = new IncomingEntry(['command' => 'get cache:telescope:pause-recording']));
+        Telescope::recordRedis($redis2 = new IncomingEntry(['command' => 'get cache:telescope:dump-watcher']));
         $this->assertCount(5, Telescope::$entriesQueue);
 
         Telescope::flushEntries();

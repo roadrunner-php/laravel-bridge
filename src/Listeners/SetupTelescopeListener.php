@@ -33,27 +33,30 @@ class SetupTelescopeListener implements ListenerInterface
                         if (Str::startsWith($entry->content['name'] ?? '', 'Spiral\\RoadRunnerLaravel\\')) {
                             return false;
                         }
+
                         break;
 
                     case EntryType::REQUEST:
                         if (Str::startsWith($entry->content['controller_action'] ?? '', 'Laravel\\Telescope\\')) {
                             return false;
                         }
+
                         break;
 
                     case EntryType::VIEW:
                         if (Str::startsWith($entry->content['name'] ?? '', 'telescope::')) {
                             return false;
                         }
+
                         break;
 
                     case EntryType::REDIS:
-                        if (Str::contains($entry->content['command'] ?? '', [
-                            'telescope:pause-recording',
-                            'telescope:dump-watcher',
-                        ])) {
+                        $cmd = $entry->content['command'] ?? '';
+
+                        if (Str::contains($cmd, ['telescope:pause-recording', 'telescope:dump-watcher'])) {
                             return false;
                         }
+
                         break;
                 }
 
