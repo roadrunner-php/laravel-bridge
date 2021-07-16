@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Integration with [Laravel Telescope](https://github.com/laravel/telescope/) is supported now (just enable `SetupTelescopeListener` for `BeforeLoopStartedEvent`)
+
 ## v5.1.0
 
 ### Added
