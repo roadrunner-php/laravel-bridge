@@ -9,6 +9,7 @@
 [![Build Status][badge_build_status]][link_build_status]
 [![Coverage][badge_coverage]][link_coverage]
 [![Downloads count][badge_downloads_count]][link_packagist]
+[![Chat][badge_chat]][badge_chat]
 [![License][badge_license]][link_license]
 
 Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applications.
@@ -299,6 +300,7 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maint
 [badge_packagist_version]:https://img.shields.io/packagist/v/spiral/roadrunner-laravel.svg?maxAge=180
 [badge_php_version]:https://img.shields.io/packagist/php-v/spiral/roadrunner-laravel.svg?longCache=true
 [badge_build_status]:https://img.shields.io/github/workflow/status/spiral/roadrunner-laravel/tests?maxAge=30
+[badge_chat]:https://img.shields.io/badge/discord-chat-magenta.svg
 [badge_coverage]:https://img.shields.io/codecov/c/github/spiral/roadrunner-laravel/master.svg?maxAge=180
 [badge_downloads_count]:https://img.shields.io/packagist/dt/spiral/roadrunner-laravel.svg?maxAge=180
 [badge_license]:https://img.shields.io/packagist/l/spiral/roadrunner-laravel.svg?maxAge=256
@@ -309,6 +311,7 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maint
 [link_releases]:https://github.com/spiral/roadrunner-laravel/releases
 [link_packagist]:https://packagist.org/packages/spiral/roadrunner-laravel
 [link_build_status]:https://github.com/spiral/roadrunner-laravel/actions
+[link_chat]:https://discord.gg/Y3df23vJDw
 [link_coverage]:https://codecov.io/gh/spiral/roadrunner-laravel/
 [link_changes_log]:https://github.com/spiral/roadrunner-laravel/blob/master/CHANGELOG.md
 [link_issues]:https://github.com/spiral/roadrunner-laravel/issues
