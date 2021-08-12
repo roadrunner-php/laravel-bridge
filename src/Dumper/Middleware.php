@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Dumper;
 
 use Closure;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
 
 class Middleware

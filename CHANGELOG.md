@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.2.1
+
+### Fixed
+
+- Dumper middleware could not to dump large set of responses (such as `Illuminate\Http\JsonResponse`)
+
 ## v5.2.0
 
 ### Added
