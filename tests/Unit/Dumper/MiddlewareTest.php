@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Dumper;
 
 use Illuminate\Support\Str;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Router;
+use Symfony\Component\HttpFoundation\Response;
 use Spiral\RoadRunnerLaravel\Dumper\Middleware;
 
 /**
