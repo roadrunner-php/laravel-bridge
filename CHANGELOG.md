@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Fixed
 
-- Dumper middleware could not to dump large set of responses (such as `Illuminate\Http\JsonResponse`)
+- Dumper middleware could not dump a large set of responses (such as `Illuminate\Http\JsonResponse`)
 
 ## v5.2.0
 
