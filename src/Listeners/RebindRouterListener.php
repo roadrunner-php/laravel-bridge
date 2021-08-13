@@ -25,8 +25,12 @@ class RebindRouterListener implements ListenerInterface
             $app     = $event->application();
             $request = $event->httpRequest();
 
+            if (!$app->resolved($router_abstract = 'router')) {
+                return;
+            }
+
             /** @var \Illuminate\Routing\Router $router */
-            $router = $app->make('router');
+            $router = $app->make($router_abstract);
 
             /**
              * Method `setContainer` for the Router available since Laravel v8.35.0.

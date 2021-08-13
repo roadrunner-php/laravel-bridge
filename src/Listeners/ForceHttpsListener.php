@@ -29,10 +29,11 @@ class ForceHttpsListener implements ListenerInterface
             $config = $app->make(ConfigRepository::class);
 
             if ((bool) $config->get(ServiceProvider::getConfigRootKey() . '.force_https', false)) {
-                /** @var UrlGenerator $url_generator */
-                $url_generator = $app->make(UrlGenerator::class);
-
-                $url_generator->forceScheme('https');
+                if ($app->resolved($url_generator_abstract = UrlGenerator::class)) {
+                    /** @var UrlGenerator $url_generator */
+                    $url_generator = $app->make($url_generator_abstract);
+                    $url_generator->forceScheme('https');
+                }
 
                 // Set 'HTTPS' server parameter (required for correct working request methods like ::isSecure
                 // and others)

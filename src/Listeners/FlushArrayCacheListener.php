@@ -21,11 +21,15 @@ class FlushArrayCacheListener implements ListenerInterface
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
+            if (! $app->resolved($cache_abstract = 'cache')) {
+                return;
+            }
+
             /** @var ConfigRepository $config */
             $config = $app->make(ConfigRepository::class);
 
             /** @var CacheManager $cache_manager */
-            $cache_manager = $app->make('cache');
+            $cache_manager = $app->make($cache_abstract);
 
             foreach ($config->get('cache.stores') as $name => $options) {
                 if (($options['driver'] ?? '') === 'array') {

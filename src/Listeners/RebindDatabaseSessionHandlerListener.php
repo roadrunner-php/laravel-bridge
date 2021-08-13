@@ -21,8 +21,12 @@ class RebindDatabaseSessionHandlerListener implements ListenerInterface
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
+            if (!$app->resolved($session_abstract = 'session')) {
+                return;
+            }
+
             /** @var \Illuminate\Session\SessionManager $session */
-            $session = $app->make('session');
+            $session = $app->make($session_abstract);
             $driver  = $session->driver();
 
             if ($driver instanceof \Illuminate\Contracts\Session\Session) {
