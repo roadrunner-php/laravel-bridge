@@ -22,11 +22,17 @@ class FlushAuthenticationStateListener implements ListenerInterface
             $app = $event->application();
 
             if ($app instanceof \Illuminate\Container\Container) {
-                $app->forgetInstance('auth.driver');
+                if ($app->resolved($auth_driver_abstract = 'auth.driver')) {
+                    $app->forgetInstance($auth_driver_abstract);
+                }
+            }
+
+            if (! $app->resolved($auth_abstract = 'auth')) {
+                return;
             }
 
             /** @var \Illuminate\Auth\AuthManager $auth */
-            $auth = $app->make('auth');
+            $auth = $app->make($auth_abstract);
 
             /**
              * Method `setApplication` for the Auth Manager available since Laravel v8.35.0.

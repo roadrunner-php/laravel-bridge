@@ -22,8 +22,12 @@ class RebindBroadcastManagerListener implements ListenerInterface
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
+            if (! $app->resolved($broadcast_manager_abstract = BroadcastManager::class)) {
+                return;
+            }
+
             /** @var BroadcastManager $broadcast_manager */
-            $broadcast_manager = $app->make(BroadcastManager::class);
+            $broadcast_manager = $app->make($broadcast_manager_abstract);
 
             /**
              * Method `setApplication` for the BroadcastManager available since Laravel v8.35.0.

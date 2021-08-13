@@ -20,8 +20,12 @@ class RebindViewListener implements ListenerInterface
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
+            if (!$app->resolved($view_abstract = 'view')) {
+                return;
+            }
+
             /** @var \Illuminate\View\Factory $view */
-            $view = $app->make('view');
+            $view = $app->make($view_abstract);
 
             $view->setContainer($app);
             $view->share('app', $app);

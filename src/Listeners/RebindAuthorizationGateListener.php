@@ -22,8 +22,12 @@ class RebindAuthorizationGateListener implements ListenerInterface
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
+            if (! $app->resolved($gate_abstract = Gate::class)) {
+                return;
+            }
+
             /** @var Gate $gate */
-            $gate = $app->make(Gate::class);
+            $gate = $app->make($gate_abstract);
 
             /**
              * Method `setContainer` for the Gate implementation available since Laravel v8.35.0.

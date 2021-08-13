@@ -23,8 +23,12 @@ class RebindHttpKernelListener implements ListenerInterface
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
+            if (!$app->resolved($kernel_abstract = HttpKernel::class)) {
+                return;
+            }
+
             /** @var HttpKernel $kernel */
-            $kernel = $app->make(HttpKernel::class);
+            $kernel = $app->make($kernel_abstract);
 
             /**
              * Method `setApplication` for the HTTP kernel available since Laravel v8.35.0.

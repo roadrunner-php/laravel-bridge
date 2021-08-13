@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.2.2
+
+### Changed
+
+- Resolve listener components when needed [#58]
+
+[#58]:https://github.com/spiral/roadrunner-laravel/issues/58
+
 ## v5.2.1
 
 ### Fixed

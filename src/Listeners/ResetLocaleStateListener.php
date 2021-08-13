@@ -23,12 +23,12 @@ class ResetLocaleStateListener implements ListenerInterface
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
-            if ($app->bound('translator')) {
+            if ($app->bound($translator_abstract = 'translator')) {
                 /** @var ConfigRepository $config */
                 $config = $app->make(ConfigRepository::class);
 
                 /** @var Translator $translator */
-                $translator = $app->make('translator');
+                $translator = $app->make($translator_abstract);
 
                 $translator->setLocale($config->get('app.locale'));
 
