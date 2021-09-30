@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Possibility to use different classes of workers for different worker modes [#65]
-- Integration with [Ziggy](https://github.com/tighten/ziggy) is supported now (just enable `ResetZiggyListener` for `BeforeLoopIterationEvent`) [#64]
+- Integration with [Ziggy](https://github.com/tighten/ziggy) is supported now [#64]
 
 ### Changed
 
