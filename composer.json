@@ -43,6 +43,7 @@
     "require-dev": {
         "guzzlehttp/guzzle": "^6.3 || ~7.0",
         "inertiajs/inertia-laravel": "^0.4.2",
+        "tightenco/ziggy": "^1.4.0",
         "laravel/laravel": "~6.0 || ~7.0 || ~8.0",
         "laravel/scout": "~8.0 || ~9.0",
         "laravel/socialite": "^5.0",
