@@ -13,7 +13,7 @@ class WorkerFactory
     /**
      * @var string Depends on the environment
      */
-    public const AUTO_MODE = 'auto';
+    public const MODE_AUTO = 'auto';
 
     /**
      * Base path to the Laravel application.
@@ -37,9 +37,9 @@ class WorkerFactory
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function make(string $mode = self::AUTO_MODE, ...$args): WorkerInterface
+    public function make(string $mode = self::MODE_AUTO, ...$args): WorkerInterface
     {
-        if ($mode === self::AUTO_MODE) {
+        if ($mode === self::MODE_AUTO) {
             $mode = Environment::fromGlobals()->getMode();
 
             if ($mode === "") {
@@ -71,7 +71,7 @@ class WorkerFactory
     {
         $map = ((array) require ServiceProvider::getConfigPath())[$key = 'workers']; // load defaults
 
-        if (\file_exists($path = $this->app_base_path . '/config/roadrunner.php')) {
+        if (\file_exists($path = $this->app_base_path . '/config/' . ServiceProvider::getConfigRootKey() . '.php')) {
             if (\array_key_exists($key, $user_defined = (array) require $path)) {
                 if (\is_array($user_defined[$key])) {
                     $map = \array_merge($map, $user_defined[$key]);

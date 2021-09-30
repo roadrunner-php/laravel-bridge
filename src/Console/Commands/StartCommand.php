@@ -78,7 +78,7 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
             null,
             InputOption::VALUE_REQUIRED,
             'Worker mode', /** @see \Spiral\RoadRunner\Environment\Mode */
-            WorkerFactory::AUTO_MODE
+            WorkerFactory::MODE_AUTO
         );
     }
 
