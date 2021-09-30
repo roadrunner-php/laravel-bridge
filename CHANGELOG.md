@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Integration with [Ziggy](https://github.com/tighten/ziggy) is supported now (just enable `ResetZiggyListener` for `BeforeLoopIterationEvent`)
+
 ## v5.2.2
 
 ### Changed
