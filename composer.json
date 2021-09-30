@@ -36,7 +36,7 @@
         "illuminate/view": "~6.0 || ~7.0 || ~8.0",
         "nyholm/psr7": "^1.2",
         "spiral/roadrunner-http": "^2.0",
-        "spiral/roadrunner-worker": "^2.0",
+        "spiral/roadrunner-worker": "^2.0.3",
         "symfony/console": "^4.3.4 || ^5.0",
         "symfony/psr-http-message-bridge": "^1.2 || ^2.0"
     },
