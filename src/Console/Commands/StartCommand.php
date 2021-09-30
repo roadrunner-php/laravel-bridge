@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Console\Commands;
 
 use InvalidArgumentException;
-use Spiral\RoadRunnerLaravel\WorkerInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,16 +18,10 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
      * Option names.
      */
     protected const
+        OPTION_WORKER_MODE = 'worker-mode',
         OPTION_LARAVEL_PATH = 'laravel-path',
         OPTION_RELAY_DSN = 'relay-dsn',
         OPTION_REFRESH_APP = 'refresh-app';
-
-    /**
-     * Worker instance.
-     *
-     * @var WorkerInterface
-     */
-    protected WorkerInterface $worker;
 
     /**
      * @var string|null
@@ -38,14 +31,12 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
     /**
      * Create a new command instance.
      *
-     * @var WorkerInterface $worker
-     * @var string|null     $laravel_base_path
+     * @var string|null $laravel_base_path
      */
-    public function __construct(WorkerInterface $worker, ?string $laravel_base_path = null)
+    public function __construct(?string $laravel_base_path = null)
     {
         parent::__construct();
 
-        $this->worker            = $worker;
         $this->laravel_base_path = $laravel_base_path;
     }
 
@@ -81,6 +72,14 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
             InputOption::VALUE_NONE,
             'Refresh application instance on each HTTP request (avoid this for performance reasons)'
         );
+
+        $this->addOption(
+            static::OPTION_WORKER_MODE,
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Worker mode', /** @see \Spiral\RoadRunner\Environment\Mode */
+            WorkerFactory::MODE_AUTO
+        );
     }
 
     /**
@@ -94,11 +93,15 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
             $this->getRelayDSN($input),
         );
 
+        $worker = (new WorkerFactory($options->getAppBasePath()))->make($mode = $this->getWorkerMode($input));
+
         if ($output->isDebug()) {
             $hints = [
-                'Laravel base path' => $options->getAppBasePath(),
+                'Laravel base path'      => $options->getAppBasePath(),
                 'Application refreshing' => $options->getRefreshApp() ? 'yes' : 'no',
-                'Relay DSN' => $options->getRelayDsn(),
+                'Relay DSN'              => $options->getRelayDsn(),
+                'Mode'                   => $mode,
+                'Worker class'           => \get_class($worker),
             ];
 
             foreach ($hints as $key => $value) {
@@ -106,7 +109,7 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
             }
         }
 
-        $this->worker->start($options);
+        $worker->start($options);
 
         return 0;
     }
@@ -131,6 +134,24 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
         }
 
         throw new InvalidArgumentException("Laravel base path was not set");
+    }
+
+    /**
+     * @param InputInterface $input
+     *
+     * @return string
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function getWorkerMode(InputInterface $input): string
+    {
+        $worker_mode = $input->getOption(static::OPTION_WORKER_MODE);
+
+        if (\is_string($worker_mode) && !empty($worker_mode)) {
+            return $worker_mode;
+        }
+
+        throw new InvalidArgumentException("Invalid option value for the worker mode");
     }
 
     /**
