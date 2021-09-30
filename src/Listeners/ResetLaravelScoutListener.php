@@ -21,6 +21,10 @@ class ResetLaravelScoutListener implements ListenerInterface
      */
     public function handle($event): void
     {
+        if (!\class_exists(ScoutEngineManager::class)) {
+            return;
+        }
+
         if ($event instanceof WithApplication) {
             $app = $event->application();
 

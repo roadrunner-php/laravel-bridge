@@ -21,6 +21,10 @@ class ResetInertiaListener implements ListenerInterface
      */
     public function handle($event): void
     {
+        if (!\class_exists(InertiaResponseFactory::class)) {
+            return;
+        }
+
         if ($event instanceof WithApplication) {
             $app = $event->application();
 

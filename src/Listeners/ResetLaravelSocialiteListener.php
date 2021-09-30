@@ -21,6 +21,10 @@ class ResetLaravelSocialiteListener implements ListenerInterface
      */
     public function handle($event): void
     {
+        if (!\class_exists(\Laravel\Socialite\SocialiteManager::class)) {
+            return;
+        }
+
         if ($event instanceof WithApplication) {
             $app = $event->application();
 

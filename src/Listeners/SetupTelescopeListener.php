@@ -19,11 +19,15 @@ class SetupTelescopeListener implements ListenerInterface
      */
     public function handle($event): void
     {
+        if (!\class_exists(Telescope::class)) {
+            return;
+        }
+
         if ($event instanceof WithApplication) {
             /** @var ConfigRepository $config */
             $config = $event->application()->make(ConfigRepository::class);
 
-            if (!\class_exists(Telescope::class) || !$config->get('telescope.enabled')) {
+            if (!$config->get('telescope.enabled')) {
                 return;
             }
 

@@ -33,15 +33,10 @@ return [
     'listeners' => [
         Events\BeforeLoopStartedEvent::class => [
             ...Defaults::beforeLoopStarted(),
-            // Listeners\SetupTelescopeListener::class, // for <https://github.com/laravel/telescope>
         ],
 
         Events\BeforeLoopIterationEvent::class => [
             ...Defaults::beforeLoopIteration(),
-            // Listeners\ResetLaravelScoutListener::class,     // for <https://github.com/laravel/scout>
-            // Listeners\ResetLaravelSocialiteListener::class, // for <https://github.com/laravel/socialite>
-            // Listeners\ResetInertiaListener::class,          // for <https://github.com/inertiajs/inertia-laravel>
-            // Listeners\ResetZiggyListener::class,            // for <https://github.com/tighten/ziggy>
         ],
 
         Events\BeforeRequestHandlingEvent::class => [

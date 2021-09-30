@@ -4,12 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## UNRELEASED
+## v5.3.0
 
 ### Added
 
-- Possibility to use different classes of workers for different worker modes
-- Integration with [Ziggy](https://github.com/tighten/ziggy) is supported now (just enable `ResetZiggyListener` for `BeforeLoopIterationEvent`)
+- Possibility to use different classes of workers for different worker modes [#65]
+- Integration with [Ziggy](https://github.com/tighten/ziggy) is supported now (just enable `ResetZiggyListener` for `BeforeLoopIterationEvent`) [#64]
+
+### Changed
+
+- Listeners (resetters) for the 3rd party packages are enabled by default
+
+[#64]:https://github.com/spiral/roadrunner-laravel/issues/64
+[#65]:https://github.com/spiral/roadrunner-laravel/issues/65
 
 ## v5.2.2
 

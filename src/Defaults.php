@@ -17,6 +17,9 @@ final class Defaults
             Listeners\FixSymfonyFileValidationListener::class,
             Listeners\FixSymfonyFileMovingListener::class,
             Listeners\WarmInstancesListener::class,
+
+            // 3rd party packages:
+            Listeners\SetupTelescopeListener::class, // for <https://github.com/laravel/telescope>
         ];
     }
 
@@ -46,6 +49,12 @@ final class Defaults
             Listeners\ResetSessionListener::class,
             Listeners\ResetProvidersListener::class,
             Listeners\ResetLocaleStateListener::class,
+
+            // 3rd party packages:
+            Listeners\ResetLaravelScoutListener::class, // for <https://github.com/laravel/scout>
+            Listeners\ResetLaravelSocialiteListener::class, // for <https://github.com/laravel/socialite>
+            Listeners\ResetInertiaListener::class, // for <https://github.com/inertiajs/inertia-laravel>
+            Listeners\ResetZiggyListener::class, // for <https://github.com/tighten/ziggy>
         ];
     }
 
