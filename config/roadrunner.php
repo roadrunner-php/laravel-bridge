@@ -109,7 +109,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you can override the worker class for processing different kinds of
-    | jobs, that received from the RoadRunner daemon.
+    | jobs, that received from the RoadRunner daemon. The key is a worker mode.
     |
     */
 
