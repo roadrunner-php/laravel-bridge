@@ -95,6 +95,7 @@ final class Defaults
             Listeners\FlushLogContextListener::class,
             Listeners\FlushArrayCacheListener::class,
             Listeners\ResetDatabaseRecordModificationStateListener::class,
+            Listeners\FlushDatabaseQueryLogListener::class,
             Listeners\ClearInstancesListener::class,
         ];
     }

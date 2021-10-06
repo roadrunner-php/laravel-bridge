@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.4.0
+
+### Added
+
+- Listener `FlushDatabaseQueryLogListener` for cleaning up database query log [#66]
+
+[#66]:https://github.com/spiral/roadrunner-laravel/pull/66
+
 ## v5.3.0
 
 ### Added
