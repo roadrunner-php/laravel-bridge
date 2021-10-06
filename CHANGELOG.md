@@ -8,9 +8,9 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Listener `FlushDatabaseQueryLogListener` for cleaning up database query log [#66]
+- Listener `FlushDatabaseQueryLogListener` for cleaning up database query log [#67]
 
-[#66]:https://github.com/spiral/roadrunner-laravel/pull/66
+[#67]:https://github.com/spiral/roadrunner-laravel/pull/67
 
 ## v5.3.0
 
