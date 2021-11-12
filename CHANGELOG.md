@@ -8,9 +8,11 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Listener `FlushTranslatorCacheListener` for memory leak fixing on `Translator` implementation [#69]
+- Listener `FlushTranslatorCacheListener` for memory leak fixing on `Translator` implementation [#70]
+- Integration with [Livewire](https://github.com/livewire/livewire) is supported now [#71]
 
-[#69]:https://github.com/spiral/roadrunner-laravel/pull/69
+[#70]:https://github.com/spiral/roadrunner-laravel/pull/70
+[#71]:https://github.com/spiral/roadrunner-laravel/pull/71
 
 ## v5.4.0
 
