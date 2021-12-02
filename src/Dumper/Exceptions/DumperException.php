@@ -82,14 +82,21 @@ final class DumperException extends \RuntimeException
 
         if ($this->stack->count() > 0) {
             foreach ($this->stack->all() as $item) {
-                /* @var \Symfony\Component\VarDumper\Cloner\Data $item */
-                $content = $this->renderer->dump($item, true) . \PHP_EOL . $content;
+                if ($item instanceof \Symfony\Component\VarDumper\Cloner\Data) {
+                    $content = $this->renderer->dump($item, true) . \PHP_EOL . $content;
+                }
             }
         } else {
             $content .= '(╯°□°)╯︵ ┻━┻';
         }
 
-        return new Response($this->generateView($content), $this->getCode());
+        $code = Response::HTTP_INTERNAL_SERVER_ERROR;
+
+        if (\is_int($current_code = $this->getCode())) {
+            $code = $current_code;
+        }
+
+        return new Response($this->generateView($content), $code);
     }
 
     /**

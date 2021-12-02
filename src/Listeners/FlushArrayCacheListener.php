@@ -31,8 +31,8 @@ class FlushArrayCacheListener implements ListenerInterface
             /** @var CacheManager $cache_manager */
             $cache_manager = $app->make($cache_abstract);
 
-            foreach ($config->get('cache.stores') as $name => $options) {
-                if (($options['driver'] ?? '') === 'array') {
+            foreach ((array) $config->get('cache.stores') as $name => $options) {
+                if (\is_array($options) && ($options['driver'] ?? '') === 'array') {
                     $cache_manager->store($name)->getStore()->flush();
                 }
             }

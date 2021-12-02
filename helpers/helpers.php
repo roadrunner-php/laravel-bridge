@@ -7,6 +7,7 @@ namespace rr;
 use Illuminate\Container\Container;
 use Spiral\RoadRunner\Http\PSR7Worker;
 use Spiral\RoadRunnerLaravel\Dumper\Dumper;
+use Illuminate\Contracts\Container\BindingResolutionException;
 
 if (!\function_exists('\\rr\\dump')) {
     /**
@@ -59,10 +60,16 @@ if (!\function_exists('\\rr\\worker')) {
      *
      * @return PSR7Worker
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException If called outside of RR worker context
+     * @throws BindingResolutionException If called outside of RR worker context
      */
     function worker(): PSR7Worker
     {
-        return Container::getInstance()->make(PSR7Worker::class);
+        $worker = Container::getInstance()->make(PSR7Worker::class);
+
+        if ($worker instanceof PSR7Worker) {
+            return $worker;
+        }
+
+        throw new BindingResolutionException;
     }
 }

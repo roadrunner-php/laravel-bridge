@@ -31,7 +31,7 @@ class RebindMailManagerListener implements ListenerInterface
                 return;
             }
 
-            /* @var MailManager $mail_manager */
+            /** @var MailManager $mail_manager */
             $mail_manager = $app->make($mail_manager_abstract);
 
             /**

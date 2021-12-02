@@ -20,7 +20,10 @@ class CloneConfigListener implements ListenerInterface
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
-            $app->instance('config', clone $app->make(ConfigRepository::class));
+            /** @var ConfigRepository $config */
+            $config = $app->make(ConfigRepository::class);
+
+            $app->instance('config', clone $config);
         }
     }
 }

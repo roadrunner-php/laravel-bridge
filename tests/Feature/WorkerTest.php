@@ -50,6 +50,8 @@ class WorkerTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
      * @param string $relay_type
      *
      * @return string Path to the created config file.
+     *
+     * @throws \Exception
      */
     protected function createConfigFile(string $where, string $relay_type): string
     {
@@ -69,7 +71,7 @@ class WorkerTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
                 break;
 
             case self::RELAY_TYPE_TCP_PORT:
-                $relay_dsn = 'tcp://localhost:' . \random_int(6000, 20000);
+                $relay_dsn = 'tcp://127.0.0.127:' . \random_int(6000, 20000);
                 break;
 
             default:
