@@ -48,8 +48,9 @@ class Middleware
             $dumped = '';
 
             foreach ($this->stack->all() as $item) {
-                /* @var \Symfony\Component\VarDumper\Cloner\Data $item */
-                $dumped = $this->renderer->dump($item, true) . \PHP_EOL . $dumped;
+                if ($item instanceof \Symfony\Component\VarDumper\Cloner\Data) {
+                    $dumped = $this->renderer->dump($item, true) . \PHP_EOL . $dumped;
+                }
             }
 
             $response->setContent($dumped . $response->getContent());

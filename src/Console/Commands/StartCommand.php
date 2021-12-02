@@ -30,8 +30,6 @@ class StartCommand extends \Symfony\Component\Console\Command\Command
 
     /**
      * Create a new command instance.
-     *
-     * @var string|null $laravel_base_path
      */
     public function __construct(?string $laravel_base_path = null)
     {

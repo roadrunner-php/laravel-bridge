@@ -24,7 +24,9 @@ class ClearInstancesListener implements ListenerInterface
 
             if ($app instanceof Container) {
                 /** @var ConfigRepository $config */
-                $config    = $app->make(ConfigRepository::class);
+                $config = $app->make(ConfigRepository::class);
+
+                /** @var array<string> $abstracts */
                 $abstracts = (array) $config->get(ServiceProvider::getConfigRootKey() . '.clear', []);
 
                 foreach ($abstracts as $abstract) {

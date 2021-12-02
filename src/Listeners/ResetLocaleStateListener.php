@@ -30,10 +30,14 @@ class ResetLocaleStateListener implements ListenerInterface
                 /** @var Translator $translator */
                 $translator = $app->make($translator_abstract);
 
-                $translator->setLocale($config->get('app.locale'));
+                if (\is_string($app_locale = $config->get('app.locale'))) {
+                    $translator->setLocale($app_locale);
+                }
 
-                // method `setFallback` is not defined in the translator contract
-                $this->invokeMethod($translator, 'setFallback', $config->get('app.fallback_locale'));
+                if (\is_string($app_fallback_locale = $config->get('app.fallback_locale'))) {
+                    // method `setFallback` is not defined in the translator contract
+                    $this->invokeMethod($translator, 'setFallback', $app_fallback_locale);
+                }
             }
         }
     }
