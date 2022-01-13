@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/schema/9.3.xsd"
          bootstrap="vendor/autoload.php"
          colors="true">
 
@@ -28,20 +28,6 @@
             <text outputFile="php://stdout" showUncoveredFiles="false"/>
         </report>
     </coverage>
-
-    <!-- deprecated -->
-    <logging>
-        <log type="coverage-html" target="./coverage/html"/>
-        <log type="coverage-xml" target="./coverage/xml"/>
-        <log type="coverage-clover" target="./coverage/clover.xml"/>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
-    </logging>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
-    <!-- /deprecated -->
 
     <php>
         <server name="APP_KEY" value="base64:+hY09mlBag/d7Qhq2SjE/i2iUzZBS1dGObLqcHZU2Ac=" force="true"/>

@@ -48,7 +48,6 @@ class WorkerFactory
         }
 
         if (\array_key_exists($mode, $map = $this->getWorkersMap())) {
-            /** @var string $class */
             $class  = $map[$mode];
             $worker = new $class(...$args);
 

@@ -33,12 +33,12 @@ class FixSymfonyFileMovingListenerTest extends AbstractListenerTestCase
         $this->assertFileExists($old_file_path);
         $this->assertTrue($function_location($old_file_path, $new_file_path));
         $this->assertFileExists($new_file_path);
-        $this->assertFileNotExists($old_file_path);
+        $this->assertFileDoesNotExist($old_file_path);
         $rnd_file_path1 = $tmp_dir . DIRECTORY_SEPARATOR . Str::random();
         $rnd_file_path2 = $tmp_dir . DIRECTORY_SEPARATOR . Str::random();
         $this->assertFalse($function_location($rnd_file_path1, $rnd_file_path2));
-        $this->assertFileNotExists($rnd_file_path1);
-        $this->assertFileNotExists($rnd_file_path2);
+        $this->assertFileDoesNotExist($rnd_file_path1);
+        $this->assertFileDoesNotExist($rnd_file_path2);
     }
 
     /**
