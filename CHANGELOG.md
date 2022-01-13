@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Give the current App instance to `FilesystemManager` (listener `RebindFilesystemManagerListener`)
+
 ## v5.5.0
 
 ### Added

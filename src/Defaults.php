@@ -39,6 +39,7 @@ final class Defaults
             Listeners\RebindBroadcastManagerListener::class,
             Listeners\RebindDatabaseManagerListener::class,
             Listeners\RebindDatabaseSessionHandlerListener::class,
+            Listeners\RebindFilesystemManagerListener::class,
             Listeners\RebindMailManagerListener::class,
             Listeners\RebindNotificationChannelManagerListener::class,
             Listeners\RebindPipelineHubListener::class,
