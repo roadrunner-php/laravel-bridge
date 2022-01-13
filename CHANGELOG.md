@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Give the current App instance to `FilesystemManager` (listener `RebindFilesystemManagerListener`) [#77]
+- Monolog state resetting between requests (listener `FlushMonologStateListener`) [#77]
+
+[#77]:https://github.com/spiral/roadrunner-laravel/pull/77
+
 ## v5.5.0
 
 ### Added
