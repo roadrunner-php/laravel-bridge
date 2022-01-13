@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Give the current App instance to `FilesystemManager` (listener `RebindFilesystemManagerListener`) [#77]
+- Monolog state resetting between requests (listener `FlushMonologStateListener`) [#77]
 
 [#77]:https://github.com/spiral/roadrunner-laravel/pull/77
 
