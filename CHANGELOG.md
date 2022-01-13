@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Give the current App instance to `FilesystemManager` (listener `RebindFilesystemManagerListener`)
+- Give the current App instance to `FilesystemManager` (listener `RebindFilesystemManagerListener`) [#77]
+
+[#77]:https://github.com/spiral/roadrunner-laravel/pull/77
 
 ## v5.5.0
 
