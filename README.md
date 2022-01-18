@@ -121,6 +121,10 @@ Name            | Description
 
 ### Known issues
 
+#### Performance degradation
+
+...when `file` driver is set for your sessions. Please, use `redis` (or something similar) driver instead ([related issue](https://github.com/spiral/roadrunner-laravel/issues/23)).
+
 #### Controller constructors
 
 You should avoid to use HTTP controller constructors _(created or resolved instances in a constructor can be shared between different requests)_. Use dependencies resolving in a controller **methods** instead.
