@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
  */
 class FlushStrCacheListener implements ListenerInterface
 {
+    use Traits\InvokerTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -22,8 +24,10 @@ class FlushStrCacheListener implements ListenerInterface
          * @link https://github.com/illuminate/support/blob/v8.81.0/Str.php#L994
          * @see  \Illuminate\Support\Str::flushCache
          */
-        if (\method_exists(Str::class, $method_name = 'flushCache')) {
-            Str::{$method_name}();
+        if(! $this->invokeStaticMethod($class = Str::class, 'flushCache')) {
+            foreach (['snakeCache', 'camelCache', 'studlyCache'] as $property) {
+                $this->setStaticProperty($class, $property, []);
+            }
         }
     }
 }
