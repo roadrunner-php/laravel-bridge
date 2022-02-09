@@ -2,15 +2,11 @@ name: tests
 
 on:
   push:
-    branches:
-      - master
-    tags-ignore:
-      - '**'
-    paths-ignore:
-      - '**.md'
+    branches: [master, main]
+    tags-ignore: ['**']
+    paths-ignore: ['**.md']
   pull_request:
-    paths-ignore:
-      - '**.md'
+    paths-ignore: ['**.md']
   schedule:
     - cron: '0 0 * * 1' # once in a week, docs: <https://git.io/JvxXE#onschedule>
 
@@ -24,7 +20,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
       matrix:
         setup: ['basic', 'lowest']
         php: ['7.4', '8.0']
-        rr: ['2.6.6'] # Releases: <https://github.com/spiral/roadrunner-binary/releases>
+        rr: ['2.7.6'] # Releases: <https://github.com/roadrunner-server/roadrunner/releases>
         coverage: ['true']
         include:
           - php: '7.4'
@@ -37,17 +33,15 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             coverage: 'false'
           - php: '8.1'
             setup: 'basic'
-            rr: '2.6.6'
+            rr: '2.7.6'
             coverage: 'false'
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Install RoadRunner Binary
         run: docker run --rm -v "/:/rootfs:rw" --entrypoint "" spiralscout/roadrunner:${{ matrix.rr }} cp /usr/bin/rr /rootfs/usr/bin/rr
 
-      - name: Setup PHP, with composer and extensions
-        uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
+      - uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
         with:
           php-version: ${{ matrix.php }}
           extensions: xdebug
@@ -95,11 +89,9 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
     name: Check Code Style
     runs-on: ubuntu-20.04
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Setup PHP, with composer and extensions
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: 7.4
 
