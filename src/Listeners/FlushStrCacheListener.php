@@ -24,6 +24,14 @@ class FlushStrCacheListener implements ListenerInterface
          */
         if (\method_exists(Str::class, $method_name = 'flushCache')) {
             \call_user_func(Str::class . "::{$method_name}");
+        } else {
+            (function (): void {
+                foreach (['snakeCache', 'camelCache', 'studlyCache'] as $property_name) {
+                    if (\property_exists($this, $property_name)) {
+                        static::${$property_name} = [];
+                    }
+                }
+            })->bindTo($str = new Str, $str)();
         }
     }
 }

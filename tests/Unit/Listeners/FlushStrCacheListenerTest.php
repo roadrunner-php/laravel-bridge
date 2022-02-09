@@ -18,16 +18,29 @@ class FlushStrCacheListenerTest extends AbstractListenerTestCase
     public function testHandle(): void
     {
         Str::snake('Hello world');
+        Str::camel('Hello world');
+        Str::studly('Hello world');
 
         $reflection = new \ReflectionClass(Str::class);
-        $property = $reflection->getProperty('snakeCache');
-        $property->setAccessible(true);
 
-        $this->assertNotEmpty($property->getValue());
+        /** @var array<\ReflectionProperty> $props */
+        $props = [
+            $reflection->getProperty('snakeCache'),
+            $reflection->getProperty('camelCache'),
+            $reflection->getProperty('studlyCache'),
+        ];
+
+        foreach ($props as $prop) {
+            $prop->setAccessible(true);
+
+            $this->assertNotEmpty($prop->getValue());
+        }
 
         $this->listenerFactory()->handle(new \stdClass());
 
-        $this->assertEmpty($property->getValue());
+        foreach ($props as $prop) {
+            $this->assertEmpty($prop->getValue());
+        }
     }
 
     /**
