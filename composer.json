@@ -30,7 +30,7 @@
         "laravel/laravel": "~8.0 || ~9.0",
         "laravel/scout": "~9.0",
         "laravel/socialite": "^5.0",
-        "laravel/telescope": "^4.4",
+        "laravel/telescope": "^4.5",
         "livewire/livewire": "^2.7",
         "mockery/mockery": "~1.3.3 || ^1.4.2",
         "phpstan/phpstan": "~1.4",
