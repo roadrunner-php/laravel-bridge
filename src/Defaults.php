@@ -96,6 +96,7 @@ final class Defaults
             Listeners\FlushDumperStackListener::class,
             Listeners\FlushLogContextListener::class,
             Listeners\FlushArrayCacheListener::class,
+            Listeners\FlushStrCacheListener::class,
             Listeners\FlushMonologStateListener::class,
             Listeners\FlushTranslatorCacheListener::class,
             Listeners\ResetDatabaseRecordModificationStateListener::class,

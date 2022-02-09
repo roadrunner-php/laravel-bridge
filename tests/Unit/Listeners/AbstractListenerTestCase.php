@@ -31,8 +31,6 @@ abstract class AbstractListenerTestCase extends \Spiral\RoadRunnerLaravel\Tests\
     abstract protected function testHandle(): void;
 
     /**
-     * @deprecated
-     *
      * @param object $object
      * @param string $property
      *
@@ -53,8 +51,29 @@ abstract class AbstractListenerTestCase extends \Spiral\RoadRunnerLaravel\Tests\
     }
 
     /**
-     * @deprecated
+     * @param class-string $class
+     * @param string       $property
      *
+     * @return mixed
+     * @throws \ReflectionException
+     */
+    protected function getStaticProperty(string $class, string $property)
+    {
+        $result = null;
+
+        $closure = function () use ($property, &$result): void {
+            $result = static::${$property};
+        };
+
+        $instance = (new \ReflectionClass($class))->newInstanceWithoutConstructor();
+
+        $getter = $closure->bindTo($instance, $instance);
+        $getter();
+
+        return $result;
+    }
+
+    /**
      * @param object $object
      * @param string $property
      * @param mixed  $value
@@ -68,6 +87,26 @@ abstract class AbstractListenerTestCase extends \Spiral\RoadRunnerLaravel\Tests\
         };
 
         $setter = $closure->bindTo($object, $object);
+        $setter();
+    }
+
+    /**
+     * @param class-string $class
+     * @param string       $property
+     * @param mixed        $value
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
+    protected function setStaticProperty(string $class, string $property, $value): void
+    {
+        $closure = function () use ($property, &$value): void {
+            static::${$property} = $value;
+        };
+
+        $instance = (new \ReflectionClass($class))->newInstanceWithoutConstructor();
+
+        $setter = $closure->bindTo($instance, $instance);
         $setter();
     }
 }

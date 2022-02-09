@@ -9,12 +9,14 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Laravel 9 support [#78]
+- Listener `FlushStrCacheListener` for flushing `Str` cache between requests [#86]
 
 ### Removed
 
 - Laravel 6 and 7 is no longer supported [#78]
 
 [#78]:https://github.com/spiral/roadrunner-laravel/pull/78
+[#86]:https://github.com/spiral/roadrunner-laravel/pull/86
 
 ## v5.6.0
 
