@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Laravel 9 support [#78]
+
+### Removed
+
+- Laravel 6 and 7 is no longer supported [#78]
+
+[#78]:https://github.com/spiral/roadrunner-laravel/pull/78
+
 ## v5.6.0
 
 ### Added

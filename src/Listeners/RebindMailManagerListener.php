@@ -19,11 +19,6 @@ class RebindMailManagerListener implements ListenerInterface
      */
     public function handle($event): void
     {
-        // MailManager was introduced in laravel >= v7.0
-        if (!\class_exists(MailManager::class)) {
-            return;
-        }
-
         if ($event instanceof WithApplication) {
             $app = $event->application();
 
