@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Laravel 9 support [#78]
 - Listener `FlushStrCacheListener` for flushing `Str` cache between requests [#86]
+- Listener `CleanupUploadedFilesListener` for removing temporary files, which was created during uploading [#84]
 
 ### Removed
 
@@ -17,6 +18,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 [#78]:https://github.com/spiral/roadrunner-laravel/pull/78
 [#86]:https://github.com/spiral/roadrunner-laravel/pull/86
+[#84]:https://github.com/spiral/roadrunner-laravel/issues/84
 
 ## v5.6.0
 

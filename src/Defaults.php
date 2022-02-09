@@ -102,6 +102,7 @@ final class Defaults
             Listeners\ResetDatabaseRecordModificationStateListener::class,
             Listeners\FlushDatabaseQueryLogListener::class,
             Listeners\ClearInstancesListener::class,
+            Listeners\CleanupUploadedFilesListener::class,
         ];
     }
 
