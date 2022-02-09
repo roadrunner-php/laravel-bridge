@@ -23,7 +23,7 @@ class FlushStrCacheListener implements ListenerInterface
          * @see  \Illuminate\Support\Str::flushCache
          */
         if (\method_exists(Str::class, $method_name = 'flushCache')) {
-            \call_user_func(Str::class . "::{$method_name}");
+            Str::{$method_name}();
         }
     }
 }
