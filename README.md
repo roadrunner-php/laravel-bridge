@@ -21,7 +21,7 @@ Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applicat
 Make sure that [RR binary file][roadrunner-binary-releases] already installed on your system (or docker image). Require this package with composer using next command:
 
 ```shell script
-$ composer require spiral/roadrunner-laravel "^5.2"
+$ composer require spiral/roadrunner-laravel "^5.7"
 ```
 
 > Installed `composer` is required ([how to install composer][getcomposer]).
@@ -63,28 +63,30 @@ $ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvi
 
 After package installation you can use provided "binary" file as RoadRunner worker: `./vendor/bin/rr-worker`. This worker allows you to interact with incoming requests and outgoing responses using [laravel events system][laravel_events]. Event contains:
 
-Event classname              | Application object | HTTP server request | HTTP request | HTTP response | Exception
----------------------------- | :----------------: | :-----------------: | :----------: | :-----------: | :-------:
-`BeforeLoopStartedEvent`     |          ✔         |                     |              |               |
-`BeforeLoopIterationEvent`   |          ✔         |          ✔          |              |               |
-`BeforeRequestHandlingEvent` |          ✔         |                     |       ✔      |               |
-`AfterRequestHandlingEvent`  |          ✔         |                     |       ✔      |       ✔       |
-`AfterLoopIterationEvent`    |          ✔         |                     |       ✔      |       ✔       |
-`AfterLoopStoppedEvent`      |          ✔         |                     |              |               |
-`LoopErrorOccurredEvent`     |          ✔         |          ✔          |              |               |     ✔
+| Event classname              | Application object | HTTP server request | HTTP request | HTTP response | Exception |
+|------------------------------|:------------------:|:-------------------:|:------------:|:-------------:|:---------:|
+| `BeforeLoopStartedEvent`     |         ✔          |                     |              |               |           |
+| `BeforeLoopIterationEvent`   |         ✔          |          ✔          |              |               |           |
+| `BeforeRequestHandlingEvent` |         ✔          |                     |      ✔       |               |           |
+| `AfterRequestHandlingEvent`  |         ✔          |                     |      ✔       |       ✔       |           |
+| `AfterLoopIterationEvent`    |         ✔          |                     |      ✔       |       ✔       |           |
+| `AfterLoopStoppedEvent`      |         ✔          |                     |              |               |           |
+| `LoopErrorOccurredEvent`     |         ✔          |          ✔          |              |               |     ✔     |
 
 Simple `.rr.yaml` config example ([full example can be found here][roadrunner_config]):
 
 > For `windows` path must be full (eg.: `php vendor/spiral/roadrunner-laravel/bin/rr-worker start`)
 
 ```yaml
+version: "2.7"
+
 server:
   command: "php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-relay.sock"
   relay: "unix:///var/run/rr-relay.sock"
 
 http:
   address: 0.0.0.0:8080
-  middleware: ["headers", "gzip"]
+  middleware: ["static", "headers", "gzip"]
   pool:
     max_jobs: 64 # feel free to change this
     supervisor:
@@ -113,11 +115,11 @@ This package provides event listeners for resetting application state without fu
 
 This package provides the following helpers:
 
-Name            | Description
---------------- | -----------
-`\rr\dump(...)` | Dump passed values (dumped result will be available in the HTTP response)
-`\rr\dd(...)`   | Dump passed values and stop the execution
-`\rr\worker()`  | Easy access to the RoadRunner PSR worker instance
+| Name            | Description                                                               |
+|-----------------|---------------------------------------------------------------------------|
+| `\rr\dump(...)` | Dump passed values (dumped result will be available in the HTTP response) |
+| `\rr\dd(...)`   | Dump passed values and stop the execution                                 |
+| `\rr\worker()`  | Easy access to the RoadRunner PSR worker instance                         |
 
 ### Known issues
 
@@ -324,10 +326,10 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maint
 [link_pulls]:https://github.com/spiral/roadrunner-laravel/pulls
 [link_license]:https://github.com/spiral/roadrunner-laravel/blob/master/LICENSE
 [getcomposer]:https://getcomposer.org/download/
-[roadrunner]:https://github.com/spiral/roadrunner
-[roadrunner_config]:https://github.com/spiral/roadrunner-binary/blob/master/.rr.yaml
+[roadrunner]:https://github.com/roadrunner-server/roadrunner
+[roadrunner_config]:https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml
 [laravel]:https://laravel.com
 [laravel_events]:https://laravel.com/docs/events
 [roadrunner-cli]:https://github.com/spiral/roadrunner-cli
-[roadrunner-binary-releases]:https://github.com/spiral/roadrunner-binary/releases
+[roadrunner-binary-releases]:https://github.com/roadrunner-server/roadrunner/releases
 [#10]:https://github.com/spiral/roadrunner-laravel/issues/10
