@@ -17,6 +17,10 @@ class FlushStrCacheListenerTest extends AbstractListenerTestCase
      */
     public function testHandle(): void
     {
+        if (! \method_exists(Str::class, $method_name = 'flushCache')) {
+            $this->markTestSkipped("Method $method_name does not exist");
+        }
+
         Str::snake('Hello world');
         Str::camel('Hello world');
         Str::studly('Hello world');
