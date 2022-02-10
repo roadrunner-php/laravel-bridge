@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Listener `CleanupUploadedFilesListener` for removing temporary files, which was created during uploading _(should be enabled manually for the `AfterLoopIterationEvent` event)_ [#84]
+
+[#84]:https://github.com/spiral/roadrunner-laravel/issues/84
+
 ## v5.7.0
 
 ### Added

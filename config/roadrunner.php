@@ -51,6 +51,7 @@ return [
         Events\AfterLoopIterationEvent::class => [
             ...Defaults::afterLoopIteration(),
             Listeners\RunGarbageCollectorListener::class, // keep the memory usage low
+            // Listeners\CleanupUploadedFilesListener::class, // remove temporary files
         ],
 
         Events\AfterLoopStoppedEvent::class => [
