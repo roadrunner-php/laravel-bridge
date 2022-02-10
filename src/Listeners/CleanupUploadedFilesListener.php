@@ -19,12 +19,12 @@ class CleanupUploadedFilesListener implements ListenerInterface
         if ($event instanceof WithHttpRequest) {
             foreach ($event->httpRequest()->files->all() as $file) {
                 if ($file instanceof \SplFileInfo) {
-                    $path = $file->getRealPath();
+                    if (\is_string($path = $file->getRealPath())) {
+                        \clearstatcache(true, $path);
 
-                    \clearstatcache(true, $path);
-
-                    if (\is_string($path) && \is_file($path)) {
-                        \unlink($path);
+                        if (\is_file($path)) {
+                            \unlink($path);
+                        }
                     }
                 }
             }
