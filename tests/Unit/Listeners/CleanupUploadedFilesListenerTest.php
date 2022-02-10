@@ -52,7 +52,7 @@ class CleanupUploadedFilesListenerTest extends AbstractListenerTestCase
             new UploadedFile($file_3_path, $file_3_name),
         ]);
 
-        \rename($file_3_path, $file_3_new_path = $file_3_path . '.new');
+        \rename($file_3_path, $file_3_new_path = $file_3_path . Str::random());
 
         /** @var m\MockInterface|WithHttpRequest $event */
         $event = m::mock(WithHttpRequest::class)
