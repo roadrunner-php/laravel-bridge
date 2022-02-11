@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Listener `CleanupUploadedFilesListener` for removing temporary files, which was created during uploading _(should be enabled manually for the `AfterLoopIterationEvent` event)_ [#84]
+- Listener `CleanupUploadedFilesListener` for removing temporary files which were created during uploading _(must be enabled manually for the `AfterLoopIterationEvent` event)_ [#84]
 
 [#84]:https://github.com/spiral/roadrunner-laravel/issues/84
 
