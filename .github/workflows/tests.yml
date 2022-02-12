@@ -59,7 +59,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Install lowest Composer dependencies
         if: matrix.setup == 'lowest'
-        run: composer update --prefer-dist --no-interaction --prefer-lowest --no-progress --ansi
+        run: composer update --prefer-dist --no-interaction --prefer-lowest --ignore-platform-req=php --no-progress --ansi
 
       - name: Install basic Composer dependencies
         if: matrix.setup == 'basic'
@@ -107,7 +107,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install required Composer packages
-        run: composer require 'spiral/code-style:^1.0' -n --no-progress --prefer-dist # `--ignore-platform-reqs` is required only for PHP 8.0
+        run: composer require 'spiral/code-style:^1.0' -n --ignore-platform-req=php --no-progress --prefer-dist # `--ignore-platform-reqs` is required only for PHP 8.0
 
       - name: Execute check
         run: php ./vendor/bin/spiral-cs check ./bin ./src ./tests --ansi
