@@ -14,6 +14,18 @@ class ResetLaravelIgnitionListener implements ListenerInterface
     use Traits\InvokerTrait;
 
     /**
+     * @var array<class-string>
+     */
+    private static array $abstracts = [
+        \Spatie\Ignition\Ignition::class,
+        \Spatie\LaravelIgnition\Support\SentReports::class,
+        \Spatie\LaravelIgnition\Recorders\DumpRecorder\DumpRecorder::class,
+        \Spatie\LaravelIgnition\Recorders\LogRecorder\LogRecorder::class,
+        \Spatie\LaravelIgnition\Recorders\QueryRecorder\QueryRecorder::class,
+        \Spatie\LaravelIgnition\Recorders\JobRecorder\JobRecorder::class,
+    ];
+
+    /**
      * {@inheritdoc}
      */
     public function handle($event): void
@@ -26,14 +38,7 @@ class ResetLaravelIgnitionListener implements ListenerInterface
             $app = $event->application();
 
             /** @see \Spatie\LaravelIgnition\IgnitionServiceProvider::resetFlareAndLaravelIgnition */
-            foreach ([
-                         \Spatie\Ignition\Ignition::class,
-                         \Spatie\LaravelIgnition\Support\SentReports::class,
-                         \Spatie\LaravelIgnition\Recorders\DumpRecorder\DumpRecorder::class,
-                         \Spatie\LaravelIgnition\Recorders\LogRecorder\LogRecorder::class,
-                         \Spatie\LaravelIgnition\Recorders\QueryRecorder\QueryRecorder::class,
-                         \Spatie\LaravelIgnition\Recorders\JobRecorder\JobRecorder::class,
-                     ] as $abstract) {
+            foreach (self::$abstracts as $abstract) {
                 if ($app->resolved($abstract)) {
                     $instance = $app->make($abstract);
 
