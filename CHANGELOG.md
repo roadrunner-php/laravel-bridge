@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- Integration with [spatie/laravel-ignition](https://github.com/spatie/laravel-ignition) is supported now [#88]
+- Defining of environment variable `APP_RUNNING_IN_CONSOLE` in the worker "binary" file (it is required for the correct [`Application::runningInConsole`](https://bit.ly/3GPJTNL) method working) [#88]
+
+### Fixed
+
+- CLI running mode detection [#88]
+
+[#88]:https://github.com/spiral/roadrunner-laravel/pull/88
+
 ## v5.8.0
 
 ### Added
