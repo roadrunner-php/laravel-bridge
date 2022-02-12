@@ -101,6 +101,10 @@ class Dumper
      */
     protected function ranUsingCLI(): bool
     {
+        if (Env::get('APP_RUNNING_IN_CONSOLE') === true) {
+            return true;
+        }
+
         /** @link https://roadrunner.dev/docs/php-environment */
         if (Env::get('RR_MODE') !== null && Env::get('RR_RELAY') !== null) {
             return false;

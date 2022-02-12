@@ -57,6 +57,7 @@ final class Defaults
             Listeners\ResetInertiaListener::class, // for <https://github.com/inertiajs/inertia-laravel>
             Listeners\ResetZiggyListener::class, // for <https://github.com/tighten/ziggy>
             Listeners\ResetLivewireListener::class, // for <https://github.com/livewire/livewire>
+            Listeners\ResetLaravelIgnitionListener::class, // for <https://github.com/spatie/laravel-ignition>
         ];
     }
 

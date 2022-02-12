@@ -9,6 +9,19 @@ declare(strict_types=1);
 
 /*
 |--------------------------------------------------------------------------
+| Setup Application Running Mode
+|--------------------------------------------------------------------------
+|
+| Saying to the Laravel "We are NOT running in the console"
+| (https://bit.ly/3GPJTNL).
+|
+*/
+
+$_ENV['APP_RUNNING_IN_CONSOLE'] = false;
+\putenv('APP_RUNNING_IN_CONSOLE=false');
+
+/*
+|--------------------------------------------------------------------------
 | Register The Auto Loader
 |--------------------------------------------------------------------------
 |
