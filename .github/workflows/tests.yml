@@ -65,7 +65,8 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         if: matrix.setup == 'basic'
         run: composer update --prefer-dist --no-interaction --no-progress --ansi
 
-      - if: ${{ startsWith(matrix.php, '8') && matrix.setup == 'basic' }} # only for php >= 8.0
+      - name: Install "spatie/laravel-ignition" package
+        if: ${{ startsWith(matrix.php, '8') && matrix.setup == 'basic' }} # only for php >= 8.0
         run: composer require --dev spatie/laravel-ignition
 
       - name: Show most important package versions

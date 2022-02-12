@@ -6,7 +6,7 @@ parameters:
     - fixes
     - helpers
     - src
-  reportUnmatchedIgnoredErrors: true
+  reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     - message: '#Call to protected method bootstrappers\(\) of class.+Kernel#'
       paths: [src/Application/Factory.php]
