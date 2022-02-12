@@ -63,7 +63,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
 
       - name: Install basic Composer dependencies
         if: matrix.setup == 'basic'
-        run: composer update --prefer-dist --no-interaction --no-progress --ansi
+        run: composer update --prefer-dist --no-interaction --no-progress --ignore-platform-req=php --ansi
 
       - name: Show most important package versions
         run: composer info | grep -e laravel -e spiral -e phpunit/phpunit -e phpstan/phpstan
