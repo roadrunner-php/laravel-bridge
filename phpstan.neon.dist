@@ -10,3 +10,5 @@ parameters:
   ignoreErrors:
     - message: '#Call to protected method bootstrappers\(\) of class.+Kernel#'
       paths: [src/Application/Factory.php]
+    - message: '#Class Spatie\\.+Ignition.* not found#'
+      paths: [src/Listeners/ResetLaravelIgnitionListener.php]

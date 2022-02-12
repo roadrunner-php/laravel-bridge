@@ -19,6 +19,10 @@ class ResetLaravelIgnitionListenerTest extends AbstractListenerTestCase
      */
     public function testHandle(): void
     {
+        if (!\class_exists(\Spatie\LaravelIgnition\IgnitionServiceProvider::class)) {
+            $this->markTestSkipped("Run 'composer require --dev spatie/laravel-ignition' for enabling this test");
+        }
+
         $this->spy(\Spatie\Ignition\Ignition::class, function (m\MockInterface $m) {
             $m->shouldReceive('reset')->once();
         });
