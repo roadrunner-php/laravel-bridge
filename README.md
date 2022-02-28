@@ -21,7 +21,7 @@ Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applicat
 Make sure that [RR binary file][roadrunner-binary-releases] already installed on your system (or docker image). Require this package with composer using next command:
 
 ```shell script
-$ composer require spiral/roadrunner-laravel "^5.7"
+$ composer require spiral/roadrunner-laravel
 ```
 
 > Installed `composer` is required ([how to install composer][getcomposer]).
