@@ -36,7 +36,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             rr: '2.7.6'
             coverage: 'false'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install RoadRunner Binary
         run: docker run --rm -v "/:/rootfs:rw" --entrypoint "" spiralscout/roadrunner:${{ matrix.rr }} cp /usr/bin/rr /rootfs/usr/bin/rr
@@ -93,7 +93,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
     name: Check Code Style
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: shivammathur/setup-php@v2
         with:
