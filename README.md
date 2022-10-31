@@ -12,7 +12,7 @@
 [![Chat][badge_chat]][link_chat]
 [![License][badge_license]][link_license]
 
-Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applications.
+Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applications (community integration).
 
 > 🐋 If you want to see an example of a laravel application in a docker container with RoadRunner as a web server - take a look at [this repository](https://github.com/tarampampam/laravel-roadrunner-in-docker).
 
