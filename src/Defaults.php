@@ -45,6 +45,7 @@ final class Defaults
             Listeners\RebindPipelineHubListener::class,
             Listeners\RebindQueueManagerListener::class,
             Listeners\RebindValidationFactoryListener::class,
+            Listeners\RebindPaginatorListener::class,
             Listeners\UnqueueCookiesListener::class,
             Listeners\FlushAuthenticationStateListener::class,
             Listeners\ResetSessionListener::class,
@@ -102,6 +103,7 @@ final class Defaults
             Listeners\FlushTranslatorCacheListener::class,
             Listeners\ResetDatabaseRecordModificationStateListener::class,
             Listeners\FlushDatabaseQueryLogListener::class,
+            Listeners\FlushDatabaseQueryDurationListener::class,
             Listeners\ClearInstancesListener::class,
         ];
     }

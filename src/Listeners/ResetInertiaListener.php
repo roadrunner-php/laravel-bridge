@@ -35,10 +35,7 @@ class ResetInertiaListener implements ListenerInterface
             /** @var InertiaResponseFactory $inertia */
             $inertia = $app->make($inertia_abstract);
 
-            /** @see \Inertia\ResponseFactory::flushShared() */
-            if (!$this->invokeMethod($inertia, 'flushShared')) {
-                $this->setProperty($inertia, 'sharedProps', []);
-            }
+            $inertia->flushShared();
         }
     }
 }

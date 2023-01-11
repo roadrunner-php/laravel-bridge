@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.11.0
+
+### Added
+
+- Listener `FlushDatabaseQueryDurationListener` [#112]
+- Listener `RebindPaginatorListener` [#112]
+
+### Changed
+
+- Methods invoking in listeners replaced with normal function calls [#112]
+
+[#112]:https://github.com/spiral/roadrunner-laravel/pull/112
+
 ## v5.10.0
 
 ### Added

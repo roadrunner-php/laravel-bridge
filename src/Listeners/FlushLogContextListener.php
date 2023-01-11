@@ -28,6 +28,8 @@ class FlushLogContextListener implements ListenerInterface
             /** @var \Illuminate\Log\LogManager $log_manager */
             $log_manager = $app->make($log_abstract);
 
+            $log_manager->flushSharedContext();
+
             if (($logger = $log_manager->driver()) instanceof \Illuminate\Log\Logger) {
                 $logger->withoutContext();
             }

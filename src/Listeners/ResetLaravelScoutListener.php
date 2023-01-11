@@ -35,10 +35,7 @@ class ResetLaravelScoutListener implements ListenerInterface
             /** @var ScoutEngineManager $scout */
             $scout = $app->make($scout_abstract);
 
-            /** @see \Laravel\Scout\EngineManager::forgetEngines() */
-            if (!$this->invokeMethod($scout, 'forgetEngines')) {
-                $this->setProperty($scout, 'drivers', []);
-            }
+            $scout->forgetEngines();
         }
     }
 }

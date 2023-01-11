@@ -32,14 +32,8 @@ class RebindRouterListener implements ListenerInterface
             /** @var \Illuminate\Routing\Router $router */
             $router = $app->make($router_abstract);
 
-            /**
-             * Method `setContainer` for the Router available since Laravel v8.35.0.
-             *
-             * @link https://git.io/JszyO Source code (v8.35.0)
-             * @see  \Illuminate\Routing\Router::setContainer
-             */
-            if (!$this->invokeMethod($router, 'setContainer', $app)) {
-                $this->setProperty($router, 'container', $app);
+            if ($app instanceof \Illuminate\Container\Container) {
+                $router->setContainer($app);
             }
 
             try {

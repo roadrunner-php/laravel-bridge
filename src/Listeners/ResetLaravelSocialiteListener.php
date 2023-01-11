@@ -32,19 +32,11 @@ class ResetLaravelSocialiteListener implements ListenerInterface
                 return;
             }
 
-            /** @var SocialiteFactory $socialite */
+            /** @var \Laravel\Socialite\SocialiteManager $socialite */
             $socialite = $app->make($socialite_abstract);
 
-            /** @see \Laravel\Socialite\SocialiteManager::forgetDrivers() */
-            if (!$this->invokeMethod($socialite, 'forgetDrivers')) {
-                $this->setProperty($socialite, 'drivers', []);
-            }
-
-            /** @see \Laravel\Socialite\SocialiteManager::setContainer() */
-            if (!$this->invokeMethod($socialite, 'setContainer', $app)) {
-                $this->setProperty($socialite, 'app', $app);
-                $this->setProperty($socialite, 'container', $app);
-            }
+            $socialite->forgetDrivers();
+            $socialite->setContainer($app);
         }
     }
 }
