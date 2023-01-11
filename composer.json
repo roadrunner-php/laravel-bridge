@@ -15,9 +15,9 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.0",
         "composer-runtime-api": "^2.0",
-        "laravel/framework": "~8.0 || ~9.0",
+        "laravel/framework": "~8.0 || ~9.0 || ~10.0",
         "nyholm/psr7": "^1.5",
         "spiral/roadrunner-http": "^2.0.4",
         "spiral/roadrunner-worker": "^2.1.5",
@@ -27,8 +27,8 @@
         "guzzlehttp/guzzle": "^6.3 || ~7.0",
         "inertiajs/inertia-laravel": "^0.4.2 || ^0.5",
         "tightenco/ziggy": "^1.4.0",
-        "laravel/laravel": "~8.0 || ~9.0",
-        "laravel/scout": "~9.0",
+        "laravel/laravel": "~8.0 || ~9.0 || ~10.0",
+        "laravel/scout": "~9.0 || ~10.0",
         "laravel/socialite": "^5.0",
         "laravel/telescope": "^4.5",
         "livewire/livewire": "^2.7",
