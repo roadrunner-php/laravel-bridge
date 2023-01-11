@@ -88,7 +88,7 @@ http:
   address: 0.0.0.0:8080
   middleware: ["static", "headers", "gzip"]
   pool:
-    max_jobs: 64 # feel free to change this
+    #max_jobs: 64 # feel free to change this
     supervisor:
       exec_ttl: 60s
   headers:
