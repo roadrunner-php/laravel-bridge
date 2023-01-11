@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.10.0
+
+### Added
+
+- Laravel 10 support [#111]
+
+### Changed
+
+- Minimal required PHP version now is `8.0` [#111]
+- Minimal required Laravel version now is `9.33` [#111]
+
+[#111]:https://github.com/spiral/roadrunner-laravel/pull/111
+
 ## v5.9.0
 
 ### Added

@@ -23,10 +23,6 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
         rr: ['2.12.1'] # Releases: <https://github.com/roadrunner-server/roadrunner/releases>
         coverage: ['true']
         include:
-          - php: '7.4'
-            setup: 'basic'
-            rr: '2.0.0'
-            coverage: 'false'
           - php: '8.0'
             setup: 'lowest'
             rr: '2.0.0'
@@ -88,30 +84,3 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage/clover.xml
           fail_ci_if_error: false
-
-  cs-check:
-    name: Check Code Style
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: 7.4
-
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install required Composer packages
-        run: composer require 'spiral/code-style:^1.0' -n --no-progress --prefer-dist # `--ignore-platform-reqs` is required only for PHP 8.0
-
-      - name: Execute check
-        run: php ./vendor/bin/spiral-cs check ./bin ./src ./tests --ansi
