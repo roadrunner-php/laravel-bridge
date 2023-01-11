@@ -28,15 +28,7 @@ class RebindFilesystemManagerListener implements ListenerInterface
             /** @var \Illuminate\Filesystem\FilesystemManager $filesystem_manager */
             $filesystem_manager = $app->make($filesystem_abstract);
 
-            /**
-             * Method `setApplication` for the FilesystemManager available since Laravel v8.77.0.
-             *
-             * @link https://github.com/laravel/framework/blob/v8.77.0/src/Illuminate/Filesystem/FilesystemManager.php#L395-L400
-             * @see  \Illuminate\Filesystem\FilesystemManager::setApplication
-             */
-            if (! $this->invokeMethod($filesystem_manager, 'setApplication', $app)) {
-                $this->setProperty($filesystem_manager, 'app', $app);
-            }
+            $filesystem_manager->setApplication($app);
         }
     }
 }

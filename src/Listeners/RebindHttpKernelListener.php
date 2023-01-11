@@ -27,18 +27,10 @@ class RebindHttpKernelListener implements ListenerInterface
                 return;
             }
 
-            /** @var HttpKernel $kernel */
+            /** @var \Illuminate\Foundation\Http\Kernel $kernel */
             $kernel = $app->make($kernel_abstract);
 
-            /**
-             * Method `setApplication` for the HTTP kernel available since Laravel v8.35.0.
-             *
-             * @link https://git.io/JszZM Source code (v8.35.0)
-             * @see  \Illuminate\Foundation\Http\Kernel::setApplication
-             */
-            if (! $this->invokeMethod($kernel, 'setApplication', $app)) {
-                $this->setProperty($kernel, 'app', $app);
-            }
+            $kernel->setApplication($app);
         }
     }
 }

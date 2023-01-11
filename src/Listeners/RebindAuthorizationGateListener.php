@@ -26,18 +26,10 @@ class RebindAuthorizationGateListener implements ListenerInterface
                 return;
             }
 
-            /** @var Gate $gate */
+            /** @var \Illuminate\Auth\Access\Gate $gate */
             $gate = $app->make($gate_abstract);
 
-            /**
-             * Method `setContainer` for the Gate implementation available since Laravel v8.35.0.
-             *
-             * @link https://git.io/JszTs Source code (v8.35.0)
-             * @see  \Illuminate\Auth\Access\Gate::setContainer
-             */
-            if (! $this->invokeMethod($gate, 'setContainer', $app)) {
-                $this->setProperty($gate, 'container', $app);
-            }
+            $gate->setContainer($app);
         }
     }
 }

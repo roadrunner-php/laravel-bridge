@@ -31,15 +31,7 @@ class FlushTranslatorCacheListener implements ListenerInterface
             $translator = $app->make($translator_abstract);
 
             if ($translator instanceof NamespacedItemResolver) {
-                /**
-                 * Method `flushParsedKeys` for the Translator available since Laravel v8.70.0.
-                 *
-                 * @link https://git.io/JXd0v Source code (v8.70.0)
-                 * @see  Translator::flushParsedKeys()
-                 */
-                if (! $this->invokeMethod($translator, 'flushParsedKeys')) {
-                    $this->setProperty($translator, 'parsed', []);
-                }
+                $translator->flushParsedKeys();
             }
         }
     }

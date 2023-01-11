@@ -23,6 +23,8 @@ class ClearInstancesListener implements ListenerInterface
             $app = $event->application();
 
             if ($app instanceof Container) {
+                $app->forgetScopedInstances();
+
                 /** @var ConfigRepository $config */
                 $config = $app->make(ConfigRepository::class);
 

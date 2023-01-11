@@ -26,18 +26,10 @@ class RebindPipelineHubListener implements ListenerInterface
                 return;
             }
 
-            /** @var Hub $hub */
+            /** @var \Illuminate\Pipeline\Hub $hub */
             $hub = $app->make($hub_abstract);
 
-            /**
-             * Method `setContainer` for the Hub available since Laravel v8.35.0.
-             *
-             * @link https://git.io/Jszic Source code (v8.35.0)
-             * @see  \Illuminate\Pipeline\Hub::setContainer
-             */
-            if (!$this->invokeMethod($hub, 'setContainer', $app)) {
-                $this->setProperty($hub, 'container', $app);
-            }
+            $hub->setContainer($app);
         }
     }
 }

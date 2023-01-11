@@ -33,15 +33,7 @@ class RebindDatabaseSessionHandlerListener implements ListenerInterface
                 $handler = $driver->getHandler();
 
                 if ($handler instanceof \Illuminate\Session\DatabaseSessionHandler) {
-                    /**
-                     * Method `setContainer` for the DatabaseSessionHandler available since Laravel v8.45.0.
-                     *
-                     * @link https://git.io/JZYrJ Source code (v8.45.0)
-                     * @see  \Illuminate\Session\DatabaseSessionHandler::setContainer
-                     */
-                    if (!$this->invokeMethod($handler, 'setContainer', $app)) {
-                        $this->setProperty($handler, 'container', $app);
-                    }
+                    $handler->setContainer($app);
                 }
             }
         }

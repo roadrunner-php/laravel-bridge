@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Listeners;
 
+use Illuminate\Database\Connection;
+use Illuminate\Database\DatabaseManager;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithApplication;
 
 /**
- * @link https://github.com/laravel/octane/blob/1.x/src/Listeners/FlushDatabaseRecordModificationState.php
+ * @link https://github.com/laravel/octane/blob/1.x/src/Listeners/RefreshQueryDurationHandling.php
  */
-class ResetDatabaseRecordModificationStateListener implements ListenerInterface
+class FlushDatabaseQueryDurationListener implements ListenerInterface
 {
-    use Traits\InvokerTrait;
-
     /**
      * {@inheritdoc}
      */
@@ -25,11 +25,14 @@ class ResetDatabaseRecordModificationStateListener implements ListenerInterface
                 return;
             }
 
-            /** @var \Illuminate\Database\DatabaseManager $database_manager */
+            /** @var DatabaseManager $database_manager */
             $database_manager = $app->make($database_abstract);
 
             foreach ($database_manager->getConnections() as $connection) {
-                $connection->forgetRecordModificationState();
+                if ($connection instanceof Connection) {
+                    $connection->resetTotalQueryDuration();
+                    $connection->allowQueryDurationHandlersToRunAgain();
+                }
             }
         }
     }
