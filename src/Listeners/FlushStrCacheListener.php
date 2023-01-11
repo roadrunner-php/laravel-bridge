@@ -18,16 +18,6 @@ class FlushStrCacheListener implements ListenerInterface
      */
     public function handle($event): void
     {
-        /**
-         * Method `flushCache` for the Str available since Laravel v8.81.0.
-         *
-         * @link https://github.com/illuminate/support/blob/v8.81.0/Str.php#L994
-         * @see  \Illuminate\Support\Str::flushCache
-         */
-        if (! $this->invokeStaticMethod($class = Str::class, 'flushCache')) {
-            foreach (['snakeCache', 'camelCache', 'studlyCache'] as $property) {
-                $this->setStaticProperty($class, $property, []);
-            }
-        }
+        Str::flushCache();
     }
 }

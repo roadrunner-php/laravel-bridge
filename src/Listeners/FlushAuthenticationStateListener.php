@@ -34,25 +34,8 @@ class FlushAuthenticationStateListener implements ListenerInterface
             /** @var \Illuminate\Auth\AuthManager $auth */
             $auth = $app->make($auth_abstract);
 
-            /**
-             * Method `setApplication` for the Auth Manager available since Laravel v8.35.0.
-             *
-             * @link https://git.io/JsgTx Source code (v8.35.0)
-             * @see  \Illuminate\Auth\AuthManager::setApplication()
-             */
-            if (! $this->invokeMethod($auth, 'setApplication', $app)) {
-                $this->setProperty($auth, 'app', $app);
-            }
-
-            /**
-             * Method `forgetGuards` for the Auth Manager available since Laravel v8.35.0.
-             *
-             * @link https://git.io/Jsgkt Source code (v8.35.0)
-             * @see  \Illuminate\Auth\AuthManager::forgetGuards()
-             */
-            if (! $this->invokeMethod($auth, 'forgetGuards')) {
-                $this->setProperty($auth, 'guards', []);
-            }
+            $auth->setApplication($app);
+            $auth->forgetGuards();
         }
     }
 }

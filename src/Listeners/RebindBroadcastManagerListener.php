@@ -29,15 +29,7 @@ class RebindBroadcastManagerListener implements ListenerInterface
             /** @var BroadcastManager $broadcast_manager */
             $broadcast_manager = $app->make($broadcast_manager_abstract);
 
-            /**
-             * Method `setApplication` for the BroadcastManager available since Laravel v8.35.0.
-             *
-             * @link https://git.io/Jszm3 Source code (v8.35.0)
-             * @see  \Illuminate\Broadcasting\BroadcastManager::setApplication
-             */
-            if (! $this->invokeMethod($broadcast_manager, 'setApplication', $app)) {
-                $this->setProperty($broadcast_manager, 'app', $app);
-            }
+            $broadcast_manager->setApplication($app);
 
             // Forgetting drivers will flush all channel routes which is unwanted...
             // $broadcast_manager->forgetDrivers();

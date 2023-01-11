@@ -29,15 +29,7 @@ class RebindQueueManagerListener implements ListenerInterface
             /** @var \Illuminate\Queue\QueueManager $queue_manager */
             $queue_manager = $app->make($queue_abstract);
 
-            /**
-             * Method `setContainer` for the QueueManager available since Laravel v8.35.0.
-             *
-             * @link https://git.io/JszXf Source code (v8.35.0)
-             * @see  \Illuminate\Queue\QueueManager::setApplication
-             */
-            if (!$this->invokeMethod($queue_manager, 'setApplication', $app)) {
-                $this->setProperty($queue_manager, 'app', $app);
-            }
+            $queue_manager->setApplication($app);
         }
     }
 }

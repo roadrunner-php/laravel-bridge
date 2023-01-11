@@ -25,18 +25,7 @@ class UnqueueCookiesListener implements ListenerInterface
                 /** @var \Illuminate\Cookie\CookieJar $cookies */
                 $cookies = $app->make($cookie_abstract);
 
-                /**
-                 * Method `flushQueuedCookies` for the CookieJar available since Laravel v8.34.0.
-                 *
-                 * @link https://git.io/Jsuph Pull request
-                 * @link https://git.io/Jszvy Source code (v8.34.0)
-                 * @see  \Illuminate\Cookie\CookieJar::flushQueuedCookies
-                 */
-                if (!$this->invokeMethod($cookies, 'flushQueuedCookies')) {
-                    foreach ($cookies->getQueuedCookies() as $_ => $value) { // the "old" way
-                        $cookies->unqueue($value->getName());
-                    }
-                }
+                $cookies->flushQueuedCookies();
             }
         }
     }

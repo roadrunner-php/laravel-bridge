@@ -29,25 +29,8 @@ class RebindMailManagerListener implements ListenerInterface
             /** @var MailManager $mail_manager */
             $mail_manager = $app->make($mail_manager_abstract);
 
-            /**
-             * Method `setApplication` for the MailManager available since Laravel v8.35.0.
-             *
-             * @link https://git.io/JszC5 Source code (v8.35.0)
-             * @see  \Illuminate\Mail\MailManager::setApplication
-             */
-            if (!$this->invokeMethod($mail_manager, 'setApplication', $app)) {
-                $this->setProperty($mail_manager, 'app', $app);
-            }
-
-            /**
-             * Method `forgetMailers` for the MailManager available since Laravel v8.35.0.
-             *
-             * @link https://git.io/JszWd Source code (v8.35.0)
-             * @see  \Illuminate\Mail\MailManager::forgetMailers
-             */
-            if (!$this->invokeMethod($mail_manager, 'forgetMailers')) {
-                $this->setProperty($mail_manager, 'mailers', []);
-            }
+            $mail_manager->setApplication($app);
+            $mail_manager->forgetMailers();
         }
     }
 }
