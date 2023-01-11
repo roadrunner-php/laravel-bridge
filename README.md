@@ -305,7 +305,7 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maint
 
 [badge_packagist_version]:https://img.shields.io/packagist/v/spiral/roadrunner-laravel.svg?maxAge=180
 [badge_php_version]:https://img.shields.io/packagist/php-v/spiral/roadrunner-laravel.svg?longCache=true
-[badge_build_status]:https://img.shields.io/github/workflow/status/spiral/roadrunner-laravel/tests?maxAge=30
+[badge_build_status]:https://img.shields.io/github/actions/workflow/status/spiral/roadrunner-laravel/tests.yml?branch=master&maxAge=30
 [badge_chat]:https://img.shields.io/badge/discord-chat-magenta.svg
 [badge_coverage]:https://img.shields.io/codecov/c/github/spiral/roadrunner-laravel/master.svg?maxAge=180
 [badge_downloads_count]:https://img.shields.io/packagist/dt/spiral/roadrunner-laravel.svg?maxAge=180
