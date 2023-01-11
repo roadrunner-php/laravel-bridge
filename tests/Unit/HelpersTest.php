@@ -20,6 +20,8 @@ class HelpersTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
             ->andReturnUndefined();
 
         \rr\dump('foo', 'bar');
+
+        $this->assertTrue(true);
     }
 
     /**
@@ -33,6 +35,8 @@ class HelpersTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
             ->andReturnUndefined();
 
         \rr\dd('foo', 123);
+
+        $this->assertTrue(true);
     }
 
     /**

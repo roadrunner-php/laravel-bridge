@@ -55,6 +55,6 @@ class StartCommandTest extends \Spiral\RoadRunnerLaravel\Tests\AbstractTestCase
      */
     public function testCommandExecuting(): void
     {
-        $this->markTestSkipped('There is now legal way for the execution method testing');
+        $this->markTestSkipped('There is no legal way for the execution method testing');
     }
 }
