@@ -56,11 +56,11 @@ class WorkerFactory
             }
 
             throw new \RuntimeException(
-                \sprintf("Class [${class}] should implements [%s] interface", WorkerInterface::class)
+                \sprintf("Class [{$class}] should implements [%s] interface", WorkerInterface::class)
             );
         }
 
-        throw new \InvalidArgumentException("Unsupported worker mode: ${mode}");
+        throw new \InvalidArgumentException("Unsupported worker mode: {$mode}");
     }
 
     /**
