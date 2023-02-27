@@ -92,7 +92,7 @@ final class DumperException extends \RuntimeException
 
         $code = Response::HTTP_INTERNAL_SERVER_ERROR;
 
-        if (\is_int($current_code = $this->getCode()) && $current_code > 0) {
+        if (($current_code = $this->getCode()) > 0) {
             $code = $current_code;
         }
 
