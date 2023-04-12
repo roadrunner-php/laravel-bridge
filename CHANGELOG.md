@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Strings interpolation for PHP 8.2 [#114]
 
-[#114]:https://github.com/spiral/roadrunner-laravel/issues/114
+[#114]:https://github.com/roadrunner-php/laravel-bridge/issues/114
 
 ## v5.11.0
 
@@ -23,7 +23,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Methods invoking in listeners replaced with normal function calls [#112]
 
-[#112]:https://github.com/spiral/roadrunner-laravel/pull/112
+[#112]:https://github.com/roadrunner-php/laravel-bridge/pull/112
 
 ## v5.10.0
 
@@ -36,7 +36,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 - Minimal required PHP version now is `8.0` [#111]
 - Minimal required Laravel version now is `9.33` [#111]
 
-[#111]:https://github.com/spiral/roadrunner-laravel/pull/111
+[#111]:https://github.com/roadrunner-php/laravel-bridge/pull/111
 
 ## v5.9.0
 
@@ -49,7 +49,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - CLI running mode detection [#88]
 
-[#88]:https://github.com/spiral/roadrunner-laravel/pull/88
+[#88]:https://github.com/roadrunner-php/laravel-bridge/pull/88
 
 ## v5.8.0
 
@@ -57,7 +57,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Listener `CleanupUploadedFilesListener` for removing temporary files which were created during uploading _(must be enabled manually for the `AfterLoopIterationEvent` event)_ [#84]
 
-[#84]:https://github.com/spiral/roadrunner-laravel/issues/84
+[#84]:https://github.com/roadrunner-php/laravel-bridge/issues/84
 
 ## v5.7.0
 
@@ -70,8 +70,8 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Laravel 6 and 7 is no longer supported [#78]
 
-[#78]:https://github.com/spiral/roadrunner-laravel/pull/78
-[#86]:https://github.com/spiral/roadrunner-laravel/pull/86
+[#78]:https://github.com/roadrunner-php/laravel-bridge/pull/78
+[#86]:https://github.com/roadrunner-php/laravel-bridge/pull/86
 
 ## v5.6.0
 
@@ -80,7 +80,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 - Give the current App instance to `FilesystemManager` (listener `RebindFilesystemManagerListener`) [#77]
 - Monolog state resetting between requests (listener `FlushMonologStateListener`) [#77]
 
-[#77]:https://github.com/spiral/roadrunner-laravel/pull/77
+[#77]:https://github.com/roadrunner-php/laravel-bridge/pull/77
 
 ## v5.5.0
 
@@ -89,8 +89,8 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 - Listener `FlushTranslatorCacheListener` for memory leak fixing on `Translator` implementation [#70]
 - Integration with [Livewire](https://github.com/livewire/livewire) is supported now [#71]
 
-[#70]:https://github.com/spiral/roadrunner-laravel/pull/70
-[#71]:https://github.com/spiral/roadrunner-laravel/pull/71
+[#70]:https://github.com/roadrunner-php/laravel-bridge/pull/70
+[#71]:https://github.com/roadrunner-php/laravel-bridge/pull/71
 
 ## v5.4.0
 
@@ -98,7 +98,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Listener `FlushDatabaseQueryLogListener` for cleaning up database query log [#67]
 
-[#67]:https://github.com/spiral/roadrunner-laravel/pull/67
+[#67]:https://github.com/roadrunner-php/laravel-bridge/pull/67
 
 ## v5.3.0
 
@@ -111,8 +111,8 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Listeners (resetters) for the 3rd party packages are enabled by default
 
-[#64]:https://github.com/spiral/roadrunner-laravel/issues/64
-[#65]:https://github.com/spiral/roadrunner-laravel/issues/65
+[#64]:https://github.com/roadrunner-php/laravel-bridge/issues/64
+[#65]:https://github.com/roadrunner-php/laravel-bridge/issues/65
 
 ## v5.2.2
 
@@ -120,7 +120,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Resolve listener components when needed [#58]
 
-[#58]:https://github.com/spiral/roadrunner-laravel/issues/58
+[#58]:https://github.com/roadrunner-php/laravel-bridge/issues/58
 
 ## v5.2.1
 
@@ -134,7 +134,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Integration with [Laravel Telescope](https://github.com/laravel/telescope/) is supported now (just enable `SetupTelescopeListener` for `BeforeLoopStartedEvent`) [#53]
 
-[#53]:https://github.com/spiral/roadrunner-laravel/issues/53
+[#53]:https://github.com/roadrunner-php/laravel-bridge/issues/53
 
 ## v5.1.0
 
@@ -142,7 +142,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Listener `FlushLogContextListener` for the logger context flushing [#51]
 
-[#51]:https://github.com/spiral/roadrunner-laravel/pull/51
+[#51]:https://github.com/roadrunner-php/laravel-bridge/pull/51
 
 ## v5.0.2
 
@@ -150,7 +150,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Dumper CLI mode detection [#47]
 
-[#47]:https://github.com/spiral/roadrunner-laravel/pull/47
+[#47]:https://github.com/roadrunner-php/laravel-bridge/pull/47
 
 ## v5.0.1
 
@@ -158,7 +158,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Symfony uploaded file moving (`FixSymfonyFileMovingListener` was added for this) [#43]
 
-[#43]:https://github.com/spiral/roadrunner-laravel/issues/43
+[#43]:https://github.com/roadrunner-php/laravel-bridge/issues/43
 
 ## v5.0.0
 
@@ -270,7 +270,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Sending any form data with a `DELETE` or `PUT` method (the application ignored the hidden field `_method` and as a result the action necessary for the form did not occur) [#9]
 
-[#9]:https://github.com/spiral/roadrunner-laravel/pull/9
+[#9]:https://github.com/roadrunner-php/laravel-bridge/pull/9
 
 ## v3.4.0
 
@@ -282,7 +282,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Minimal required PHP version now is `7.2` [#3]
 
-[#3]:https://github.com/spiral/roadrunner-laravel/issues/3
+[#3]:https://github.com/roadrunner-php/laravel-bridge/issues/3
 
 ## v3.3.0
 

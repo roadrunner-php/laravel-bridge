@@ -7,7 +7,7 @@ namespace Spiral\RoadRunnerLaravel\Listeners;
 use Spiral\RoadRunnerLaravel\Events\Contracts\WithHttpRequest;
 
 /**
- * @link https://github.com/spiral/roadrunner-laravel/issues/84
+ * @link https://github.com/roadrunner-php/laravel-bridge/issues/84
  */
 class CleanupUploadedFilesListener implements ListenerInterface
 {

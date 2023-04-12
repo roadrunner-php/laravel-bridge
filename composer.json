@@ -74,7 +74,7 @@
         }
     },
     "support": {
-        "issues": "https://github.com/spiral/roadrunner-laravel/issues",
-        "source": "https://github.com/spiral/roadrunner-laravel"
+        "issues": "https://github.com/roadrunner-php/laravel-bridge/issues",
+        "source": "https://github.com/roadrunner-php/laravel-bridge"
     }
 }

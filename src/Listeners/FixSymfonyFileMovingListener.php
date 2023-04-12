@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Listeners;
 
 /**
- * @link https://github.com/spiral/roadrunner-laravel/issues/43
+ * @link https://github.com/roadrunner-php/laravel-bridge/issues/43
  */
 class FixSymfonyFileMovingListener implements ListenerInterface
 {

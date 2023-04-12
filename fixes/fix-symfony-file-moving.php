@@ -8,7 +8,7 @@ namespace Symfony\Component\HttpFoundation\File {
      * ***************************************************************************
      * *******                                                             *******
      * *******        THIS FUNCTION OVERLOADING IS NECESSARY MEASURE       *******
-     * *******    https://github.com/spiral/roadrunner-laravel/issues/43   *******
+     * *******  https://github.com/roadrunner-php/laravel-bridge/issues/43 *******
      * *******                                                             *******
      * ***************************************************************************.
      *

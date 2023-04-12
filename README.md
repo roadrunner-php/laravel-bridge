@@ -125,7 +125,7 @@ This package provides the following helpers:
 
 #### Performance degradation
 
-...when `file` driver is set for your sessions. Please, use `redis` (or something similar) driver instead ([related issue](https://github.com/spiral/roadrunner-laravel/issues/23)). This package or/and RoadRunner has nothing to do with it, but since this is a fairly common issue - it is described here.
+...when `file` driver is set for your sessions. Please, use `redis` (or something similar) driver instead ([related issue](https://github.com/roadrunner-php/laravel-bridge/issues/23)). This package or/and RoadRunner has nothing to do with it, but since this is a fairly common issue - it is described here.
 
 #### Controller constructors
 
@@ -332,4 +332,4 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maint
 [laravel_events]:https://laravel.com/docs/events
 [roadrunner-cli]:https://github.com/spiral/roadrunner-cli
 [roadrunner-binary-releases]:https://github.com/roadrunner-server/roadrunner/releases
-[#10]:https://github.com/spiral/roadrunner-laravel/issues/10
+[#10]:https://github.com/roadrunner-php/laravel-bridge/issues/10
