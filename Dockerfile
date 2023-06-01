@@ -1,5 +1,5 @@
 # Image page: <https://hub.docker.com/_/php>
-FROM php:8.2.5-alpine
+FROM php:8.2.6-alpine
 
 ENV COMPOSER_HOME="/tmp/composer"
 
