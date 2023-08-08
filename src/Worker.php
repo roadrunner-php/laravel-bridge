@@ -74,8 +74,11 @@ class Worker implements WorkerInterface
      */
     public function start(WorkerOptionsInterface $options): void
     {
+        /** @var non-empty-string $relay_dsn */
+        $relay_dsn = $options->getRelayDsn();
+
         $psr7_worker = new \Spiral\RoadRunner\Http\PSR7Worker(
-            new \Spiral\RoadRunner\Worker(\Spiral\Goridge\Relay::create($options->getRelayDsn())),
+            new \Spiral\RoadRunner\Worker(\Spiral\Goridge\Relay::create($relay_dsn)),
             $this->request_factory,
             $this->stream_factory,
             $this->uploads_factory

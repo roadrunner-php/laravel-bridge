@@ -19,8 +19,8 @@
         "composer-runtime-api": "^2.0",
         "laravel/framework": "~9.33 || ~10.0",
         "nyholm/psr7": "^1.5",
-        "spiral/roadrunner-http": "^2.2",
-        "spiral/roadrunner-worker": "^2.2",
+        "spiral/roadrunner-http": "^2.2 || ^3.0",
+        "spiral/roadrunner-worker": "^2.2 || ^3.0",
         "symfony/psr-http-message-bridge": "^2.1"
     },
     "require-dev": {
