@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.12.0
+
+### Added
+
+- Support for `v3.x` of `spiral/roadrunner-http` package [#125]
+
+[#125]:https://github.com/roadrunner-php/laravel-bridge/issues/125
+
 ## v5.11.1
 
 ### Fixed
