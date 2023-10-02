@@ -32,7 +32,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
             rr: '2.12.1'
             coverage: 'false'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install RoadRunner Binary
         run: docker run --rm -v "/:/rootfs:rw" --entrypoint "" spiralscout/roadrunner:${{ matrix.rr }} cp /usr/bin/rr /rootfs/usr/bin/rr
