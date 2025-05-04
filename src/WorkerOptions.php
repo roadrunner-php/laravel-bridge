@@ -6,56 +6,18 @@ namespace Spiral\RoadRunnerLaravel;
 
 class WorkerOptions implements WorkerOptionsInterface
 {
-    /**
-     * @var string
-     */
-    protected string $base_path;
+    public function __construct(
+        protected string $basePath,
+        protected string $relayDsn = 'pipes',
+    ) {}
 
-    /**
-     * @var bool
-     */
-    protected bool $refresh_app;
-
-    /**
-     * @var string
-     */
-    protected string $relay_dsn;
-
-    /**
-     * WorkerOptions constructor.
-     *
-     * @param string $base_path
-     * @param bool   $refresh_app
-     * @param string $relay_dsn
-     */
-    public function __construct(string $base_path, bool $refresh_app = false, string $relay_dsn = 'pipes')
-    {
-        $this->base_path   = $base_path;
-        $this->refresh_app = $refresh_app;
-        $this->relay_dsn   = $relay_dsn;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getAppBasePath(): string
     {
-        return $this->base_path;
+        return $this->basePath;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getRefreshApp(): bool
-    {
-        return $this->refresh_app;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getRelayDsn(): string
     {
-        return $this->relay_dsn;
+        return $this->relayDsn;
     }
 }

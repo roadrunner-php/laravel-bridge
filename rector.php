@@ -9,8 +9,6 @@ use Rector\Set\ValueObject\SetList;
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
         __DIR__ . '/bin',
-        __DIR__ . '/helpers',
-        __DIR__ . '/fixes',
         __DIR__ . '/config',
         __DIR__ . '/src',
         __DIR__ . '/tests',
