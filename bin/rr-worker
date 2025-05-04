@@ -3,22 +3,13 @@
 
 declare(strict_types=1);
 
+use Composer\InstalledVersions;
+use Spiral\RoadRunnerLaravel\Console\Commands\StartCommand;
+use Symfony\Component\Console\Application as ApplicationAlias;
+
 \define('RR_WORKER_START', \microtime(true));
 
 \ini_set('display_errors', 'stderr');
-
-/*
-|--------------------------------------------------------------------------
-| Setup Application Running Mode
-|--------------------------------------------------------------------------
-|
-| Saying to the Laravel "We are NOT running in the console"
-| (https://bit.ly/3GPJTNL).
-|
-*/
-
-$_ENV['APP_RUNNING_IN_CONSOLE'] = false;
-\putenv('APP_RUNNING_IN_CONSOLE=false');
 
 /*
 |--------------------------------------------------------------------------
@@ -58,12 +49,12 @@ if ($loaded !== true) {
 |
 */
 
-/** @var string|null $base_path */
-$base_path = null;
+/** @var string|null $basePath */
+$basePath = null;
 
 foreach (['../../../..', '../../..', '../..', '..', '../vendor/laravel/laravel'] as $path) {
     if (\is_file(__DIR__ . '/' . $path . '/bootstrap/app.php')) {
-        $base_path = (string) \realpath(__DIR__ . '/' . $path);
+        $basePath = (string) \realpath(__DIR__ . '/' . $path);
         break;
     }
 }
@@ -76,12 +67,11 @@ foreach (['../../../..', '../../..', '../..', '..', '../vendor/laravel/laravel']
 | Symfony console component is a nice wrapper around worker CLI options.
 |
 */
-
-$app = new \Symfony\Component\Console\Application(
+$app = new ApplicationAlias(
     'RoadRunner worker',
-    \Composer\InstalledVersions::getPrettyVersion('spiral/roadrunner-laravel') ?? 'unknown'
+    InstalledVersions::getPrettyVersion('roadrunner-php/laravel-bridge') ?? 'unknown',
 );
 
-$app->add(new \Spiral\RoadRunnerLaravel\Console\Commands\StartCommand($base_path));
+$app->add(new StartCommand($basePath));
 
 $app->run();
