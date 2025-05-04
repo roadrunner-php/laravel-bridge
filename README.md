@@ -231,7 +231,7 @@ return [
 ];
 ```
 
-### Temporal Plugin
+### Temporal
 
 Temporal is a workflow engine that enables orchestration of microservices and provides sophisticated workflow
 mechanisms.
@@ -309,8 +309,7 @@ If you find any package errors, please, [make an issue][link_create_issue] in a 
 
 ## License
 
-MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained
-by [tarampampam](https://github.com/tarampampam) and [Spiral Scout](https://spiralscout.com).
+MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
 
 [badge_packagist_version]:https://img.shields.io/packagist/v/roadrunner-php/laravel-bridge.svg?maxAge=180
 

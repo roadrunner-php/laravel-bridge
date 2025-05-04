@@ -12,6 +12,12 @@
     "cache",
     "http"
   ],
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/roadrunner-server"
+    }
+  ],
   "license": "MIT",
   "authors": [
     {
