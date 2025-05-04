@@ -100,8 +100,6 @@ return [
 
     'reset_providers' => [
         ...Defaults::providersToReset(),
-        Illuminate\Auth\AuthServiceProvider::class,             // is not required for Laravel >= v8.35
-        Illuminate\Pagination\PaginationServiceProvider::class, // is not required for Laravel >= v8.35
     ],
 
     /*

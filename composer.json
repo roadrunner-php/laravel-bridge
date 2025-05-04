@@ -1,80 +1,82 @@
 {
-    "name": "spiral/roadrunner-laravel",
-    "type": "library",
-    "description": "RoadRunner: Bridge for Laravel applications",
-    "keywords": [
-        "laravel",
-        "bridge",
-        "roadrunner"
-    ],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "tarampampam",
-            "homepage": "https://github.com/tarampampam"
-        }
-    ],
-    "require": {
-        "php": "^8.0",
-        "composer-runtime-api": "^2.0",
-        "laravel/framework": "~9.33 || ~10.0",
-        "nyholm/psr7": "^1.5",
-        "spiral/roadrunner-http": "^2.2 || ^3.0",
-        "spiral/roadrunner-worker": "^2.2 || ^3.0",
-        "symfony/psr-http-message-bridge": "^2.1"
-    },
-    "require-dev": {
-        "guzzlehttp/guzzle": "^6.3 || ~7.0",
-        "inertiajs/inertia-laravel": "^0.6",
-        "tightenco/ziggy": "^1.4.0",
-        "laravel/laravel": "~9.1 || ~10.0",
-        "laravel/scout": "~9.0 || ~10.0",
-        "laravel/socialite": "^5.0",
-        "laravel/telescope": "^4.5",
-        "livewire/livewire": "^2.7",
-        "mockery/mockery": "^1.4.4",
-        "phpstan/phpstan": "~1.6",
-        "phpunit/phpunit": "^9.5.10",
-        "brick/math": "^0.10"
-    },
-    "autoload": {
-        "psr-4": {
-            "Spiral\\RoadRunnerLaravel\\": "src/"
-        },
-        "files": [
-            "helpers/helpers.php"
-        ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Spiral\\RoadRunnerLaravel\\Tests\\": "tests/"
-        }
-    },
-    "bin": [
-        "bin/rr-worker"
-    ],
-    "scripts": {
-        "phpunit": "@php ./vendor/bin/phpunit --no-coverage",
-        "phpunit-cover": "@php ./vendor/bin/phpunit",
-        "phpstan": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",
-        "test": [
-            "@phpstan",
-            "@phpunit"
-        ],
-        "test-cover": [
-            "@phpstan",
-            "@phpunit-cover"
-        ]
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Spiral\\RoadRunnerLaravel\\ServiceProvider"
-            ]
-        }
-    },
-    "support": {
-        "issues": "https://github.com/roadrunner-php/laravel-bridge/issues",
-        "source": "https://github.com/roadrunner-php/laravel-bridge"
+  "name": "spiral/roadrunner-laravel",
+  "type": "library",
+  "description": "RoadRunner: Bridge for Laravel applications",
+  "keywords": [
+    "laravel",
+    "bridge",
+    "roadrunner"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "tarampampam",
+      "homepage": "https://github.com/tarampampam"
     }
+  ],
+  "require": {
+    "php": "^8.2",
+    "composer-runtime-api": "^2.0",
+    "laravel/framework": "~11.0 || ~12.0",
+    "nyholm/psr7": "^1.5",
+    "spiral/roadrunner-http": "^3.0",
+    "spiral/roadrunner-worker": "^3.0",
+    "symfony/psr-http-message-bridge": "~6.0 || ~7.0"
+  },
+  "require-dev": {
+    "spiral/code-style": "^2.2.2",
+    "rector/rector": "^2.0",
+    "guzzlehttp/guzzle": "^7.0",
+    "inertiajs/inertia-laravel": "^2.0",
+    "tightenco/ziggy": "^1.4.0",
+    "laravel/laravel": "^12.0",
+    "laravel/scout": "^10.0",
+    "laravel/socialite": "^5.0",
+    "laravel/telescope": "^v5.0",
+    "livewire/livewire": "^v3.6",
+    "mockery/mockery": "^1.6",
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^10.0",
+    "brick/math": "^0.12"
+  },
+  "autoload": {
+    "psr-4": {
+      "Spiral\\RoadRunnerLaravel\\": "src/"
+    },
+    "files": [
+      "helpers/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Spiral\\RoadRunnerLaravel\\Tests\\": "tests/"
+    }
+  },
+  "bin": [
+    "bin/rr-worker"
+  ],
+  "scripts": {
+    "phpunit": "@php ./vendor/bin/phpunit --no-coverage",
+    "phpunit-cover": "@php ./vendor/bin/phpunit",
+    "phpstan": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",
+    "test": [
+      "@phpstan",
+      "@phpunit"
+    ],
+    "test-cover": [
+      "@phpstan",
+      "@phpunit-cover"
+    ]
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Spiral\\RoadRunnerLaravel\\ServiceProvider"
+      ]
+    }
+  },
+  "support": {
+    "issues": "https://github.com/roadrunner-php/laravel-bridge/issues",
+    "source": "https://github.com/roadrunner-php/laravel-bridge"
+  }
 }

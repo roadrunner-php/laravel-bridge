@@ -3,6 +3,8 @@
 
 declare(strict_types=1);
 
+use Composer\InstalledVersions;
+
 \define('RR_WORKER_START', \microtime(true));
 
 \ini_set('display_errors', 'stderr');
@@ -79,7 +81,7 @@ foreach (['../../../..', '../../..', '../..', '..', '../vendor/laravel/laravel']
 
 $app = new \Symfony\Component\Console\Application(
     'RoadRunner worker',
-    \Composer\InstalledVersions::getPrettyVersion('spiral/roadrunner-laravel') ?? 'unknown'
+    InstalledVersions::getPrettyVersion('spiral/roadrunner-laravel') ?? 'unknown',
 );
 
 $app->add(new \Spiral\RoadRunnerLaravel\Console\Commands\StartCommand($base_path));
