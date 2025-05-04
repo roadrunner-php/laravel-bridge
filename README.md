@@ -312,49 +312,49 @@ If you find any package errors, please, [make an issue][link_create_issue] in a 
 MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained
 by [tarampampam](https://github.com/tarampampam) and [Spiral Scout](https://spiralscout.com).
 
-[badge_packagist_version]:https://img.shields.io/packagist/v/spiral/roadrunner-laravel.svg?maxAge=180
+[badge_packagist_version]:https://img.shields.io/packagist/v/roadrunner-php/laravel-bridge.svg?maxAge=180
 
-[badge_php_version]:https://img.shields.io/packagist/php-v/spiral/roadrunner-laravel.svg?longCache=true
+[badge_php_version]:https://img.shields.io/packagist/php-v/roadrunner-php/laravel-bridge.svg?longCache=true
 
-[badge_build_status]:https://img.shields.io/github/actions/workflow/status/spiral/roadrunner-laravel/tests.yml?branch=master&maxAge=30
+[badge_build_status]:https://img.shields.io/github/actions/workflow/status/roadrunner-php/laravel-bridge/tests.yml?branch=master&maxAge=30
 
 [badge_chat]:https://img.shields.io/badge/discord-chat-magenta.svg
 
-[badge_coverage]:https://img.shields.io/codecov/c/github/spiral/roadrunner-laravel/master.svg?maxAge=180
+[badge_coverage]:https://img.shields.io/codecov/c/github/roadrunner-php/laravel-bridge/master.svg?maxAge=180
 
-[badge_downloads_count]:https://img.shields.io/packagist/dt/spiral/roadrunner-laravel.svg?maxAge=180
+[badge_downloads_count]:https://img.shields.io/packagist/dt/roadrunner-php/laravel-bridge.svg?maxAge=180
 
-[badge_license]:https://img.shields.io/packagist/l/spiral/roadrunner-laravel.svg?maxAge=256
+[badge_license]:https://img.shields.io/packagist/l/roadrunner-php/laravel-bridge.svg?maxAge=256
 
-[badge_release_date]:https://img.shields.io/github/release-date/spiral/roadrunner-laravel.svg?style=flat-square&maxAge=180
+[badge_release_date]:https://img.shields.io/github/release-date/roadrunner-php/laravel-bridge.svg?style=flat-square&maxAge=180
 
-[badge_commits_since_release]:https://img.shields.io/github/commits-since/spiral/roadrunner-laravel/latest.svg?style=flat-square&maxAge=180
+[badge_commits_since_release]:https://img.shields.io/github/commits-since/roadrunner-php/laravel-bridge/latest.svg?style=flat-square&maxAge=180
 
-[badge_issues]:https://img.shields.io/github/issues/spiral/roadrunner-laravel.svg?style=flat-square&maxAge=180
+[badge_issues]:https://img.shields.io/github/issues/roadrunner-php/laravel-bridge.svg?style=flat-square&maxAge=180
 
-[badge_pulls]:https://img.shields.io/github/issues-pr/spiral/roadrunner-laravel.svg?style=flat-square&maxAge=180
+[badge_pulls]:https://img.shields.io/github/issues-pr/roadrunner-php/laravel-bridge.svg?style=flat-square&maxAge=180
 
-[link_releases]:https://github.com/spiral/roadrunner-laravel/releases
+[link_releases]:https://github.com/roadrunner-php/laravel-bridge/releases
 
-[link_packagist]:https://packagist.org/packages/spiral/roadrunner-laravel
+[link_packagist]:https://packagist.org/packages/roadrunner-php/laravel-bridge
 
-[link_build_status]:https://github.com/spiral/roadrunner-laravel/actions
+[link_build_status]:https://github.com/roadrunner-php/laravel-bridge/actions
 
 [link_chat]:https://discord.gg/Y3df23vJDw
 
-[link_coverage]:https://codecov.io/gh/spiral/roadrunner-laravel/
+[link_coverage]:https://codecov.io/gh/roadrunner-php/laravel-bridge/
 
-[link_changes_log]:https://github.com/spiral/roadrunner-laravel/blob/master/CHANGELOG.md
+[link_changes_log]:https://github.com/roadrunner-php/laravel-bridge/blob/master/CHANGELOG.md
 
-[link_issues]:https://github.com/spiral/roadrunner-laravel/issues
+[link_issues]:https://github.com/roadrunner-php/laravel-bridge/issues
 
-[link_create_issue]:https://github.com/spiral/roadrunner-laravel/issues/new/choose
+[link_create_issue]:https://github.com/roadrunner-php/laravel-bridge/issues/new/choose
 
-[link_commits]:https://github.com/spiral/roadrunner-laravel/commits
+[link_commits]:https://github.com/roadrunner-php/laravel-bridge/commits
 
-[link_pulls]:https://github.com/spiral/roadrunner-laravel/pulls
+[link_pulls]:https://github.com/roadrunner-php/laravel-bridge/pulls
 
-[link_license]:https://github.com/spiral/roadrunner-laravel/blob/master/LICENSE
+[link_license]:https://github.com/roadrunner-php/laravel-bridge/blob/master/LICENSE
 
 [getcomposer]:https://getcomposer.org/download/
 
