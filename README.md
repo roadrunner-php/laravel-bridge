@@ -6,8 +6,6 @@
 
 [![Version][badge_packagist_version]][link_packagist]
 [![Version][badge_php_version]][link_packagist]
-[![Build Status][badge_build_status]][link_build_status]
-[![Downloads count][badge_downloads_count]][link_packagist]
 [![License][badge_license]][link_license]
 
 Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applications (community integration).
