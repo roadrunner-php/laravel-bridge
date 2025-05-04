@@ -7,86 +7,69 @@
 [![Version][badge_packagist_version]][link_packagist]
 [![Version][badge_php_version]][link_packagist]
 [![Build Status][badge_build_status]][link_build_status]
-[![Coverage][badge_coverage]][link_coverage]
 [![Downloads count][badge_downloads_count]][link_packagist]
-[![Chat][badge_chat]][link_chat]
 [![License][badge_license]][link_license]
 
 Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applications (community integration).
 
-> 🐋 If you want to see an example of a laravel application in a docker container with RoadRunner as a web server - take a look at [this repository](https://github.com/tarampampam/laravel-roadrunner-in-docker).
+## Why Use This Package?
+
+Laravel provides the [Octane](https://laravel.com/docs/12.x/octane) package which partially supports RoadRunner as an
+application server, but RoadRunner offers much more than just HTTP capabilities. It also includes Jobs, Temporal, gRPC,
+and other plugins.
+
+> **Note:** There is an article that explains all the RoadRunner
+> plugins: https://butschster.medium.com/roadrunner-an-underrated-powerhouse-for-php-applications-46410b0abc
+
+The main limitation of Octane is that it has a built-in worker only for the HTTP plugin and doesn't provide the ability
+to create additional workers for other RoadRunner plugins, restricting its use to just the HTTP plugin.
+
+Our **Laravel Bridge** solves this problem by taking a different approach:
+
+1. We include `laravel/octane` in our package and reuse its **SDK** for clearing the state of Laravel applications
+2. We add support for running and configuring multiple workers for different RoadRunner plugins
+3. By reusing Octane's functionality for state clearing, we automatically support all third-party packages that are
+   compatible with Octane
+
+**This way, you get the best of both worlds:** Octane's state management and RoadRunner's full plugin ecosystem.
 
 ## Installation
 
-Make sure that [RR binary file][roadrunner-binary-releases] already installed on your system (or docker image). Require this package with composer using next command:
-
 ```shell script
-$ composer require spiral/roadrunner-laravel
+composer require roadrunner-php/laravel-bridge
 ```
-
-> Installed `composer` is required ([how to install composer][getcomposer]).
 
 After that you can "publish" package configuration file (`./config/roadrunner.php`) using next command:
 
 ```shell script
-$ php ./artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=config
+php artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=config
 ```
-
-**Important**: despite the fact that worker allows you to refresh application instance on each HTTP request _(if worker started with option `--refresh-app`, eg.: `php ./vendor/bin/rr-worker start --refresh-app`)_, we strongly recommend avoiding this for performance reasons. Large applications can be hard to integrate with RoadRunner _(you must decide which of service providers must be reloaded on each request, avoid "static optimization" in some cases)_, but it's worth it.
-
-### Upgrading guide
-
-#### **v4.x** &rarr; **v5.x**
-
-- Update current package in your application:
-    - `composer remove spiral/roadrunner-laravel`
-    - `composer require spiral/roadrunner-laravel "^5.0"`
-- Update package configuration file (`roadrunner.php`; take a look for actual example in current repository)
-
-#### **v3.x** &rarr; **v4.x**
-
-- Update current package in your application:
-  - `composer remove spiral/roadrunner-laravel`
-  - `composer require spiral/roadrunner-laravel "^4.0"`
-- Update your `.rr.yaml` config (take a look for sample [here][roadrunner_config]) - a lot of options was changed
-  - Optionally change relay to socket or TCP port:
-    > ```yaml
-    > server:
-    >   command: "php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-relay.sock"
-    >   relay: "unix:///var/run/rr-relay.sock"
-    > ```
-- Update RR binary file (using [`roadrunner-cli`][roadrunner-cli] or download from [binary releases][roadrunner-binary-releases] page) up to `v2.x`
-- Update RoadRunner starting (`rr serve ...`) flags - `-v` and `-d` must be not used anymore
-- In your application code replace `Spiral\RoadRunner\PSR7Client` with `Spiral\RoadRunner\Http\PSR7Worker`
 
 ## Usage
 
-After package installation you can use provided "binary" file as RoadRunner worker: `./vendor/bin/rr-worker`. This worker allows you to interact with incoming requests and outgoing responses using [laravel events system][laravel_events]. Event contains:
+After package installation, you can download and install [RoadRunner][roadrunner] binary
+using [roadrunner-cli][roadrunner-cli]:
 
-| Event classname              | Application object | HTTP server request | HTTP request | HTTP response | Exception |
-|------------------------------|:------------------:|:-------------------:|:------------:|:-------------:|:---------:|
-| `BeforeLoopStartedEvent`     |         ✔          |                     |              |               |           |
-| `BeforeLoopIterationEvent`   |         ✔          |          ✔          |              |               |           |
-| `BeforeRequestHandlingEvent` |         ✔          |                     |      ✔       |               |           |
-| `AfterRequestHandlingEvent`  |         ✔          |                     |      ✔       |       ✔       |           |
-| `AfterLoopIterationEvent`    |         ✔          |                     |      ✔       |       ✔       |           |
-| `AfterLoopStoppedEvent`      |         ✔          |                     |              |               |           |
-| `LoopErrorOccurredEvent`     |         ✔          |          ✔          |              |               |     ✔     |
+```bash
+./vendor/bin/rr get
+```
 
-Simple `.rr.yaml` config example ([full example can be found here][roadrunner_config]):
+### Basic Configuration (.rr.yaml)
 
-> For `windows` path must be full (eg.: `php vendor/spiral/roadrunner-laravel/bin/rr-worker start`)
+Create a `.rr.yaml` configuration file in your project root:
 
 ```yaml
-version: "2.7"
+version: '3'
+rpc:
+  listen: 'tcp://127.0.0.1:6001'
 
 server:
-  command: "php ./vendor/bin/rr-worker start --relay-dsn unix:///var/run/rr-relay.sock"
-  relay: "unix:///var/run/rr-relay.sock"
+  command: 'php vendor/bin/rr-worker start'
+  relay: pipes
 
 http:
   address: 0.0.0.0:8080
-  middleware: ["static", "headers", "gzip"]
+  middleware: [ "static", "headers", "gzip" ]
   pool:
     #max_jobs: 64 # feel free to change this
     supervisor:
@@ -96,201 +79,226 @@ http:
       X-Powered-By: "RoadRunner"
   static:
     dir: "public"
-    forbid: [".php"]
+    forbid: [ ".php" ]
 ```
 
-**Socket** or **TCP port** relay usage is strongly recommended for avoiding problems with `dd()`, `dump()`, `echo()` and other similar functions, that sends data to the IO pipes.
+## RoadRunner Worker Configuration
 
-Roadrunner server starting:
+You can configure workers in `config/roadrunner.php` file in the `workers` section:
+
+```php
+use Spiral\RoadRunner\Environment\Mode;
+use Spiral\RoadRunnerLaravel\Grpc\GrpcWorker;
+use Spiral\RoadRunnerLaravel\Http\HttpWorker;
+use Spiral\RoadRunnerLaravel\Queue\QueueWorker;
+use Spiral\RoadRunnerLaravel\Temporal\TemporalWorker;
+
+return [
+    // ... other configuration options ...
+
+    'workers' => [
+        Mode::MODE_HTTP => HttpWorker::class,
+        Mode::MODE_JOBS => QueueWorker::class,
+        Mode::MODE_GRPC => GrpcWorker::class,
+        Mode::MODE_TEMPORAL => TemporalWorker::class,
+    ],
+];
+```
+
+As you can see, there are several predefined workers for HTTP, Jobs, gRPC, and Temporal. Feel free to replace any of
+them with your implementation if needed. Or create your own worker, for example,
+for [Centrifugo](https://docs.roadrunner.dev/docs/plugins/centrifuge), [TCP](https://docs.roadrunner.dev/docs/plugins/tcp)
+or any other plugin.
+
+## How It Works
+
+In the server section of the RoadRunner config, we specify the command to start our worker:
+
+```yaml
+server:
+  command: 'php vendor/bin/rr-worker start'
+  relay: pipes
+```
+
+When RoadRunner server creates a worker pool for a specific plugin, it exposes an environment variable `RR_MODE` that
+indicates which plugin is being used. Our worker checks this variable to determine which Worker class should handle the
+request based on the configuration in `roadrunner.php`.
+
+The selected worker starts listening for requests from the RoadRunner server and handles them using the Octane worker,
+which clears the application state after each task (request, command, etc.).
+
+## Supported Plugins
+
+### HTTP Plugin
+
+The HTTP plugin enables serving HTTP requests with your Laravel application through RoadRunner.
+
+#### Configuration
+
+Ensure your `.rr.yaml` has the HTTP section configured:
+
+```yaml
+http:
+  address: 0.0.0.0:8080
+  middleware: [ "static", "headers", "gzip" ]
+  pool:
+    max_jobs: 64
+  static:
+    dir: "public"
+    forbid: [ ".php" ]
+```
+
+> **Note:** Read more about the HTTP plugin in
+> the [RoadRunner documentation][https://docs.roadrunner.dev/docs/http/http].
+
+### Jobs (Queue) Plugin
+
+The Queue plugin allows you to use RoadRunner as a queue driver for Laravel.
+
+#### Configuration
+
+First, add the Queue Service Provider in your `config/app.php`:
+
+```php
+'providers' => [
+    // ... other providers
+    Spiral\RoadRunnerLaravel\Queue\QueueServiceProvider::class,
+],
+```
+
+Then, configure a new connection in your `config/queue.php`:
+
+```php
+'connections' => [
+    // ... other connections
+   'roadrunner' => [
+      'driver' => 'roadrunner',
+      'queue' => env('RR_QUEUE', 'default'),
+      'retry_after' => (int) env('RR_QUEUE_RETRY_AFTER', 90),
+      'after_commit' => false,
+   ],
+],
+```
+
+Update your `.rr.yaml` file to include the Jobs section:
+
+```yaml
+jobs:
+  pool:
+    num_workers: 4
+  pipelines:
+    default:
+      driver: memory
+      config: { }
+```
+
+> **Note:** Read more about the Jobs plugin in
+> the [RoadRunner documentation][https://docs.roadrunner.dev/docs/queues-and-jobs/overview-queues].
+
+Don't forget to set the `QUEUE_CONNECTION` environment variable in your `.env` file:
+
+```dotenv
+QUEUE_CONNECTION=roadrunner
+```
+
+That's it! You can now dispatch jobs to the RoadRunner queue without any additional services like Redis or Database.
+
+### gRPC Plugin
+
+The gRPC plugin enables serving gRPC services with your Laravel application.
+
+#### Configuration
+
+Configure gRPC in your `.rr.yaml`:
+
+```yaml
+grpc:
+  listen: 'tcp://0.0.0.0:9001'
+  proto:
+    - "proto/service.proto"
+```
+
+Then, add your gRPC services to `config/roadrunner.php`:
+
+```php
+return [
+    // ... other configuration
+    'grpc' => [
+        'services' => [
+            \App\GRPC\EchoServiceInterface::class => \App\GRPC\EchoService::class,
+        ],
+    ],
+];
+```
+
+### Temporal Plugin
+
+Temporal is a workflow engine that enables orchestration of microservices and provides sophisticated workflow
+mechanisms.
+
+#### Configuration
+
+First, configure Temporal in your `.rr.yaml`:
+
+```yaml
+temporal:
+  address: 127.0.0.1:7233
+  activities:
+    num_workers: 10
+```
+
+Then, configure your workflows and activities in `config/roadrunner.php`:
+
+```php
+return [
+    // ... other configuration
+    'temporal' => [
+        'address' => env('TEMPORAL_ADDRESS', '127.0.0.1:7233'),
+        'namespace' => 'default',
+        'declarations' => [
+            \App\Temporal\Workflows\MyWorkflow::class,
+            \App\Temporal\Activities\MyActivity::class,
+        ],
+    ],
+];
+```
+
+## Starting RoadRunner Server
+
+To start the RoadRunner server:
 
 ```shell script
-$ rr serve -c ./.rr.yaml
+./rr serve
 ```
 
-### Listeners
+## Custom Workers
 
-This package provides event listeners for resetting application state without full application reload _(like cookies, HTTP request, application instance, service-providers and other)_. Some of them already declared in configuration file, but you can declare own without any limitations.
-
-### Helpers
-
-This package provides the following helpers:
-
-| Name            | Description                                                               |
-|-----------------|---------------------------------------------------------------------------|
-| `\rr\dump(...)` | Dump passed values (dumped result will be available in the HTTP response) |
-| `\rr\dd(...)`   | Dump passed values and stop the execution                                 |
-| `\rr\worker()`  | Easy access to the RoadRunner PSR worker instance                         |
-
-### Known issues
-
-#### Performance degradation
-
-...when `file` driver is set for your sessions. Please, use `redis` (or something similar) driver instead ([related issue](https://github.com/roadrunner-php/laravel-bridge/issues/23)). This package or/and RoadRunner has nothing to do with it, but since this is a fairly common issue - it is described here.
-
-#### Controller constructors
-
-You should avoid to use HTTP controller constructors _(created or resolved instances in a constructor can be shared between different requests)_. Use dependencies resolving in a controller **methods** instead.
-
-Bad:
+You can create your own custom workers by implementing the `Spiral\RoadRunnerLaravel\WorkerInterface`:
 
 ```php
-<?php
+namespace App\Workers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Http\Controllers\Controller;
+use Spiral\RoadRunnerLaravel\WorkerInterface;
+use Spiral\RoadRunnerLaravel\WorkerOptionsInterface;
 
-class UserController extends Controller
+class CustomWorker implements WorkerInterface
 {
-    /**
-     * The user repository instance.
-     */
-    protected $users;
-
-    /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
-     * @param UserRepository $users
-     * @param Request        $request
-     */
-    public function __construct(UserRepository $users, Request $request)
+    public function start(WorkerOptionsInterface $options): void
     {
-        $this->users   = $users;
-        $this->request = $request;
-    }
-
-    /**
-     * @return Response
-     */
-    public function store(): Response
-    {
-        $user = $this->users->getById($this->request->id);
-
-        // ...
+        // Your custom worker implementation
     }
 }
 ```
 
-Good:
+Then register it in the `config/roadrunner.php`:
 
 ```php
-<?php
-
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Http\Controllers\Controller;
-
-class UserController extends Controller
-{
-    /**
-     * @param  Request        $request
-     * @param  UserRepository $users
-     *
-     * @return Response
-     */
-    public function store(Request $request, UserRepository $users): Response
-    {
-        $user = $users->getById($request->id);
-
-        // ...
-    }
-}
+return [
+    'workers' => [
+        'custom' => \App\Workers\CustomWorker::class,
+    ],
+];
 ```
-
-#### Middleware constructors
-
-You should never to use middleware constructor for `session`, `session.store`, `auth` or auth `Guard` instances resolving and **storing** in properties _(for example)_. Use method-injection or access them through `Request` instance.
-
-Bad:
-
-```php
-<?php
-
-use Illuminate\Http\Request;
-use Illuminate\Session\Store;
-
-class Middleware
-{
-    /**
-     * @var Store
-     */
-    protected $session;
-
-    /**
-     * @param Store $session
-     */
-    public function __construct(Store $session)
-    {
-        $this->session = $session;
-    }
-
-    /**
-     * Handle an incoming request.
-     *
-     * @param Request  $request
-     * @param \Closure $next
-     *
-     * @return mixed
-     */
-    public function handle(Request $request, Closure $next)
-    {
-        $name = $this->session->getName();
-
-        // ...
-
-        return $next($request);
-    }
-}
-```
-
-Good:
-
-```php
-<?php
-
-use Illuminate\Http\Request;
-
-class Middleware
-{
-    /**
-     * Handle an incoming request.
-     *
-     * @param Request  $request
-     * @param \Closure $next
-     *
-     * @return mixed
-     */
-    public function handle(Request $request, Closure $next)
-    {
-        $name = $request->session()->getName();
-        // $name = resolve('session')->getName();
-
-        // ...
-
-        return $next($request);
-    }
-}
-```
-
-### Testing
-
-For package testing we use `phpunit` framework and `docker-ce` + `docker-compose` as develop environment. So, just write into your terminal after repository cloning:
-
-```shell script
-$ make build
-$ make latest # or 'make lowest'
-$ make test
-```
-
-## Changes log
-
-[![Release date][badge_release_date]][link_releases]
-[![Commits since latest release][badge_commits_since_release]][link_commits]
-
-Changes log can be [found here][link_changes_log].
 
 ## Support
 
@@ -301,35 +309,63 @@ If you find any package errors, please, [make an issue][link_create_issue] in a 
 
 ## License
 
-MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [tarampampam](https://github.com/tarampampam) and [Spiral Scout](https://spiralscout.com).
+MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained
+by [tarampampam](https://github.com/tarampampam) and [Spiral Scout](https://spiralscout.com).
 
 [badge_packagist_version]:https://img.shields.io/packagist/v/spiral/roadrunner-laravel.svg?maxAge=180
+
 [badge_php_version]:https://img.shields.io/packagist/php-v/spiral/roadrunner-laravel.svg?longCache=true
+
 [badge_build_status]:https://img.shields.io/github/actions/workflow/status/spiral/roadrunner-laravel/tests.yml?branch=master&maxAge=30
+
 [badge_chat]:https://img.shields.io/badge/discord-chat-magenta.svg
+
 [badge_coverage]:https://img.shields.io/codecov/c/github/spiral/roadrunner-laravel/master.svg?maxAge=180
+
 [badge_downloads_count]:https://img.shields.io/packagist/dt/spiral/roadrunner-laravel.svg?maxAge=180
+
 [badge_license]:https://img.shields.io/packagist/l/spiral/roadrunner-laravel.svg?maxAge=256
+
 [badge_release_date]:https://img.shields.io/github/release-date/spiral/roadrunner-laravel.svg?style=flat-square&maxAge=180
+
 [badge_commits_since_release]:https://img.shields.io/github/commits-since/spiral/roadrunner-laravel/latest.svg?style=flat-square&maxAge=180
+
 [badge_issues]:https://img.shields.io/github/issues/spiral/roadrunner-laravel.svg?style=flat-square&maxAge=180
+
 [badge_pulls]:https://img.shields.io/github/issues-pr/spiral/roadrunner-laravel.svg?style=flat-square&maxAge=180
+
 [link_releases]:https://github.com/spiral/roadrunner-laravel/releases
+
 [link_packagist]:https://packagist.org/packages/spiral/roadrunner-laravel
+
 [link_build_status]:https://github.com/spiral/roadrunner-laravel/actions
+
 [link_chat]:https://discord.gg/Y3df23vJDw
+
 [link_coverage]:https://codecov.io/gh/spiral/roadrunner-laravel/
+
 [link_changes_log]:https://github.com/spiral/roadrunner-laravel/blob/master/CHANGELOG.md
+
 [link_issues]:https://github.com/spiral/roadrunner-laravel/issues
+
 [link_create_issue]:https://github.com/spiral/roadrunner-laravel/issues/new/choose
+
 [link_commits]:https://github.com/spiral/roadrunner-laravel/commits
+
 [link_pulls]:https://github.com/spiral/roadrunner-laravel/pulls
+
 [link_license]:https://github.com/spiral/roadrunner-laravel/blob/master/LICENSE
+
 [getcomposer]:https://getcomposer.org/download/
+
 [roadrunner]:https://github.com/roadrunner-server/roadrunner
+
 [roadrunner_config]:https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml
+
 [laravel]:https://laravel.com
+
 [laravel_events]:https://laravel.com/docs/events
+
 [roadrunner-cli]:https://github.com/spiral/roadrunner-cli
+
 [roadrunner-binary-releases]:https://github.com/roadrunner-server/roadrunner/releases
-[#10]:https://github.com/roadrunner-php/laravel-bridge/issues/10
