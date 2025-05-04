@@ -78,7 +78,7 @@ jobs: # Docs: <https://help.github.com/en/articles/workflow-syntax-for-github-ac
           XDEBUG_MODE: coverage
         run: composer test-cover
 
-      - uses: codecov/codecov-action@v3 # Docs: <https://github.com/codecov/codecov-action>
+      - uses: codecov/codecov-action@v5 # Docs: <https://github.com/codecov/codecov-action>
         if: matrix.coverage == 'true'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
