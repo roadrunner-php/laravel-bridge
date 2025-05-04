@@ -1,7 +1,7 @@
 {
   "name": "roadrunner-php/laravel-bridge",
   "type": "library",
-  "description": "RoadRunner: Bridge for Laravel applications",
+  "description": "Laravel integration for RoadRunner with support for HTTP, Jobs, gRPC, and Temporal plugins - going beyond Octane's capabilities",
   "keywords": [
     "laravel",
     "bridge",
