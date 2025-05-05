@@ -15,7 +15,7 @@ final class CacheServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->booting(static function (): void {
-            Cache::extend('roadrunner', static function () {
+            Cache::extend('roadrunner', function () {
                 $env = Environment::fromGlobals();
                 $factory = new Factory(RPC::create($env->getRPCAddress()));
 
