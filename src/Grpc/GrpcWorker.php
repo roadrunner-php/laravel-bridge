@@ -19,6 +19,7 @@ final class GrpcWorker implements WorkerInterface
             appFactory: new ApplicationFactory($options->getAppBasePath()),
         );
 
+        $worker->boot();
         $app = $worker->application();
 
         $server = new Server(
