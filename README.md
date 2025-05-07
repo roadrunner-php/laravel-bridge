@@ -48,10 +48,10 @@ php artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider'
 ## Usage
 
 After package installation, you can download and install [RoadRunner][roadrunner] binary
-using [roadrunner-cli][roadrunner-cli]:
+using Composer script:
 
 ```bash
-./vendor/bin/rr get
+composer get:rr
 ```
 
 ### Basic Configuration (.rr.yaml)
@@ -263,9 +263,22 @@ return [
 ];
 ```
 
+Download Temporal binary for development purposes using the following command:
+
+```bash
+composer get:temporal
+```
+
+To start the Temporal server, you can use the following command:
+
+```bash
+./temporal server start-dev --log-level error --color always
+```
+
 #### Useful links
 
-- [PHP SDK docs](https://docs.temporal.io/develop/php/) 
+- [PHP SDK on GitHub](https://github.com/temporalio/sdk-php)
+- [PHP SDK docs](https://docs.temporal.io/develop/php/)
 - [Code samples](https://github.com/temporalio/samples-php)
 - [Taxi service sample](https://github.com/butschster/podlodka-taxi-service)
 
@@ -372,7 +385,5 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
 [laravel]:https://laravel.com
 
 [laravel_events]:https://laravel.com/docs/events
-
-[roadrunner-cli]:https://github.com/spiral/roadrunner-cli
 
 [roadrunner-binary-releases]:https://github.com/roadrunner-server/roadrunner/releases
