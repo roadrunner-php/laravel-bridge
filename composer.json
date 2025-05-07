@@ -35,14 +35,14 @@
   ],
   "require": {
     "php": "^8.2",
-    "spiral/roadrunner-cli": "^2.7",
     "spiral/roadrunner-kv": "^4.0",
     "spiral/roadrunner-jobs": "^4.0",
     "spiral/roadrunner-grpc": "^3.5",
     "laravel/octane": "^2.9",
     "spiral/roadrunner-http": "^3.0",
     "spiral/roadrunner-worker": "^3.0",
-    "temporal/sdk": "^2.0"
+    "temporal/sdk": "^2.0",
+    "internal/dload": "^1.1"
   },
   "require-dev": {
     "laravel/framework": "^12.0",
@@ -67,6 +67,9 @@
     "bin/rr-worker"
   ],
   "scripts": {
+    "get:rr": "dload get rr",
+    "get:temporal": "dload get temporal",
+    "get:protoc": "dload get protoc protoc-gen-php-grpc",
     "cs-check": "vendor/bin/php-cs-fixer fix --dry-run",
     "cs-fix": "vendor/bin/php-cs-fixer fix",
     "refactor": "rector process --config=rector.php",
