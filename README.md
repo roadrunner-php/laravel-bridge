@@ -261,6 +261,12 @@ return [
 ];
 ```
 
+#### Useful links
+
+- [PHP SDK docs](https://docs.temporal.io/develop/php/) 
+- [Code samples](https://github.com/temporalio/samples-php)
+- [Taxi service sample](https://github.com/butschster/podlodka-taxi-service)
+
 ## Starting RoadRunner Server
 
 To start the RoadRunner server:
