@@ -16,6 +16,8 @@ Laravel provides the [Octane](https://laravel.com/docs/12.x/octane) package whic
 application server, but RoadRunner offers much more than just HTTP capabilities. It also includes Jobs, Temporal, gRPC,
 and other plugins.
 
+![RoadRunner](https://github.com/user-attachments/assets/609d2e29-b6af-478b-b350-1d27b77ed6fb)
+
 > **Note:** There is an article that explains all the RoadRunner
 > plugins: https://butschster.medium.com/roadrunner-an-underrated-powerhouse-for-php-applications-46410b0abc
 
@@ -305,6 +307,8 @@ return [
 ```
 
 ## Support
+
+If you find this package helpful, please consider giving it a star on GitHub. Your support helps make the project more visible to other developers who might benefit from it!
 
 [![Issues][badge_issues]][link_issues]
 [![Issues][badge_pulls]][link_pulls]
