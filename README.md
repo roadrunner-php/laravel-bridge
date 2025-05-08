@@ -267,13 +267,19 @@ Start the Temporal dev server:
 
 ## Custom Workers
 
-As you can see, there are several predefined workers for HTTP, Jobs, gRPC, and Temporal in `'workers'` section of `config/roadrunner.php`.
-You can replace them with your own implementations if needed or create your own workers for other plugins, for example,
-for [Centrifugo](https://docs.roadrunner.dev/docs/plugins/centrifuge), [TCP](https://docs.roadrunner.dev/docs/plugins/tcp)
-or any other plugin.
+The RoadRunner Laravel Bridge comes with several predefined workers for common plugins,
+but you can easily create your own custom workers for any RoadRunner plugin.
+This section explains how to create and register custom workers in your application.
+
+### Understanding Workers
+
+Workers are responsible for handling requests from the RoadRunner server and processing them in your Laravel application.
+The predefined workers are configured in the `config/roadrunner.php` file:
 
 ```php
 return [
+    // ... other configuration options ...
+
     'workers' => [
         Mode::MODE_HTTP => HttpWorker::class,
         Mode::MODE_JOBS => QueueWorker::class,
@@ -283,7 +289,10 @@ return [
 ];
 ```
 
-To create your own custom workers start from implementing the `Spiral\RoadRunnerLaravel\WorkerInterface`:
+### Creating Custom Workers
+
+To create a custom worker, you need to implement the `Spiral\RoadRunnerLaravel\WorkerInterface`.
+This interface has a single method, `start()`, which is called when the worker is started by the RoadRunner server:
 
 ```php
 namespace App\Workers;
@@ -300,12 +309,21 @@ class CustomWorker implements WorkerInterface
 }
 ```
 
-Then register it in the `config/roadrunner.php`:
+### Registering Custom Workers
+
+After creating your custom worker, you need to register it in the `config/roadrunner.php` file:
 
 ```php
 return [
+    // ... other configuration options ...
+
     'workers' => [
-        'custom' => \App\Workers\CustomWorker::class,
+        // Existing workers
+        Mode::MODE_HTTP => HttpWorker::class,
+        Mode::MODE_JOBS => QueueWorker::class,
+
+        // Your custom worker for a custom or built-in plugin
+        'custom_plugin' => \App\Workers\CustomWorker::class,
     ],
 ];
 ```
