@@ -12,26 +12,31 @@ Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applicat
 
 ## Why Use This Package?
 
-Laravel provides the [Octane](https://laravel.com/docs/12.x/octane) package which partially supports RoadRunner as an
-application server, but RoadRunner offers much more than just HTTP capabilities. It also includes Jobs, Temporal, gRPC,
-and other plugins.
+This library offers the most complete integration of Laravel with RoadRunner.
+You should definitely use this package if:
+
+- You want to use not only HTTP but also other RoadRunner plugins like gRPC, Queue, KV, and others.
+- You want to use Temporal.
+- You want to control RoadRunner configuration.
 
 ![RoadRunner](https://github.com/user-attachments/assets/609d2e29-b6af-478b-b350-1d27b77ed6fb)
 
-> **Note:** There is an article that explains all the RoadRunner
-> plugins: https://butschster.medium.com/roadrunner-an-underrated-powerhouse-for-php-applications-46410b0abc
+> [!TIP]
+> [There is an article][rr-plugins-article] that explains all the RoadRunner plugins:
 
-The main limitation of Octane is that it has a built-in worker only for the HTTP plugin and doesn't provide the ability
-to create additional workers for other RoadRunner plugins, restricting its use to just the HTTP plugin.
 
-Our **Laravel Bridge** solves this problem by taking a different approach:
+Table of content:
 
-1. We include `laravel/octane` in our package and reuse its **SDK** for clearing the state of Laravel applications
-2. We add support for running and configuring multiple workers for different RoadRunner plugins
-3. By reusing Octane's functionality for state clearing, we automatically support all third-party packages that are
-   compatible with Octane
-
-**This way, you get the best of both worlds:** Octane's state management and RoadRunner's full plugin ecosystem.
+- [Installation](#installation)
+- [Usage](#usage)
+- [RoadRunner Worker Configuration](#roadrunner-worker-configuration)
+- [How It Works](#how-it-works)
+- [Supported Plugins](#supported-plugins)
+  - [HTTP Plugin](#http-plugin)
+  - [Jobs (Queue) Plugin](#jobs-queue-plugin)
+  - [gRPC Plugin](#grpc-plugin)
+  - [Temporal](#temporal)
+- [Custom Workers]
 
 ## Installation
 
@@ -65,7 +70,7 @@ rpc:
 
 server:
   command: 'php vendor/bin/rr-worker start'
-  relay: pipes
+      relay: pipes
 
 http:
   address: 0.0.0.0:8080
@@ -389,3 +394,7 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
 [laravel_events]:https://laravel.com/docs/events
 
 [roadrunner-binary-releases]:https://github.com/roadrunner-server/roadrunner/releases
+
+[octane]https://laravel.com/docs/12.x/octane
+
+[rr-plugins-article]https://butschster.medium.com/roadrunner-an-underrated-powerhouse-for-php-applications-46410b0abc
