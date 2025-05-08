@@ -12,12 +12,11 @@ Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applicat
 
 ## Why Use This Package?
 
-This library offers the most complete integration of Laravel with RoadRunner.
-You should definitely use this package if:
+This package provides complete Laravel integration with RoadRunner, offering:
 
-- You want to use not only HTTP but also other RoadRunner plugins like gRPC, Queue, KV, and others.
-- You want to use Temporal.
-- You want to control RoadRunner configuration.
+- Support for HTTP and other RoadRunner plugins like gRPC, Queue, KeyValue, and more.
+- [Temporal](https://temporal.io/) integration
+- Full RoadRunner configuration control
 
 ![RoadRunner](https://github.com/user-attachments/assets/609d2e29-b6af-478b-b350-1d27b77ed6fb)
 
