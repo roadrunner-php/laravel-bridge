@@ -1,103 +1,103 @@
 {
-  "name": "roadrunner-php/laravel-bridge",
-  "type": "library",
-  "description": "Laravel integration for RoadRunner with support for HTTP, Jobs, gRPC, and Temporal plugins - going beyond Octane's capabilities",
-  "keywords": [
-    "laravel",
-    "bridge",
-    "roadrunner",
-    "temporal",
-    "grpc",
-    "queue",
-    "cache",
-    "http"
-  ],
-  "funding": [
-    {
-      "type": "github",
-      "url": "https://github.com/sponsors/roadrunner-server"
-    }
-  ],
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "butschster",
-      "homepage": "https://github.com/butschster"
-    },
-    {
-      "name": "roxblnfk",
-      "homepage": "https://github.com/roxblnfk"
-    },
-    {
-      "name": "tarampampam",
-      "homepage": "https://github.com/tarampampam"
-    }
-  ],
-  "require": {
-    "php": "^8.2",
-    "spiral/roadrunner-kv": "^4.0",
-    "spiral/roadrunner-jobs": "^4.0",
-    "spiral/roadrunner-grpc": "^3.5",
-    "laravel/octane": "^2.9",
-    "spiral/roadrunner-http": "^3.0",
-    "spiral/roadrunner-worker": "^3.0",
-    "temporal/sdk": "^2.0",
-    "internal/dload": "^1.1"
-  },
-  "require-dev": {
-    "laravel/framework": "^12.0",
-    "spiral/code-style": "^2.2.2",
-    "rector/rector": "^2.0",
-    "guzzlehttp/guzzle": "^7.0",
-    "mockery/mockery": "^1.6",
-    "phpstan/phpstan": "^2.1",
-    "phpunit/phpunit": "^10.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Spiral\\RoadRunnerLaravel\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Spiral\\RoadRunnerLaravel\\Tests\\": "tests/"
-    }
-  },
-  "bin": [
-    "bin/rr-worker"
-  ],
-  "scripts": {
-    "get:rr": "dload get rr",
-    "get:temporal": "dload get temporal",
-    "get:protoc": "dload get protoc protoc-gen-php-grpc",
-    "cs-check": "vendor/bin/php-cs-fixer fix --dry-run",
-    "cs-fix": "vendor/bin/php-cs-fixer fix",
-    "refactor": "rector process --config=rector.php",
-    "refactor:ci": "rector process --config=rector.php --dry-run --ansi",
-    "phpunit": "@php ./vendor/bin/phpunit --no-coverage",
-    "phpunit-cover": "@php ./vendor/bin/phpunit",
-    "phpstan": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",
-    "test": [
-      "@phpstan",
-      "@phpunit"
+    "name": "roadrunner-php/laravel-bridge",
+    "type": "library",
+    "description": "Laravel integration for RoadRunner with support for HTTP, Jobs, gRPC, and Temporal plugins - going beyond Octane's capabilities",
+    "keywords": [
+        "laravel",
+        "bridge",
+        "roadrunner",
+        "temporal",
+        "grpc",
+        "queue",
+        "cache",
+        "http"
     ],
-    "test-cover": [
-      "@phpstan",
-      "@phpunit-cover"
-    ]
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Spiral\\RoadRunnerLaravel\\ServiceProvider",
-        "Spiral\\RoadRunnerLaravel\\Queue\\QueueServiceProvider",
-        "Spiral\\RoadRunnerLaravel\\Cache\\CacheServiceProvider",
-        "Spiral\\RoadRunnerLaravel\\Temporal\\TemporalServiceProvider"
-      ]
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/roadrunner-server"
+        }
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "butschster",
+            "homepage": "https://github.com/butschster"
+        },
+        {
+            "name": "roxblnfk",
+            "homepage": "https://github.com/roxblnfk"
+        },
+        {
+            "name": "tarampampam",
+            "homepage": "https://github.com/tarampampam"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "spiral/roadrunner-kv": "^4.0",
+        "spiral/roadrunner-jobs": "^4.0",
+        "spiral/roadrunner-grpc": "^3.5",
+        "laravel/octane": "^2.9",
+        "spiral/roadrunner-http": "^3.0",
+        "spiral/roadrunner-worker": "^3.0",
+        "temporal/sdk": "^2.0",
+        "internal/dload": "^1.1"
+    },
+    "require-dev": {
+        "laravel/framework": "^12.0",
+        "spiral/code-style": "^2.2.2",
+        "rector/rector": "^2.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "mockery/mockery": "^1.6",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Spiral\\RoadRunnerLaravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Spiral\\RoadRunnerLaravel\\Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/rr-worker"
+    ],
+    "scripts": {
+        "get:rr": "dload get rr",
+        "get:temporal": "dload get temporal",
+        "get:protoc": "dload get protoc protoc-gen-php-grpc",
+        "cs:check": "php-cs-fixer fix --dry-run",
+        "cs:fix": "php-cs-fixer fix",
+        "refactor": "rector process --config=rector.php",
+        "refactor:ci": "rector process --config=rector.php --dry-run --ansi",
+        "phpunit": "phpunit --no-coverage",
+        "phpunit-cover": "phpunit",
+        "phpstan": "phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",
+        "test": "phpunit --color=always --testdox",
+        "test:unit": "phpunit --color=always --testsuite=Unit",
+        "test:feat": "phpunit --color=always --testsuite=Feature",
+        "test-cover": [
+            "phpstan",
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --coverage-clover=runtime/phpunit/logs/clover.xml --color=always"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Spiral\\RoadRunnerLaravel\\ServiceProvider",
+                "Spiral\\RoadRunnerLaravel\\Queue\\QueueServiceProvider",
+                "Spiral\\RoadRunnerLaravel\\Cache\\CacheServiceProvider",
+                "Spiral\\RoadRunnerLaravel\\Temporal\\TemporalServiceProvider"
+            ]
+        }
+    },
+    "support": {
+        "issues": "https://github.com/roadrunner-php/laravel-bridge/issues",
+        "source": "https://github.com/roadrunner-php/laravel-bridge"
     }
-  },
-  "support": {
-    "issues": "https://github.com/roadrunner-php/laravel-bridge/issues",
-    "source": "https://github.com/roadrunner-php/laravel-bridge"
-  }
 }

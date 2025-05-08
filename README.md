@@ -12,49 +12,56 @@ Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applicat
 
 ## Why Use This Package?
 
-Laravel provides the [Octane](https://laravel.com/docs/12.x/octane) package which partially supports RoadRunner as an
-application server, but RoadRunner offers much more than just HTTP capabilities. It also includes Jobs, Temporal, gRPC,
-and other plugins.
+This package provides complete Laravel integration with RoadRunner, offering:
+
+- Support for HTTP and other RoadRunner plugins like gRPC, Queue, KeyValue, and more.
+- [Temporal](https://temporal.io/) integration
+- Full RoadRunner configuration control
 
 ![RoadRunner](https://github.com/user-attachments/assets/609d2e29-b6af-478b-b350-1d27b77ed6fb)
 
-> **Note:** There is an article that explains all the RoadRunner
-> plugins: https://butschster.medium.com/roadrunner-an-underrated-powerhouse-for-php-applications-46410b0abc
+> [!TIP]
+> [There is an article][rr-plugins-article] that explains all the RoadRunner plugins.
 
-The main limitation of Octane is that it has a built-in worker only for the HTTP plugin and doesn't provide the ability
-to create additional workers for other RoadRunner plugins, restricting its use to just the HTTP plugin.
+## Table of Contents
 
-Our **Laravel Bridge** solves this problem by taking a different approach:
+- [Get Started](#get-started)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Starting the Server](#starting-the-server)
+- [How It Works](#how-it-works)
+- [Supported Plugins](#supported-plugins)
+  - [HTTP Plugin](#http-plugin)
+  - [Jobs (Queue) Plugin](#jobs-queue-plugin)
+  - [gRPC Plugin](#grpc-plugin)
+  - [Temporal](#temporal)
+- [Custom Workers](#custom-workers)
+- [Support](#support)
+- [License](#license)
 
-1. We include `laravel/octane` in our package and reuse its **SDK** for clearing the state of Laravel applications
-2. We add support for running and configuring multiple workers for different RoadRunner plugins
-3. By reusing Octane's functionality for state clearing, we automatically support all third-party packages that are
-   compatible with Octane
+## Get Started
 
-**This way, you get the best of both worlds:** Octane's state management and RoadRunner's full plugin ecosystem.
+### Installation
 
-## Installation
+First, install the Laravel Bridge package via Composer:
 
-```shell script
+```shell
 composer require roadrunner-php/laravel-bridge
 ```
 
-After that you can "publish" package configuration file (`./config/roadrunner.php`) using next command:
+Publish the configuration file:
 
-```shell script
+```shell
 php artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider' --tag=config
 ```
 
-## Usage
+Download and install RoadRunner binary using DLoad:
 
-After package installation, you can download and install [RoadRunner][roadrunner] binary
-using [DLoad][dload] package:
-
-```bash
+```shell
 ./vendor/bin/dload get rr
 ```
 
-### Basic Configuration (.rr.yaml)
+### Configuration
 
 Create a `.rr.yaml` configuration file in your project root:
 
@@ -65,7 +72,6 @@ rpc:
 
 server:
   command: 'php vendor/bin/rr-worker start'
-  relay: pipes
 
 http:
   address: 0.0.0.0:8080
@@ -82,49 +88,30 @@ http:
     forbid: [ ".php" ]
 ```
 
-## RoadRunner Worker Configuration
+### Starting the Server
 
-You can configure workers in `config/roadrunner.php` file in the `workers` section:
+Start the RoadRunner server with:
 
-```php
-use Spiral\RoadRunner\Environment\Mode;
-use Spiral\RoadRunnerLaravel\Grpc\GrpcWorker;
-use Spiral\RoadRunnerLaravel\Http\HttpWorker;
-use Spiral\RoadRunnerLaravel\Queue\QueueWorker;
-use Spiral\RoadRunnerLaravel\Temporal\TemporalWorker;
-
-return [
-    // ... other configuration options ...
-
-    'workers' => [
-        Mode::MODE_HTTP => HttpWorker::class,
-        Mode::MODE_JOBS => QueueWorker::class,
-        Mode::MODE_GRPC => GrpcWorker::class,
-        Mode::MODE_TEMPORAL => TemporalWorker::class,
-    ],
-];
+```shell
+./rr serve
 ```
-
-As you can see, there are several predefined workers for HTTP, Jobs, gRPC, and Temporal. Feel free to replace any of
-them with your implementation if needed. Or create your own worker, for example,
-for [Centrifugo](https://docs.roadrunner.dev/docs/plugins/centrifuge), [TCP](https://docs.roadrunner.dev/docs/plugins/tcp)
-or any other plugin.
 
 ## How It Works
 
-In the server section of the RoadRunner config, we specify the command to start our worker:
+RoadRunner creates a worker pool by executing the command specified in the server configuration:
 
 ```yaml
 server:
   command: 'php vendor/bin/rr-worker start'
-  relay: pipes
 ```
 
-When RoadRunner server creates a worker pool for a specific plugin, it exposes an environment variable `RR_MODE` that
-indicates which plugin is being used. Our worker checks this variable to determine which Worker class should handle the
-request based on the configuration in `roadrunner.php`.
+When RoadRunner creates a worker pool for a specific plugin,
+it sets the `RR_MODE` environment variable to indicate which plugin is being used.
+The Laravel Bridge checks this variable to determine
+which Worker class should handle the request based on your configuration.
 
-The selected worker starts listening for requests from the RoadRunner server and handles them using the Octane worker,
+The selected worker then listens for requests from the RoadRunner server
+and handles them using the [Octane][octane] worker,
 which clears the application state after each task (request, command, etc.).
 
 ## Supported Plugins
@@ -148,16 +135,17 @@ http:
     forbid: [ ".php" ]
 ```
 
-> **Note:** Read more about the HTTP plugin in
-> the [RoadRunner documentation][https://docs.roadrunner.dev/docs/http/http].
+> [!TIP]
+> Read more about the HTTP plugin in the [RoadRunner documentation][roadrunner-docs-http].
 
 ### Jobs (Queue) Plugin
 
-The Queue plugin allows you to use RoadRunner as a queue driver for Laravel.
+The Queue plugin allows you to use RoadRunner as a queue driver for Laravel
+without additional services like Redis or a database.
 
 #### Configuration
 
-First, add the Queue Service Provider in your `config/app.php`:
+First, add the Queue Service Provider in `config/app.php`:
 
 ```php
 'providers' => [
@@ -166,7 +154,7 @@ First, add the Queue Service Provider in your `config/app.php`:
 ],
 ```
 
-Then, configure a new connection in your `config/queue.php`:
+Then, configure a new connection in `config/queue.php`:
 
 ```php
 'connections' => [
@@ -192,16 +180,16 @@ jobs:
       config: { }
 ```
 
-> **Note:** Read more about the Jobs plugin in
-> the [RoadRunner documentation][https://docs.roadrunner.dev/docs/queues-and-jobs/overview-queues].
-
-Don't forget to set the `QUEUE_CONNECTION` environment variable in your `.env` file:
+Set the `QUEUE_CONNECTION` environment variable in your `.env` file:
 
 ```dotenv
 QUEUE_CONNECTION=roadrunner
 ```
 
 That's it! You can now dispatch jobs to the RoadRunner queue without any additional services like Redis or Database.
+
+> [!TIP]
+> Read more about the Jobs plugin in the [RoadRunner documentation][roadrunner-docs-jobs].
 
 ### gRPC Plugin
 
@@ -263,36 +251,54 @@ return [
 ];
 ```
 
-Download Temporal binary for development purposes using the following command:
+Download Temporal binary for development:
 
 ```bash
 ./vendor/bin/dload get temporal
 ```
 
-To start the Temporal server, you can use the following command:
+Start the Temporal dev server:
 
 ```bash
 ./temporal server start-dev --log-level error --color always
 ```
 
-#### Useful links
+#### Useful Links
 
 - [PHP SDK on GitHub](https://github.com/temporalio/sdk-php)
 - [PHP SDK docs](https://docs.temporal.io/develop/php/)
 - [Code samples](https://github.com/temporalio/samples-php)
 - [Taxi service sample](https://github.com/butschster/podlodka-taxi-service)
 
-## Starting RoadRunner Server
-
-To start the RoadRunner server:
-
-```shell script
-./rr serve
-```
-
 ## Custom Workers
 
-You can create your own custom workers by implementing the `Spiral\RoadRunnerLaravel\WorkerInterface`:
+The RoadRunner Laravel Bridge comes with several predefined workers for common plugins,
+but you can easily create your own custom workers for any RoadRunner plugin.
+This section explains how to create and register custom workers in your application.
+
+### Understanding Workers
+
+Workers are responsible for handling requests from the RoadRunner server
+and processing them in your Laravel application.
+The predefined workers are configured in the `config/roadrunner.php` file:
+
+```php
+return [
+    // ... other configuration options ...
+
+    'workers' => [
+        Mode::MODE_HTTP => HttpWorker::class,
+        Mode::MODE_JOBS => QueueWorker::class,
+        Mode::MODE_GRPC => GrpcWorker::class,
+        Mode::MODE_TEMPORAL => TemporalWorker::class,
+    ],
+];
+```
+
+### Creating Custom Workers
+
+To create a custom worker, you need to implement the `Spiral\RoadRunnerLaravel\WorkerInterface`.
+This interface has a single method, `start()`, which is called when the worker is started by the RoadRunner server:
 
 ```php
 namespace App\Workers;
@@ -304,29 +310,45 @@ class CustomWorker implements WorkerInterface
 {
     public function start(WorkerOptionsInterface $options): void
     {
-        // Your custom worker implementation
+        // Your worker implementation goes here
+        // This method should handle requests from the RoadRunner server
     }
 }
 ```
 
-Then register it in the `config/roadrunner.php`:
+### Registering Custom Workers
+
+After creating your custom worker, you need to register it in the `config/roadrunner.php` file:
 
 ```php
 return [
+    // ... other configuration options ...
+
     'workers' => [
-        'custom' => \App\Workers\CustomWorker::class,
+        // Existing workers
+        Mode::MODE_HTTP => HttpWorker::class,
+        Mode::MODE_JOBS => QueueWorker::class,
+
+        // Your custom worker for a custom or built-in plugin
+        'custom_plugin' => \App\Workers\CustomWorker::class,
     ],
 ];
 ```
 
+The key in the `workers` array should match the value of the `RR_MODE` environment variable
+set by the RoadRunner server for your plugin.
+
 ## Support
 
-If you find this package helpful, please consider giving it a star on GitHub. Your support helps make the project more visible to other developers who might benefit from it!
+If you find this package helpful, please consider giving it a star on GitHub.
+Your support helps make the project more visible to other developers who might benefit from it!
 
 [![Issues][badge_issues]][link_issues]
 [![Issues][badge_pulls]][link_pulls]
 
 If you find any package errors, please, [make an issue][link_create_issue] in a current repository.
+
+You can also [sponsor this project][link_sponsor] to help ensure its continued development and maintenance.
 
 ## License
 
@@ -374,6 +396,8 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
 
 [link_pulls]:https://github.com/roadrunner-php/laravel-bridge/pulls
 
+[link_sponsor]:https://github.com/sponsors/roadrunner-server
+
 [link_license]:https://github.com/roadrunner-php/laravel-bridge/blob/master/LICENSE
 
 [getcomposer]:https://getcomposer.org/download/
@@ -389,3 +413,11 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
 [laravel_events]:https://laravel.com/docs/events
 
 [roadrunner-binary-releases]:https://github.com/roadrunner-server/roadrunner/releases
+
+[roadrunner-docs-jobs]:https://docs.roadrunner.dev/docs/queues-and-jobs/overview-queues
+
+[roadrunner-docs-http]:https://docs.roadrunner.dev/docs/http/http
+
+[octane]:https://laravel.com/docs/12.x/octane
+
+[rr-plugins-article]:https://butschster.medium.com/roadrunner-an-underrated-powerhouse-for-php-applications-46410b0abc

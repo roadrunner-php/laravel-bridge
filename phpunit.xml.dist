@@ -2,8 +2,12 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
-         colors="true">
-
+         cacheResultFile="runtime/phpunit/result.cache"
+         colors="true"
+         stderr="true"
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         displayDetailsOnTestsThatTriggerDeprecations="true"
+>
     <testsuites>
         <testsuite name="Unit">
             <directory>./tests/Unit</directory>
@@ -12,25 +16,22 @@
             <directory>./tests/Feature</directory>
         </testsuite>
     </testsuites>
-
-    <coverage includeUncoveredFiles="false" processUncoveredFiles="true">
+    <source>
         <include>
-            <directory suffix=".php">./src</directory>
+            <directory>src</directory>
         </include>
         <exclude>
-            <directory>./vendor</directory>
-            <directory>./tests</directory>
+            <directory>tests</directory>
         </exclude>
+    </source>
+    <coverage>
         <report>
-            <html outputDirectory="./coverage/html"/>
-            <xml outputDirectory="./coverage/xml"/>
-            <clover outputFile="./coverage/clover.xml"/>
-            <text outputFile="php://stdout" showUncoveredFiles="false"/>
+            <html outputDirectory="runtime/coverage"/>
+            <text outputFile="runtime/coverage.txt"/>
+            <clover outputFile="runtime/logs/clover.xml"/>
         </report>
     </coverage>
-
-    <php>
-        <server name="APP_KEY" value="base64:+hY09mlBag/d7Qhq2SjE/i2iUzZBS1dGObLqcHZU2Ac=" force="true"/>
-        <server name="APP_URL" value="http://unit-test" force="true"/>
-    </php>
+    <logging>
+        <junit outputFile="runtime/report.junit.xml"/>
+    </logging>
 </phpunit>
