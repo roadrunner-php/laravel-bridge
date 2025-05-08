@@ -106,10 +106,14 @@ server:
   command: 'php vendor/bin/rr-worker start'
 ```
 
-When RoadRunner creates a worker pool for a specific plugin, it sets the `RR_MODE` environment variable to indicate which plugin is being used.
-The Laravel Bridge checks this variable to determine which Worker class should handle the request based on your configuration.
+When RoadRunner creates a worker pool for a specific plugin,
+it sets the `RR_MODE` environment variable to indicate which plugin is being used.
+The Laravel Bridge checks this variable to determine
+which Worker class should handle the request based on your configuration.
 
-The selected worker then listens for requests from the RoadRunner server and handles them using the Octane worker, which clears the application state after each task (request, command, etc.).
+The selected worker then listens for requests from the RoadRunner server
+and handles them using the [Octane][octane] worker,
+which clears the application state after each task (request, command, etc.).
 
 ## Supported Plugins
 
@@ -132,11 +136,13 @@ http:
     forbid: [ ".php" ]
 ```
 
-> **Note:** Read more about the HTTP plugin in the [RoadRunner documentation](https://docs.roadrunner.dev/docs/http/http).
+> [!TIP]
+> Read more about the HTTP plugin in the [RoadRunner documentation][roadrunner-docs-http].
 
 ### Jobs (Queue) Plugin
 
-The Queue plugin allows you to use RoadRunner as a queue driver for Laravel without additional services like Redis or a database.
+The Queue plugin allows you to use RoadRunner as a queue driver for Laravel
+without additional services like Redis or a database.
 
 #### Configuration
 
@@ -184,7 +190,7 @@ QUEUE_CONNECTION=roadrunner
 That's it! You can now dispatch jobs to the RoadRunner queue without any additional services like Redis or Database.
 
 > [!TIP]
-> Read more about the Jobs plugin in the [RoadRunner documentation](https://docs.roadrunner.dev/docs/queues-and-jobs/overview-queues).
+> Read more about the Jobs plugin in the [RoadRunner documentation][roadrunner-docs-jobs].
 
 ### gRPC Plugin
 
@@ -273,7 +279,8 @@ This section explains how to create and register custom workers in your applicat
 
 ### Understanding Workers
 
-Workers are responsible for handling requests from the RoadRunner server and processing them in your Laravel application.
+Workers are responsible for handling requests from the RoadRunner server
+and processing them in your Laravel application.
 The predefined workers are configured in the `config/roadrunner.php` file:
 
 ```php
@@ -304,7 +311,8 @@ class CustomWorker implements WorkerInterface
 {
     public function start(WorkerOptionsInterface $options): void
     {
-        // Your custom worker implementation
+        // Your worker implementation goes here
+        // This method should handle requests from the RoadRunner server
     }
 }
 ```
@@ -328,14 +336,20 @@ return [
 ];
 ```
 
+The key in the `workers` array should match the value of the `RR_MODE` environment variable
+set by the RoadRunner server for your plugin.
+
 ## Support
 
-If you find this package helpful, please consider giving it a star on GitHub. Your support helps make the project more visible to other developers who might benefit from it!
+If you find this package helpful, please consider giving it a star on GitHub.
+Your support helps make the project more visible to other developers who might benefit from it!
 
 [![Issues][badge_issues]][link_issues]
 [![Issues][badge_pulls]][link_pulls]
 
 If you find any package errors, please, [make an issue][link_create_issue] in a current repository.
+
+You can also [sponsor this project][link_sponsor] to help ensure its continued development and maintenance.
 
 ## License
 
@@ -383,6 +397,8 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
 
 [link_pulls]:https://github.com/roadrunner-php/laravel-bridge/pulls
 
+[link_sponsor]:https://github.com/sponsors/roadrunner-server
+
 [link_license]:https://github.com/roadrunner-php/laravel-bridge/blob/master/LICENSE
 
 [getcomposer]:https://getcomposer.org/download/
@@ -398,6 +414,10 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
 [laravel_events]:https://laravel.com/docs/events
 
 [roadrunner-binary-releases]:https://github.com/roadrunner-server/roadrunner/releases
+
+[roadrunner-docs-jobs]:https://docs.roadrunner.dev/docs/queues-and-jobs/overview-queues
+
+[roadrunner-docs-http]:https://docs.roadrunner.dev/docs/http/http
 
 [octane]:https://laravel.com/docs/12.x/octane
 
