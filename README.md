@@ -48,10 +48,10 @@ php artisan vendor:publish --provider='Spiral\RoadRunnerLaravel\ServiceProvider'
 ## Usage
 
 After package installation, you can download and install [RoadRunner][roadrunner] binary
-using Composer script:
+using [DLoad][dload] package:
 
 ```bash
-composer get:rr
+./vendor/bin/dload get rr
 ```
 
 ### Basic Configuration (.rr.yaml)
@@ -266,7 +266,7 @@ return [
 Download Temporal binary for development purposes using the following command:
 
 ```bash
-composer get:temporal
+./vendor/bin/dload get temporal
 ```
 
 To start the Temporal server, you can use the following command:
@@ -377,6 +377,8 @@ MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
 [link_license]:https://github.com/roadrunner-php/laravel-bridge/blob/master/LICENSE
 
 [getcomposer]:https://getcomposer.org/download/
+
+[dload]:https://github.com/php-internal/dload
 
 [roadrunner]:https://github.com/roadrunner-server/roadrunner
 
