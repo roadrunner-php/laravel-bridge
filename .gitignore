@@ -16,3 +16,13 @@ composer.lock
 .DS_Store
 *.cache
 /runtime
+
+# Binaries
+/rr
+/rr.exe
+/protoc
+/protoc.exe
+/protoc-gen-php-grpc
+/protoc-gen-php-grpc.exe
+/temporal
+/temporal.exe
