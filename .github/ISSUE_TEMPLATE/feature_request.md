@@ -2,7 +2,6 @@
 name: Feature request
 about: Suggest an idea for this package
 labels: type:enhancement
-assignees: tarampampam
 ---
 
 ### Is your feature request related to a problem?
