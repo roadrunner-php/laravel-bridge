@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+### Fixed
+
+- The "withHeader" method of the "\Spiral\RoadRunner\Jobs\Task\WritableHeadersInterface" interface expects the type "string|iterable", "int" is passed
+
 ## v5.12.0
 
 ### Added

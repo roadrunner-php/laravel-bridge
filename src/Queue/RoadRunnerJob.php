@@ -53,7 +53,7 @@ class RoadRunnerJob extends Job implements JobContract
         $attempts = $this->attempts();
 
         $this->task
-            ->withHeader('attempts', $attempts + 1)
+            ->withHeader('attempts', (string) ++$attempts)
             ->fail($e->getMessage());
 
         parent::failed($e);
