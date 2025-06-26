@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## UNRELEASED
+
+### Added
+
+- gRPC client support
+
 ### Fixed
 
 - Tasks were stuck in case of an error, the "release" method did not return them to the queue.
