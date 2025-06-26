@@ -187,8 +187,7 @@ final class QueueWorker implements WorkerInterface
     protected function maxAttemptsExceededException(RoadRunnerJob $job): MaxAttemptsExceededException
     {
         return new MaxAttemptsExceededException(
-            $job->resolveName(
-            ) . ' has been attempted too many times or run too long. The job may have previously timed out.',
+            $job->resolveName() . ' has been attempted too many times or run too long. The job may have previously timed out.',
         );
     }
 
@@ -267,9 +266,9 @@ final class QueueWorker implements WorkerInterface
             ',',
             \method_exists($job, 'backoff') && !\is_null($job->backoff())
                 ? $job->backoff()
-                : $options->backoff,
+                : (string) $options->backoff,
         );
 
-        return (int) ($backoff[$job->attempts() - 1] ?? last($backoff));
+        return (int) ($backoff[$job->attempts()] ?? last($backoff));
     }
 }

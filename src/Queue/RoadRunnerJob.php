@@ -48,6 +48,18 @@ class RoadRunnerJob extends Job implements JobContract
         $this->task->complete();
     }
 
+    public function release($delay = 0): void
+    {
+        $attempts = $this->attempts();
+
+        $this->task
+            ->withDelay($delay)
+            ->withHeader('attempts', (string) ++$attempts)
+            ->requeue('release');
+
+        parent::release($delay);
+    }
+
     protected function failed($e): void
     {
         $attempts = $this->attempts();
