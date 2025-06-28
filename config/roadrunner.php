@@ -18,6 +18,31 @@ return [
         'services' => [
             // GreeterInterface::class => new Greeter::class,
         ],
+        'clients' => [
+            'interceptors' => [
+                // LoggingInterceptor::class,
+            ],
+            'services' => [
+                // [
+                //     'connection' => 'my-grpc-server:9002',
+                //     'interfaces' => [
+                //         GreeterInterface::class,
+                //     ],
+                // ],
+                // [
+                //     'connection' => 'my-secure-grpc-server:9002',
+                //     'interfaces' => [
+                //         GreeterInterface::class,
+                //     ],
+                //     'tls' => [
+                //         'rootCerts' => '/path/to/ca.pem',
+                //         'privateKey' => '/path/to/client.key',
+                //         'certChain'  => '/path/to/client.crt',
+                //         'serverName' => 'my.grpc.server',
+                //     ],
+                // ],
+            ],
+        ],
     ],
 
     'temporal' => [
