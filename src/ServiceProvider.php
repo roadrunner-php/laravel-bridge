@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel;
 
+use Illuminate\Contracts\Container\Container;
 use Spiral\Attributes\AttributeReader;
 use Spiral\Attributes\ReaderInterface;
 use Spiral\Core\FactoryInterface;
@@ -43,14 +44,18 @@ final class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     protected function initializeGrpcClientServices(): void
     {
-        $this->app->singleton(FactoryInterface::class, fn() => new class implements FactoryInterface {
+        $this->app->singleton(FactoryInterface::class, fn() => new class($this->app) implements FactoryInterface {
+            public function __construct(
+                private readonly Container $container,
+            ) {}
+
             /**
              * @param  class-string  $class
              * @param  array<int, mixed>  $parameters
              */
             public function make(string $class, array $parameters = []): object
             {
-                return new $class(...array_values($parameters));
+                return $this->container->make($class, $parameters);
             }
         });
         $this->app->singleton(ServiceClientProvider::class, function () {
