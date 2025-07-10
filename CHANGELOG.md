@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## Unreleased
+
 ### Fixed
 
+- Check pipeline stats on message push [#147]
 - Tasks were stuck in case of an error, the "release" method did not return them to the queue.
 - The "calculateBackoff" method incorrectly took the index "$job->attempts()"
 - The "withHeader" method of the "\Spiral\RoadRunner\Jobs\Task\WritableHeadersInterface" interface expects the type "string|iterable", "int" is passed
+
+[#147]:https://github.com/roadrunner-php/laravel-bridge/issues/147
 
 ## v5.12.0
 
