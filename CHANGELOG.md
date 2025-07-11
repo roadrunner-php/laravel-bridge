@@ -24,6 +24,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
+- Method `setPrefix` on the `\Spiral\RoadRunnerLaravel\Cache\RoadRunnerStore` class
 - Support for `v3.x` of `spiral/roadrunner-http` package [#125]
 
 [#125]:https://github.com/roadrunner-php/laravel-bridge/issues/125

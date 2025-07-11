@@ -10,7 +10,12 @@ use Spiral\RoadRunner\KeyValue\StorageInterface;
 
 final class RoadRunnerStore extends TaggableStore implements LockProvider
 {
-    public function __construct(private StorageInterface $storage, private string $prefix = '') {}
+    private $prefix;
+
+    public function __construct(private StorageInterface $storage, string $prefix = '')
+    {
+        $this->setPrefix($prefix);
+    }
 
     public function get($key)
     {
@@ -86,5 +91,10 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
     public function getPrefix()
     {
         return $this->prefix;
+    }
+
+    public function setPrefix($prefix)
+    {
+        $this->prefix = $prefix;
     }
 }
