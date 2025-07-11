@@ -34,6 +34,7 @@ This package provides complete Laravel integration with RoadRunner, offering:
   - [HTTP Plugin](#http-plugin)
   - [Jobs (Queue) Plugin](#jobs-queue-plugin)
   - [gRPC Plugin](#grpc-plugin)
+  - [gRPC Client](#grpc-client)
   - [Temporal](#temporal)
 - [Custom Workers](#custom-workers)
 - [Support](#support)
@@ -218,6 +219,66 @@ return [
     ],
 ];
 ```
+
+#### gRPC Client Usage
+
+The package also allows your Laravel application to act as a gRPC client, making requests to external gRPC services.
+
+##### Client Configuration
+
+Add your gRPC client configuration to `config/roadrunner.php`:
+
+```php
+return [
+    // ... other configuration
+    'grpc' => [
+        // ... server config
+        'clients' => [
+            'services' => [
+                [
+                    'connection' => '127.0.0.1:9001', // gRPC server address
+                    'interfaces' => [
+                        \App\Grpc\EchoServiceInterface::class,
+                    ],
+                    // 'tls' => [ ... ] // Optional TLS configuration
+                ],
+            ],
+            // 'interceptors' => [ ... ] // Optional interceptors
+        ],
+    ],
+];
+```
+
+##### Using the gRPC Client in Laravel
+
+You can inject `Spiral\Grpc\Client\ServiceClientProvider` into your services or controllers to obtain a gRPC client instance:
+
+```php
+use Spiral\Grpc\Client\ServiceClientProvider;
+use App\Grpc\EchoServiceInterface;
+use App\Grpc\EchoRequest;
+
+class GrpcController extends Controller
+{
+    public function callService(ServiceClientProvider $provider)
+    {
+        /** @var EchoServiceInterface $client */
+        $client = $provider->get(EchoServiceInterface::class);
+
+        $request = new EchoRequest();
+        $request->setMessage('Hello from client!');
+
+        $response = $client->Echo($request);
+
+        return $response->getMessage();
+    }
+}
+```
+
+> **Note:**
+> - Make sure you have generated the PHP classes from your `.proto` files (using `protoc`).
+> - The `connection` and `interfaces` must match the service you want to call.
+> - You can configure multiple gRPC client services as needed.
 
 ### Temporal
 
