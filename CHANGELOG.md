@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Fixed
 
 - Check pipeline stats on message push [#147]
+- Edit the $ttl calculation for the RoadRunnerStore, the time calculation takes place inside the spiral/roadrunner-kv package
 - Tasks were stuck in case of an error, the "release" method did not return them to the queue.
 - The "calculateBackoff" method incorrectly took the index "$job->attempts()"
 - The "withHeader" method of the "\Spiral\RoadRunner\Jobs\Task\WritableHeadersInterface" interface expects the type "string|iterable", "int" is passed

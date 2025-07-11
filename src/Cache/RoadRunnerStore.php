@@ -6,13 +6,10 @@ namespace Spiral\RoadRunnerLaravel\Cache;
 
 use Illuminate\Cache\TaggableStore;
 use Illuminate\Contracts\Cache\LockProvider;
-use Illuminate\Support\InteractsWithTime;
 use Spiral\RoadRunner\KeyValue\StorageInterface;
 
 final class RoadRunnerStore extends TaggableStore implements LockProvider
 {
-    use InteractsWithTime;
-
     public function __construct(private StorageInterface $storage, private string $prefix = '') {}
 
     public function get($key)
@@ -39,7 +36,7 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
 
     public function put($key, $value, $seconds)
     {
-        return $this->storage->set($this->prefix . $key, $value, $this->calculateExpiration($seconds));
+        return $this->storage->set($this->prefix . $key, $value, $seconds);
     }
 
     public function putMany(array $values, $seconds)
@@ -52,7 +49,7 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
 
         return $this->storage->setMultiple(
             $prefixedValues,
-            $this->calculateExpiration($seconds),
+            $seconds,
         );
     }
 
@@ -89,29 +86,5 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
     public function getPrefix()
     {
         return $this->prefix;
-    }
-
-    /**
-     * Set the cache key prefix.
-     */
-    public function setPrefix(string $prefix): void
-    {
-        $this->prefix = !empty($prefix) ? $prefix . ':' : '';
-    }
-
-    /**
-     * Get the expiration time of the key.
-     */
-    protected function calculateExpiration(int $seconds): int
-    {
-        return $this->toTimestamp($seconds);
-    }
-
-    /**
-     * Get the UNIX timestamp for the given number of seconds.
-     */
-    protected function toTimestamp(int $seconds): int
-    {
-        return $seconds > 0 ? $this->availableAt($seconds) : 0;
     }
 }
