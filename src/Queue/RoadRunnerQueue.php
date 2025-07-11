@@ -120,7 +120,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
 
         /** @var Stat $stat */
         foreach ($stats as $stat) {
-            if ($stat->getQueue() === $queue) {
+            if ($stat->getPipeline() === $queue) {
                 return $stat;
             }
         }
