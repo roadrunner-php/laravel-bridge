@@ -37,6 +37,7 @@ This package provides complete Laravel integration with RoadRunner, offering:
   - [gRPC Client](#grpc-client)
   - [Temporal](#temporal)
 - [Custom Workers](#custom-workers)
+- [Integrate with RoadRunner Logger](#integrate-with-roadrunner-logger)
 - [Support](#support)
 - [License](#license)
 
