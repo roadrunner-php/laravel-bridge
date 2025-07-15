@@ -37,6 +37,7 @@ This package provides complete Laravel integration with RoadRunner, offering:
   - [gRPC Client](#grpc-client)
   - [Temporal](#temporal)
 - [Custom Workers](#custom-workers)
+- [Integrate with RoadRunner Logger](#integrate-with-roadrunner-logger)
 - [Support](#support)
 - [License](#license)
 
@@ -398,6 +399,28 @@ return [
 
 The key in the `workers` array should match the value of the `RR_MODE` environment variable
 set by the RoadRunner server for your plugin.
+
+### Integrate with RoadRunner Logger
+
+You can set the RoadRunner RPC address in your `.env` file (or use the default `tcp://127.0.0.1:6001`):
+
+```
+RR_RPC=tcp://127.0.0.1:6001
+```
+
+After that, you can use the logger in your Laravel application by specifying the `rr` channel:
+
+```php
+logger('rr')->info('This is an info message');
+```
+
+Or directly via the Log facade:
+
+```php
+use Illuminate\Support\Facades\Log;
+
+Log::channel('rr')->error('An error occurred');
+```
 
 ## Support
 
