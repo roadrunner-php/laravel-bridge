@@ -43,7 +43,8 @@
         "spiral/roadrunner-worker": "^3.0",
         "temporal/sdk": "^2.0",
         "internal/dload": "^1.1",
-        "spiral/grpc-client": "^1.0.0-rc1"
+        "spiral/grpc-client": "^1.0.0-rc1",
+        "hungthai1401/laravel-roadrunner-logger": "^1.0"
     },
     "require-dev": {
         "laravel/framework": "^12.0",
