@@ -37,6 +37,10 @@ final class GrpcWorker implements WorkerInterface
 
         foreach ($services as $interface => $service) {
             if (is_array($service)) {
+                if (!isset($service[0]) || !is_string($service[0])) {
+                    throw new \InvalidArgumentException("Service array must have a class name at index 0 for interface: {$interface}");
+                }
+
                 $serviceInterceptors = array_merge($interceptors, $service['interceptors'] ?? []);
                 $service = $service[0];
             } else {

@@ -67,6 +67,14 @@ final class Server
      */
     public function registerService(string $interface, ServiceInterface $service, array $interceptors = []): void
     {
+        foreach ($interceptors as $interceptor) {
+            if (!is_subclass_of($interceptor, GrpcServerInterceptorInterface::class)) {
+                throw new ServiceException(
+                    sprintf('Interceptor %s must implement %s', $interceptor, GrpcServerInterceptorInterface::class)
+                );
+            }
+        }
+
         $service = new ServiceWrapper($this->invoker, $interface, $service);
 
         $this->services[$service->getName()] = $service;
