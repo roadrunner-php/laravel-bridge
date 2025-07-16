@@ -160,7 +160,7 @@ final class Server
             throw NotFoundException::create("Service `{$serviceName}` not found.", StatusCode::NOT_FOUND);
         }
 
-        $service = $this->services[$serviceName] ?? [];
+        $service = $this->services[$serviceName];
         $interceptors = $this->interceptors[$serviceName] ?? [];
 
         $handler = function ($method, $context, $body) use ($service) {
