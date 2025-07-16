@@ -37,6 +37,9 @@ final class Server
     /** @var ServiceWrapper[] */
     private array $services = [];
 
+    /** @var class-string<GrpcServerInterceptorInterface>[] */
+    private array $interceptors = [];
+
     /**
      * @param ServerOptions $options
      */
@@ -58,13 +61,16 @@ final class Server
      *
      * @param class-string<T> $interface Generated service interface.
      * @param T $service Must implement interface.
+     * @param array<class-string<GrpcServerInterceptorInterface>> $interceptors for this service. Must implement
+     * GrpcServerInterceptorInterface.
      * @throws ServiceException
      */
-    public function registerService(string $interface, ServiceInterface $service): void
+    public function registerService(string $interface, ServiceInterface $service, array $interceptors = []): void
     {
         $service = new ServiceWrapper($this->invoker, $interface, $service);
 
         $this->services[$service->getName()] = $service;
+        $this->interceptors[$service->getName()] = $interceptors;
     }
 
     /**
@@ -136,17 +142,30 @@ final class Server
     /**
      * Invoke service method with binary payload and return the response.
      *
-     * @param class-string<ServiceInterface> $service
+     * @param class-string<ServiceInterface> $serviceName
      * @param non-empty-string $method
      * @throws GRPCException
      */
-    protected function invoke(string $service, string $method, ContextInterface $context, string $body): string
+    protected function invoke(string $serviceName, string $method, ContextInterface $context, string $body): string
     {
-        if (!isset($this->services[$service])) {
-            throw NotFoundException::create("Service `{$service}` not found.", StatusCode::NOT_FOUND);
+        if (!isset($this->services[$serviceName])) {
+            throw NotFoundException::create("Service `{$serviceName}` not found.", StatusCode::NOT_FOUND);
         }
 
-        return $this->services[$service]->invoke($method, $context, $body);
+        $service = $this->services[$serviceName] ?? [];
+        $interceptors = $this->interceptors[$serviceName] ?? [];
+
+        $handler = function ($method, $context, $body) use ($service) {
+            return $service->invoke($method, $context, $body);
+        };
+
+        $pipeline = array_reduce(
+            array_reverse($interceptors),
+            fn($next, $interceptor) => fn($method, $context, $body) => (new $interceptor)->intercept($method, $context, $body, $next),
+            $handler
+        );
+
+        return $pipeline($method, $context, $body);
     }
 
     private function workerError(WorkerInterface $worker, string $message): void

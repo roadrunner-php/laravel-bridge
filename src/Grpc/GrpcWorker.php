@@ -32,9 +32,18 @@ final class GrpcWorker implements WorkerInterface
 
         /** @var array<class-string, class-string> $services */
         $services = $app->get('config')->get('roadrunner.grpc.services', []);
+        /** @var array<class-string> $interceptors for all services */
+        $interceptors = $app->get('config')->get('roadrunner.grpc.interceptors', []);
 
         foreach ($services as $interface => $service) {
-            $server->registerService($interface, $app->make($service));
+            if (is_array($service)) {
+                $serviceInterceptors = array_merge($interceptors, $service['interceptors'] ?? []);
+                $service = $service[0];
+            } else {
+                $serviceInterceptors = $interceptors;
+            }
+
+            $server->registerService($interface, $app->make($service), $serviceInterceptors);
         }
 
         $server->serve(Worker::create());
