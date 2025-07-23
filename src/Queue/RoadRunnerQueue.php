@@ -26,7 +26,8 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         private readonly RPCInterface $rpc,
         private readonly string $default = 'default',
         private readonly array $defaultOptions = [],
-    ) {}
+    ) {
+    }
 
     public function push($job, $data = '', $queue = null): string
     {
@@ -51,6 +52,66 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return $task->getId();
     }
 
+    private function getQueue(?string $queue = null, array $options = []): QueueInterface
+    {
+        $queue = $this->jobs->connect($queue ?? $this->default, $this->getQueueOptions($options));
+
+        if (!$this->getStats($queue->getName())->getReady()) {
+            $queue->resume();
+        }
+
+        return $queue;
+    }
+
+    private function getQueueOptions(array $overrides = []): OptionsInterface
+    {
+        $config = array_merge($this->defaultOptions, $overrides);
+        $options = new Options(
+            $config['delay'] ?? 0,
+            $config['priority'] ?? 0,
+            $config['auto_ack'] ?? false
+        );
+
+        return match ($config['driver'] ?? null) {
+            Driver::Kafka => KafkaOptions::from($options)
+                ->withTopic($config['topic'] ?? 'default'),
+            default => $options,
+        };
+    }
+
+    private function getStats(?string $queue = null): Stat
+    {
+        $queue ??= $this->default;
+
+        $stats = $this->rpc->call('jobs.Stat', new Stats(), Stats::class)->getStats();
+
+        /** @var Stat $stat */
+        foreach ($stats as $stat) {
+            if ($stat->getPipeline() === $queue) {
+                return $stat;
+            }
+        }
+
+        return new Stat();
+    }
+
+    private function getJobOverrideOptions(string|object $job): array
+    {
+        if (is_string($job) && class_exists($job)) {
+            $job = app($job);
+
+            if ($job instanceof HasQueueOptions) {
+                return $job->queueOptions();
+            }
+        }
+
+        if ($job instanceof HasQueueOptions) {
+            return $job->queueOptions();
+        }
+
+        return [];
+    }
+
     public function later($delay, $job, $data = '', $queue = null): string
     {
         return $this->enqueueUsing(
@@ -60,31 +121,6 @@ final class RoadRunnerQueue extends Queue implements QueueContract
             $delay,
             fn($payload, $queue) => $this->laterRaw($delay, $payload, $queue, $this->getJobOverrideOptions($job)),
         );
-    }
-
-    public function pop($queue = null): void
-    {
-        throw new \BadMethodCallException('Pop is not supported');
-    }
-
-    public function size($queue = null): int
-    {
-        $stats = $this->getStats($queue);
-
-        return $stats->getActive() + $stats->getDelayed();
-    }
-
-    /**
-     * Get the "available at" UNIX timestamp.
-     * @param mixed $delay
-     */
-    protected function availableAt($delay = 0): int
-    {
-        $delay = $this->parseDateInterval($delay);
-
-        return $delay instanceof \DateTimeInterface
-            ? Carbon::parse($delay)->diffInSeconds()
-            : $delay;
     }
 
     /**
@@ -108,55 +144,28 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return $task->getId();
     }
 
-    private function getQueue(?string $queue = null, array $options = []): QueueInterface
+    /**
+     * Get the "available at" UNIX timestamp.
+     * @param mixed $delay
+     */
+    protected function availableAt($delay = 0): int
     {
-        $queue = $this->jobs->connect($queue ?? $this->default, $this->getQueueOptions($options));
+        $delay = $this->parseDateInterval($delay);
 
-        if (!$this->getStats($queue->getName())->getReady()) {
-            $queue->resume();
-        }
-
-        return $queue;
+        return $delay instanceof \DateTimeInterface
+            ? Carbon::parse($delay)->diffInSeconds()
+            : $delay;
     }
 
-    private function getStats(?string $queue = null): Stat
+    public function pop($queue = null): void
     {
-        $queue ??= $this->default;
-
-        $stats = $this->rpc->call('jobs.Stat', new Stats(), Stats::class)->getStats();
-
-        /** @var Stat $stat */
-        foreach ($stats as $stat) {
-            if ($stat->getPipeline() === $queue) {
-                return $stat;
-            }
-        }
-
-        return new Stat();
+        throw new \BadMethodCallException('Pop is not supported');
     }
 
-    private function getJobOverrideOptions(string|object $job): array
+    public function size($queue = null): int
     {
-        if ($job instanceof HasQueueOptions) {
-            return $job->queueOptions();
-        }
+        $stats = $this->getStats($queue);
 
-        return [];
-    }
-
-    private function getQueueOptions(array $overrides = []): OptionsInterface
-    {
-        $config = array_merge($this->defaultOptions, $overrides);
-        $options = new Options(
-            $config['delay'] ?? 0,
-            $config['priority'] ?? 0,
-            $config['auto_ack'] ?? false
-        );
-
-        return match ($config['driver'] ?? null) {
-            Driver::Kafka => KafkaOptions::from($options)
-                ->withTopic($config['topic'] ?? 'default'),
-            default => $options,
-        };
+        return $stats->getActive() + $stats->getDelayed();
     }
 }
