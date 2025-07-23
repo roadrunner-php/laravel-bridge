@@ -12,6 +12,7 @@ use RoadRunner\Jobs\DTO\V1\Stat;
 use RoadRunner\Jobs\DTO\V1\Stats;
 use Spiral\Goridge\RPC\RPCInterface;
 use Spiral\RoadRunner\Jobs\Jobs;
+use Spiral\RoadRunner\Jobs\OptionsInterface;
 use Spiral\RoadRunner\Jobs\QueueInterface;
 
 final class RoadRunnerQueue extends Queue implements QueueContract
@@ -19,6 +20,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
     public function __construct(
         private readonly Jobs $jobs,
         private readonly RPCInterface $rpc,
+        private readonly OptionsInterface $options,
         private readonly string $default = 'default',
     ) {}
 
@@ -103,7 +105,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
 
     private function getQueue(?string $queue = null): QueueInterface
     {
-        $queue = $this->jobs->connect($queue ?? $this->default);
+        $queue = $this->jobs->connect($queue ?? $this->default, $this->options);
 
         if (!$this->getStats($queue->getName())->getReady()) {
             $queue->resume();
