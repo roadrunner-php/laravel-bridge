@@ -4,5 +4,5 @@ namespace Spiral\RoadRunnerLaravel\Queue\Contract;
 
 interface HasQueueOptions
 {
-    function queueOptions(): array;
+    public function queueOptions(): array;
 }
