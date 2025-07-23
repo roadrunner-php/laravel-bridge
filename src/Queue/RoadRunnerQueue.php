@@ -12,16 +12,20 @@ use RoadRunner\Jobs\DTO\V1\Stat;
 use RoadRunner\Jobs\DTO\V1\Stats;
 use Spiral\Goridge\RPC\RPCInterface;
 use Spiral\RoadRunner\Jobs\Jobs;
+use Spiral\RoadRunner\Jobs\KafkaOptions;
+use Spiral\RoadRunner\Jobs\Options;
 use Spiral\RoadRunner\Jobs\OptionsInterface;
+use Spiral\RoadRunner\Jobs\Queue\Driver;
 use Spiral\RoadRunner\Jobs\QueueInterface;
+use Spiral\RoadRunnerLaravel\Queue\Contract\HasQueueOptions;
 
 final class RoadRunnerQueue extends Queue implements QueueContract
 {
     public function __construct(
         private readonly Jobs $jobs,
         private readonly RPCInterface $rpc,
-        private readonly OptionsInterface $options,
         private readonly string $default = 'default',
+        private readonly array $defaultOptions = [],
     ) {}
 
     public function push($job, $data = '', $queue = null): string
@@ -31,13 +35,13 @@ final class RoadRunnerQueue extends Queue implements QueueContract
             $this->createPayload($job, $queue, $data),
             $queue,
             null,
-            fn($payload, $queue) => $this->pushRaw($payload, $queue),
+            fn($payload, $queue) => $this->pushRaw($payload, $queue, $this->getJobOverrideOptions($job)),
         );
     }
 
     public function pushRaw($payload, $queue = null, array $options = []): string
     {
-        $queue = $this->getQueue($queue);
+        $queue = $this->getQueue($queue, $options);
 
         $task = $queue->dispatch(
             $queue
@@ -54,7 +58,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
             $this->createPayload($job, $queue, $data),
             $queue,
             $delay,
-            fn($payload, $queue) => $this->laterRaw($delay, $payload, $queue),
+            fn($payload, $queue) => $this->laterRaw($delay, $payload, $queue, $this->getJobOverrideOptions($job)),
         );
     }
 
@@ -90,8 +94,9 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         \DateTimeInterface|\DateInterval|int $delay,
         array $payload,
         ?string $queue = null,
+        array $options = []
     ): string {
-        $queue = $this->getQueue($queue);
+        $queue = $this->getQueue($queue, $options);
 
         $task = $queue->dispatch(
             $queue
@@ -103,9 +108,9 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return $task->getId();
     }
 
-    private function getQueue(?string $queue = null): QueueInterface
+    private function getQueue(?string $queue = null, array $options = []): QueueInterface
     {
-        $queue = $this->jobs->connect($queue ?? $this->default, $this->options);
+        $queue = $this->jobs->connect($queue ?? $this->default, $this->getQueueOptions($options));
 
         if (!$this->getStats($queue->getName())->getReady()) {
             $queue->resume();
@@ -128,5 +133,30 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         }
 
         return new Stat();
+    }
+
+    private function getJobOverrideOptions(string|object $job): array
+    {
+        if ($job instanceof HasQueueOptions) {
+            return $job->queueOptions();
+        }
+
+        return [];
+    }
+
+    private function getQueueOptions(array $overrides = []): OptionsInterface
+    {
+        $config = array_merge($this->defaultOptions, $overrides);
+        $options = new Options(
+            $config['delay'] ?? 0,
+            $config['priority'] ?? 0,
+            $config['auto_ack'] ?? false
+        );
+
+        return match ($config['driver'] ?? null) {
+            Driver::Kafka => KafkaOptions::from($options)
+                ->withTopic($config['topic'] ?? 'default'),
+            default => $options,
+        };
     }
 }

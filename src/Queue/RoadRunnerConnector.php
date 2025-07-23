@@ -10,10 +10,6 @@ use Spiral\Goridge\RPC\Codec\ProtobufCodec;
 use Spiral\Goridge\RPC\RPC;
 use Spiral\RoadRunner\Environment;
 use Spiral\RoadRunner\Jobs\Jobs;
-use Spiral\RoadRunner\Jobs\KafkaOptions;
-use Spiral\RoadRunner\Jobs\Options;
-use Spiral\RoadRunner\Jobs\OptionsInterface;
-use Spiral\RoadRunner\Jobs\Queue\Driver;
 
 final class RoadRunnerConnector implements ConnectorInterface
 {
@@ -29,23 +25,8 @@ final class RoadRunnerConnector implements ConnectorInterface
         return new RoadRunnerQueue(
             new Jobs($rpc),
             $rpc,
-            $this->getOptions($config['options'] ?? []),
             $config['queue'],
+            $config['options'] ?? [],
         );
-    }
-
-    private function getOptions(array $config): OptionsInterface
-    {
-        $options = new Options(
-            $config['delay'] ?? 0,
-            $config['priority'] ?? 0,
-            $config['auto_ack'] ?? false
-        );
-
-        return match ($config['driver'] ?? null) {
-            Driver::Kafka => KafkaOptions::from($options)
-                ->withTopic($config['topic'] ?? 'default'),
-            default => $options,
-        };
     }
 }
