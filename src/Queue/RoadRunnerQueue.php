@@ -13,6 +13,7 @@ use RoadRunner\Jobs\DTO\V1\Stats;
 use Spiral\Goridge\RPC\RPCInterface;
 use Spiral\RoadRunner\Jobs\Jobs;
 use Spiral\RoadRunner\Jobs\KafkaOptions;
+use Spiral\RoadRunner\Jobs\KafkaOptionsInterface;
 use Spiral\RoadRunner\Jobs\Options;
 use Spiral\RoadRunner\Jobs\OptionsInterface;
 use Spiral\RoadRunner\Jobs\Queue\Driver;
@@ -67,14 +68,14 @@ final class RoadRunnerQueue extends Queue implements QueueContract
     {
         $config = array_merge($this->defaultOptions, $overrides);
         $options = new Options(
-            $config['delay'] ?? 0,
-            $config['priority'] ?? 0,
-            $config['auto_ack'] ?? false
+            $config['delay'] ?? OptionsInterface::DEFAULT_DELAY,
+            $config['priority'] ?? OptionsInterface::DEFAULT_PRIORITY,
+            $config['auto_ack'] ?? OptionsInterface::DEFAULT_AUTO_ACK,
         );
 
         return match ($config['driver'] ?? null) {
             Driver::Kafka => KafkaOptions::from($options)
-                ->withTopic($config['topic'] ?? 'default'),
+                ->withTopic($config['topic'] ?? ($this->defaultOptions['topic'] ?? '')),
             default => $options,
         };
     }
