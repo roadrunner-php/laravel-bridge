@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - gRPC client support
+- Added support to set queue options globally or per job [#158]
 
 ## Unreleased
 
