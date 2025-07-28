@@ -13,7 +13,6 @@ use RoadRunner\Jobs\DTO\V1\Stats;
 use Spiral\Goridge\RPC\RPCInterface;
 use Spiral\RoadRunner\Jobs\Jobs;
 use Spiral\RoadRunner\Jobs\KafkaOptions;
-use Spiral\RoadRunner\Jobs\KafkaOptionsInterface;
 use Spiral\RoadRunner\Jobs\Options;
 use Spiral\RoadRunner\Jobs\OptionsInterface;
 use Spiral\RoadRunner\Jobs\Queue\Driver;
@@ -100,14 +99,13 @@ final class RoadRunnerQueue extends Queue implements QueueContract
     {
         if (is_string($job) && class_exists($job)) {
             $job = app($job);
-
-            if ($job instanceof HasQueueOptions) {
-                return $job->queueOptions();
-            }
         }
 
         if ($job instanceof HasQueueOptions) {
-            return $job->queueOptions();
+            $options = $job->queueOptions();
+            if ($options instanceof Options) {
+                return $options->toArray();
+            }
         }
 
         return [];
