@@ -215,6 +215,63 @@ return [
     'grpc' => [
         'services' => [
             \App\GRPC\EchoServiceInterface::class => \App\GRPC\EchoService::class,
+        ]
+    ],
+];
+```
+
+#### gRPC Server Interceptors
+
+Create your interceptor by implementing `Spiral\RoadRunnerLaravel\Grpc\GrpcServerInterceptorInterface`:
+
+```php
+<?php
+
+namespace App\GRPC\Interceptors;
+
+use Spiral\RoadRunnerLaravel\Grpc\GrpcServerInterceptorInterface;
+use Spiral\RoadRunner\GRPC\ContextInterface;
+
+class LoggingInterceptor implements GrpcServerInterceptorInterface
+{
+    public function intercept(string $method, ContextInterface $context, string $body, callable $next)
+    {
+        \Log::info("gRPC call: {$method}");
+        
+        $response = $next($method, $context, $body);
+        
+        \Log::info("gRPC response: {$method}");
+        
+        return $response;
+    }
+}
+```
+
+##### Interceptors Configuration
+
+Configure interceptors in `config/roadrunner.php`. You can use global interceptors that apply to all services, service-specific interceptors, or both:
+
+```php
+return [
+    // ... other configuration
+    'grpc' => [
+        'services' => [
+            // Simple service configuration
+            \App\GRPC\EchoServiceInterface::class => \App\GRPC\EchoService::class,
+
+            // Service with specific interceptors
+            \App\GRPC\UserServiceInterface::class => [
+                \App\GRPC\UserService::class,
+                'interceptors' => [
+                    \App\GRPC\Interceptors\ValidationInterceptor::class,
+                    \App\GRPC\Interceptors\CacheInterceptor::class,
+                ],
+            ],
+        ],
+        // Global interceptors - applied to all services
+        'interceptors' => [
+            \App\GRPC\Interceptors\LoggingInterceptor::class,
+            \App\GRPC\Interceptors\AuthenticationInterceptor::class,
         ],
     ],
 ];

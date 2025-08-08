@@ -17,6 +17,18 @@ return [
     'grpc' => [
         'services' => [
             // GreeterInterface::class => new Greeter::class,
+
+            // Service with specific interceptors
+            // AnotherGreeterInterface::class => [
+            //     AnotherGreeterService::class,
+            //     'interceptors' => [
+            //         AnotherGreeterServiceInterceptor::class,
+            //     ],
+            // ],
+        ],
+        // Global interceptors - applied to all services
+        'interceptors' => [
+            // AllServiceInterceptor::class,
         ],
         'clients' => [
             'interceptors' => [
