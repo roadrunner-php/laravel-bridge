@@ -26,6 +26,7 @@ final class RoadRunnerConnector implements ConnectorInterface
             new Jobs($rpc),
             $rpc,
             $config['queue'],
+            $config['options'] ?? [],
         );
     }
 }
