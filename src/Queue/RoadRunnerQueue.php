@@ -26,8 +26,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         private readonly RPCInterface $rpc,
         private readonly string $default = 'default',
         private readonly array $defaultOptions = [],
-    ) {
-    }
+    ) {}
 
     public function push($job, $data = '', $queue = null): string
     {
@@ -50,6 +49,42 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         );
 
         return $task->getId();
+    }
+
+    public function later($delay, $job, $data = '', $queue = null): string
+    {
+        return $this->enqueueUsing(
+            $job,
+            $this->createPayload($job, $queue, $data),
+            $queue,
+            $delay,
+            fn($payload, $queue) => $this->laterRaw($delay, $payload, $queue, $this->getJobOverrideOptions($job)),
+        );
+    }
+
+    public function pop($queue = null): void
+    {
+        throw new \BadMethodCallException('Pop is not supported');
+    }
+
+    public function size($queue = null): int
+    {
+        $stats = $this->getStats($queue);
+
+        return $stats->getActive() + $stats->getDelayed();
+    }
+
+    /**
+     * Get the "available at" UNIX timestamp.
+     * @param mixed $delay
+     */
+    protected function availableAt($delay = 0): int
+    {
+        $delay = $this->parseDateInterval($delay);
+
+        return $delay instanceof \DateTimeInterface
+            ? Carbon::parse($delay)->diffInSeconds()
+            : $delay;
     }
 
     private function getQueue(?string $queue = null, array $options = []): QueueInterface
@@ -111,17 +146,6 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return [];
     }
 
-    public function later($delay, $job, $data = '', $queue = null): string
-    {
-        return $this->enqueueUsing(
-            $job,
-            $this->createPayload($job, $queue, $data),
-            $queue,
-            $delay,
-            fn($payload, $queue) => $this->laterRaw($delay, $payload, $queue, $this->getJobOverrideOptions($job)),
-        );
-    }
-
     /**
      * Push a raw job onto the queue after a delay.
      */
@@ -129,7 +153,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         \DateTimeInterface|\DateInterval|int $delay,
         array $payload,
         ?string $queue = null,
-        array $options = []
+        array $options = [],
     ): string {
         $queue = $this->getQueue($queue, $options);
 
@@ -141,30 +165,5 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         );
 
         return $task->getId();
-    }
-
-    /**
-     * Get the "available at" UNIX timestamp.
-     * @param mixed $delay
-     */
-    protected function availableAt($delay = 0): int
-    {
-        $delay = $this->parseDateInterval($delay);
-
-        return $delay instanceof \DateTimeInterface
-            ? Carbon::parse($delay)->diffInSeconds()
-            : $delay;
-    }
-
-    public function pop($queue = null): void
-    {
-        throw new \BadMethodCallException('Pop is not supported');
-    }
-
-    public function size($queue = null): int
-    {
-        $stats = $this->getStats($queue);
-
-        return $stats->getActive() + $stats->getDelayed();
     }
 }
