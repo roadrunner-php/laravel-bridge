@@ -72,6 +72,10 @@ $app = new ApplicationAlias(
     InstalledVersions::getPrettyVersion('roadrunner-php/laravel-bridge') ?? 'unknown',
 );
 
-$app->add(new StartCommand($basePath));
+$command = new StartCommand($basePath);
+
+\method_exists($app, 'addCommand')
+    ? $app->addCommand($command)
+    : $app->add($command);
 
 $app->run();
