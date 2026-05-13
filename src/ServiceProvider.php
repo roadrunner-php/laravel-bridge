@@ -64,6 +64,7 @@ final class ServiceProvider extends \Illuminate\Support\ServiceProvider
              * @var array<int, array{
              *     connection: non-empty-string,
              *     interfaces: list<class-string>,
+             *     interceptors?: list<class-string<\Spiral\Interceptors\InterceptorInterface>|\Spiral\Core\Container\Autowire<\Spiral\Interceptors\InterceptorInterface>|\Spiral\Interceptors\InterceptorInterface>,
              *     tls?: array{
              *         rootCerts?: non-empty-string|null,
              *         privateKey?: non-empty-string|null,
@@ -90,8 +91,11 @@ final class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 $connection = $service['connection'];
                 /** @var list<class-string> $interfaces */
                 $interfaces = $service['interfaces'];
+                /** @var list<class-string<\Spiral\Interceptors\InterceptorInterface>|\Spiral\Core\Container\Autowire<\Spiral\Interceptors\InterceptorInterface>|\Spiral\Interceptors\InterceptorInterface> $serviceInterceptors */
+                $serviceInterceptors = $service['interceptors'] ?? [];
                 $serviceConfigs[] = new ServiceConfig(
                     connections: new ConnectionConfig($connection, $tls),
+                    interceptors: $serviceInterceptors,
                     interfaces: $interfaces,
                 );
             }
@@ -105,6 +109,5 @@ final class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
             return new ServiceClientProvider($config, $this->app->make(FactoryInterface::class));
         });
-
     }
 }

@@ -41,6 +41,12 @@ return [
                 //     'interfaces' => [
                 //         GreeterInterface::class,
                 //     ],
+                //     'interceptors' => [
+                //         // Per-service interceptors. Requires the
+                //         // \Spiral\Grpc\Client\Interceptor\ExecuteServiceInterceptors
+                //         // interceptor in the global `interceptors` list above.
+                //         // GreeterClientInterceptor::class,
+                //     ],
                 // ],
                 // [
                 //     'connection' => 'my-secure-grpc-server:9002',
