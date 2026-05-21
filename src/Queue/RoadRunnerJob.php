@@ -28,7 +28,7 @@ class RoadRunnerJob extends Job implements JobContract
 
     public function getRawBody(): string
     {
-        return $this->payload();
+        return $this->task->getPayload();
     }
 
     public function payload(): array
