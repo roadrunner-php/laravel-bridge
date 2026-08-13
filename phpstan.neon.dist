@@ -3,8 +3,6 @@ parameters:
   paths:
     - bin/rr-worker
     - config
-    - fixes
-    - helpers
     - src
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
