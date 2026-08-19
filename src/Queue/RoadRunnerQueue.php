@@ -71,7 +71,27 @@ final class RoadRunnerQueue extends Queue implements QueueContract
     {
         $stats = $this->getStats($queue);
 
-        return $stats->getActive() + $stats->getDelayed();
+        return $stats->getActive() + $stats->getDelayed() + $stats->getReserved();
+    }
+
+    public function pendingSize($queue = null): int
+    {
+        return (int) $this->getStats($queue)->getActive();
+    }
+
+    public function delayedSize($queue = null): int
+    {
+        return (int) $this->getStats($queue)->getDelayed();
+    }
+
+    public function reservedSize($queue = null): int
+    {
+        return (int) $this->getStats($queue)->getReserved();
+    }
+
+    public function creationTimeOfOldestPendingJob($queue = null): ?int
+    {
+        return null;
     }
 
     /**

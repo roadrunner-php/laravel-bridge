@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## Unreleased
 
+### Added
+
+- Laravel 13 support
+
 ### Fixed
 
 - Check pipeline stats on message push [#147]
