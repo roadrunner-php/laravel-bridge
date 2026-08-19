@@ -6,7 +6,6 @@ namespace Spiral\RoadRunnerLaravel\Queue;
 
 use Illuminate\Contracts\Queue\Queue as QueueContract;
 use Illuminate\Queue\Queue;
-use Illuminate\Support\Carbon;
 use Ramsey\Uuid\Uuid;
 use RoadRunner\Jobs\DTO\V1\Stat;
 use RoadRunner\Jobs\DTO\V1\Stats;
@@ -44,8 +43,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         $queue = $this->getQueue($queue, $options);
 
         $task = $queue->dispatch(
-            $queue
-                ->create($payload['displayName'] ?? Uuid::uuid4()->toString(), $payload),
+            $queue->create(self::resolveTaskName($payload), $payload),
         );
 
         return $task->getId();
@@ -71,7 +69,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
     {
         $stats = $this->getStats($queue);
 
-        return $stats->getActive() + $stats->getDelayed() + $stats->getReserved();
+        return (int) $stats->getActive() + (int) $stats->getDelayed() + (int) $stats->getReserved();
     }
 
     public function pendingSize($queue = null): int
@@ -95,7 +93,17 @@ final class RoadRunnerQueue extends Queue implements QueueContract
     }
 
     /**
-     * Get the "available at" UNIX timestamp.
+     * Get the delay in seconds until the given DateTime.
+     *
+     * Despite the inherited name, this returns a *relative* offset (what
+     * RoadRunner's `withDelay(int $seconds)` expects), not an absolute
+     * UNIX timestamp like Laravel's own `InteractsWithTime::availableAt()`.
+     * The previous implementation routed through `Carbon::diffInSeconds()`,
+     * which since Carbon 3 (Laravel 12) returns a signed `float` — and
+     * triggered a return-type TypeError on every `Queue::later(DateTime)`
+     * call. Plain timestamp arithmetic is what Laravel's `secondsUntil()`
+     * does and avoids the round-trip entirely.
+     *
      * @param mixed $delay
      */
     protected function availableAt($delay = 0): int
@@ -103,8 +111,33 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         $delay = $this->parseDateInterval($delay);
 
         return $delay instanceof \DateTimeInterface
-            ? Carbon::parse($delay)->diffInSeconds()
-            : $delay;
+            ? max(0, $delay->getTimestamp() - $this->currentTime())
+            : (int) $delay;
+    }
+
+    /**
+     * Resolve a task name from the queue payload Laravel hands us.
+     *
+     * Modern Laravel's `Queue::createPayload()` returns JSON-encoded bytes.
+     * The previous code did bare offset access (`$payload['displayName']`)
+     * on that string, which silently reads byte 0 ({), turning every task
+     * name into `{` and emitting an "Illegal string offset" warning on
+     * PHP 8.x. Decoding first is what the original code meant to do.
+     */
+    private static function resolveTaskName(string $payload): string
+    {
+        $decoded = json_decode($payload, true);
+
+        if (
+            is_array($decoded)
+            && isset($decoded['displayName'])
+            && is_string($decoded['displayName'])
+            && $decoded['displayName'] !== ''
+        ) {
+            return $decoded['displayName'];
+        }
+
+        return Uuid::uuid4()->toString();
     }
 
     private function getQueue(?string $queue = null, array $options = []): QueueInterface
@@ -166,12 +199,9 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return [];
     }
 
-    /**
-     * Push a raw job onto the queue after a delay.
-     */
     private function laterRaw(
         \DateTimeInterface|\DateInterval|int $delay,
-        array $payload,
+        string $payload,
         ?string $queue = null,
         array $options = [],
     ): string {
@@ -179,8 +209,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
 
         $task = $queue->dispatch(
             $queue
-                ->create($payload['displayName'] ?? Uuid::uuid4()->toString())
-                ->withValue($payload)
+                ->create(self::resolveTaskName($payload), $payload)
                 ->withDelay($this->availableAt($delay)),
         );
 
