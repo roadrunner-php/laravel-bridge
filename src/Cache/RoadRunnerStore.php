@@ -79,6 +79,17 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
         return $this->put($key, $value, null);
     }
 
+    public function touch($key, $seconds): bool
+    {
+        $value = $this->get($key);
+
+        if ($value === null) {
+            return false;
+        }
+
+        return $this->put($key, $value, $seconds);
+    }
+
     public function forget($key)
     {
         return $this->storage->delete($this->prefix . $key);
