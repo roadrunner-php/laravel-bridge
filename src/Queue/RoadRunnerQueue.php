@@ -27,7 +27,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         private readonly array $defaultOptions = [],
     ) {}
 
-    public function push($job, $data = '', $queue = null): string
+    public function push($job, $data = '', $queue = null): ?string
     {
         return $this->enqueueUsing(
             $job,
@@ -49,7 +49,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return $task->getId();
     }
 
-    public function later($delay, $job, $data = '', $queue = null): string
+    public function later($delay, $job, $data = '', $queue = null): ?string
     {
         return $this->enqueueUsing(
             $job,

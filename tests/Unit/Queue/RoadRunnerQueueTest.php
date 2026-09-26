@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
+use Illuminate\Container\Container;
+use Illuminate\Database\DatabaseTransactionsManager;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RoadRunner\Jobs\DTO\V1\Job as JobProto;
 use RoadRunner\Jobs\DTO\V1\PushRequest;
@@ -15,6 +18,17 @@ use Spiral\RoadRunnerLaravel\Queue\RoadRunnerQueue;
 
 final class RoadRunnerQueueTest extends TestCase
 {
+    /**
+     * @return array<string, array{int|null}>
+     */
+    public static function dispatchMethods(): array
+    {
+        return [
+            'push' => [null],
+            'later' => [60],
+        ];
+    }
+
     public function test_queue_sizes_are_read_from_pipeline_stats(): void
     {
         $stats = new Stats([
@@ -47,6 +61,113 @@ final class RoadRunnerQueueTest extends TestCase
         self::assertSame(2, $queue->reservedSize());
         self::assertSame(7, $queue->pendingSize('secondary'));
         self::assertNull($queue->creationTimeOfOldestPendingJob());
+    }
+
+    #[DataProvider('dispatchMethods')]
+    public function test_dispatch_after_commit_waits_for_transaction(?int $delay): void
+    {
+        $pushed = [];
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$pushed): void {
+            $pushed[] = $job;
+        });
+
+        $transactions = new DatabaseTransactionsManager();
+        $container = new Container();
+        $container->instance('db.transactions', $transactions);
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q');
+        $queue->setContainer($container);
+
+        $job = new \stdClass();
+        $job->afterCommit = true;
+
+        $transactions->begin('default', 1);
+
+        $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
+
+        self::assertNull($result);
+        self::assertSame([], $pushed);
+
+        $transactions->commit('default', 1, 0);
+
+        self::assertCount(1, $pushed);
+        self::assertSame($delay ?? 0, $pushed[0]->getOptions()->getDelay());
+    }
+
+    #[DataProvider('dispatchMethods')]
+    public function test_dispatch_after_commit_drops_job_on_rollback(?int $delay): void
+    {
+        $pushed = [];
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$pushed): void {
+            $pushed[] = $job;
+        });
+
+        $transactions = new DatabaseTransactionsManager();
+        $container = new Container();
+        $container->instance('db.transactions', $transactions);
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q');
+        $queue->setContainer($container);
+
+        $job = new \stdClass();
+        $job->afterCommit = true;
+
+        $transactions->begin('default', 1);
+
+        $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
+
+        self::assertNull($result);
+
+        $transactions->rollback('default', 0);
+
+        self::assertSame([], $pushed);
+    }
+
+    #[DataProvider('dispatchMethods')]
+    public function test_dispatch_after_commit_without_transaction_sends_immediately(?int $delay): void
+    {
+        $pushed = [];
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$pushed): void {
+            $pushed[] = $job;
+        });
+
+        $container = new Container();
+        $container->instance('db.transactions', new DatabaseTransactionsManager());
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q');
+        $queue->setContainer($container);
+
+        $job = new \stdClass();
+        $job->afterCommit = true;
+
+        $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
+
+        self::assertNull($result);
+        self::assertCount(1, $pushed);
+        self::assertSame($delay ?? 0, $pushed[0]->getOptions()->getDelay());
+    }
+
+    #[DataProvider('dispatchMethods')]
+    public function test_dispatch_before_commit_returns_task_id(?int $delay): void
+    {
+        $pushed = [];
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$pushed): void {
+            $pushed[] = $job;
+        });
+
+        $container = new Container();
+        $container->instance('db.transactions', new DatabaseTransactionsManager());
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q');
+        $queue->setContainer($container);
+
+        $job = new \stdClass();
+        $job->afterCommit = false;
+
+        $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
+
+        self::assertCount(1, $pushed);
+        self::assertSame($pushed[0]->getId(), $result);
     }
 
     public function test_resolve_task_name_uses_display_name_from_json_payload(): void
