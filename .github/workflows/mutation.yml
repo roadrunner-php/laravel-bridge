@@ -1,0 +1,52 @@
+---
+
+name: Mutation Tests
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  mutation:
+    name: Infection
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: sockets
+          coverage: xdebug
+          ini-values: memory_limit=-1
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+
+      # The Infection phar is unusable with Testo: its bundled adapter calls the
+      # unscoped \Infection\StreamWrapper\IncludeInterceptor. Infection requires
+      # PHP 8.3+, so it is installed here instead of in require-dev.
+      - name: Install Infection
+        run: |
+          composer config allow-plugins.infection/extension-installer true
+          composer require --dev --no-interaction --no-progress -W infection/infection testo/bridge-infection
+
+      - name: Run Infection
+        run: vendor/bin/infection --threads=max --logger-github --show-mutations=0 --min-msi=85 --min-covered-msi=85
+        env:
+          STRYKER_DASHBOARD_API_KEY: ${{ github.event_name == 'push' && secrets.STRYKER_DASHBOARD_API_KEY || '' }}
