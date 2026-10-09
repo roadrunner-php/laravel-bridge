@@ -18,7 +18,8 @@ class RoadRunnerJob extends Job implements JobContract
         private readonly ReceivedTaskInterface $task,
     ) {
         $this->container = $container;
-        $this->payload = \json_decode($this->task->getPayload(), true);
+        $payload = \json_decode($this->task->getPayload(), true);
+        $this->payload = \is_array($payload) ? $payload : [];
     }
 
     public function getJobId(): string
@@ -33,7 +34,7 @@ class RoadRunnerJob extends Job implements JobContract
 
     public function payload(): array
     {
-        return $this->payload ?? [];
+        return $this->payload;
     }
 
     public function attempts(): int
