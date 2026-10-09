@@ -74,7 +74,7 @@ final class QueueWorker implements WorkerInterface
 
             $this->markJobAsFailedIfAlreadyExceedsMaxAttempts(
                 $job,
-                (int) $options->maxTries ?? 10,
+                (int) ($options->maxTries ?? 10),
             );
 
             if ($job->isDeleted()) {
@@ -204,7 +204,7 @@ final class QueueWorker implements WorkerInterface
             // attempts it is allowed to run the next time we process it. If so we will just
             // go ahead and mark it as failed now so we do not have to release this again.
             if (!$job->hasFailed()) {
-                $this->markJobAsFailedIfWillExceedMaxAttempts($job, (int) $options->maxTries, $e);
+                $this->markJobAsFailedIfWillExceedMaxAttempts($job, (int) ($options->maxTries ?? 10), $e);
                 $this->markJobAsFailedIfWillExceedMaxExceptions($job, $e);
             }
 
@@ -263,12 +263,11 @@ final class QueueWorker implements WorkerInterface
      */
     protected function calculateBackoff(RoadRunnerJob $job, WorkerOptions $options): int
     {
-        $backoff = \explode(
-            ',',
-            \method_exists($job, 'backoff') && !\is_null($job->backoff())
-                ? $job->backoff()
-                : (string) $options->backoff,
-        );
+        $backoff = \method_exists($job, 'backoff') && !\is_null($job->backoff())
+            ? $job->backoff()
+            : $options->backoff;
+
+        $backoff = \is_array($backoff) ? \array_values($backoff) : \explode(',', (string) $backoff);
 
         return (int) ($backoff[$job->attempts()] ?? last($backoff));
     }

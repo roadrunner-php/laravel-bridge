@@ -5,18 +5,43 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
 use Mockery\MockInterface;
-use Testo\Skip;
+use Testo\Data\DataProvider;
 use Testo\Test;
 use Testo\Assert;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\ManuallyFailedException;
 use Spiral\RoadRunner\Jobs\Task\ReceivedTaskInterface;
 use Spiral\RoadRunnerLaravel\Queue\RoadRunnerJob;
 
 #[Test]
 final class RoadRunnerJobTest
 {
+    private const NOW = 1_700_000_000;
+
+    public static function releaseDelays(): array
+    {
+        return [
+            'DateInterval' => [new \DateInterval('PT30S'), 30],
+            'future DateTimeInterface' => [new \DateTimeImmutable('@' . (self::NOW + 45)), 45],
+            'past DateTimeInterface' => [new \DateTimeImmutable('@' . (self::NOW - 10)), 0],
+            'negative seconds' => [-5, 0],
+        ];
+    }
+
+    public static function nonObjectPayloads(): array
+    {
+        return [
+            'invalid JSON' => ['not-json'],
+            'empty body' => [''],
+            'JSON null' => ['null'],
+            'JSON string' => ['"text"'],
+            'JSON number' => ['42'],
+        ];
+    }
+
     public function test_get_raw_body_returns_the_wire_payload_string_verbatim(): void
     {
         // Deliberately use non-canonical JSON (spaces after `:` and `,`) so a
@@ -114,6 +139,27 @@ final class RoadRunnerJobTest
         Assert::true($job->isReleased());
     }
 
+    #[DataProvider('releaseDelays')]
+    public function test_release_converts_the_delay_to_non_negative_seconds(\DateInterval|\DateTimeInterface|int $delay, int $seconds): void
+    {
+        $task = self::task('{"job":"X","data":{}}');
+        $task->shouldReceive('getHeaderLine')->with('attempts')->andReturn('1');
+        $task->shouldReceive('withDelay')->once()->with($seconds)->andReturnSelf();
+        $task->shouldReceive('withHeader')->once()->with('attempts', '2')->andReturnSelf();
+        $task->shouldReceive('requeue')->once()->with('release');
+
+        $job = new RoadRunnerJob(\Mockery::mock(Application::class), $task);
+
+        Carbon::setTestNow(Carbon::createFromTimestamp(self::NOW));
+        try {
+            $job->release($delay);
+        } finally {
+            Carbon::setTestNow();
+        }
+
+        Assert::true($job->isReleased());
+    }
+
     public function test_fail_marks_the_task_failed_and_notifies_the_job_handler(): void
     {
         $exception = new \RuntimeException('boom');
@@ -150,10 +196,44 @@ final class RoadRunnerJobTest
         Assert::same($handler->failed[0][1], $exception);
     }
 
-    #[Skip('Bug: a payload that is not a JSON object makes the constructor assign null to the `array $payload` property and throw a TypeError')]
-    public function test_payload_is_empty_for_a_non_json_body(): void
+    public function test_fail_without_an_exception_marks_the_task_failed(): void
     {
-        $job = new RoadRunnerJob(\Mockery::mock(Application::class), self::task('not-json'));
+        $handler = new class {
+            public array $failed = [];
+
+            public function failed(mixed $data, ?\Throwable $e): void
+            {
+                $this->failed[] = [$data, $e];
+            }
+        };
+
+        $events = \Mockery::mock(Dispatcher::class);
+        $events->shouldReceive('dispatch')->once()->with(\Mockery::on(
+            static fn(mixed $event): bool => $event instanceof JobFailed && $event->exception instanceof ManuallyFailedException,
+        ));
+
+        $app = \Mockery::mock(Application::class);
+        $app->shouldReceive('make')->with('App\\Handler')->andReturn($handler);
+        $app->shouldReceive('make')->with(Dispatcher::class)->andReturn($events);
+
+        $task = self::task('{"job":"App\\\\Handler@handle","data":{"foo":"bar"}}');
+        $task->shouldReceive('getHeaderLine')->with('attempts')->andReturn('1');
+        $task->shouldReceive('withHeader')->once()->with('attempts', '2')->andReturnSelf();
+        $task->shouldReceive('fail')->once()->with(\Mockery::type('string'));
+
+        $job = new RoadRunnerJob($app, $task);
+        $job->fail();
+
+        Assert::true($job->hasFailed());
+        Assert::true($job->isDeleted());
+        Assert::count($handler->failed, 1);
+        Assert::same($handler->failed[0], [['foo' => 'bar'], null]);
+    }
+
+    #[DataProvider('nonObjectPayloads')]
+    public function test_payload_is_empty_for_a_non_object_body(string $body): void
+    {
+        $job = new RoadRunnerJob(\Mockery::mock(Application::class), self::task($body));
 
         Assert::same($job->payload(), []);
     }
