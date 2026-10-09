@@ -4,13 +4,8 @@ parameters:
     - bin/rr-worker
     - config
     - src
-  reportUnmatchedIgnoredErrors: false
+  reportUnmatchedIgnoredErrors: true
   ignoreErrors:
-    - message: '#Call to protected method bootstrappers\(\) of class.+Kernel#'
-      paths: [src/Application/Factory.php]
-    - message: '#Class Spatie\\.+Ignition.* not found#'
-      paths: [src/Listeners/ResetLaravelIgnitionListener.php]
-
     # symfony/console < 7.4 has no addCommand(), 8.0 has no add(): both branches are needed.
     - identifier: function.alreadyNarrowedType
       path: bin/rr-worker
@@ -29,11 +24,6 @@ parameters:
       message: '#createPayload\(\) expects string, string\|null given#'
       path: src/Queue/RoadRunnerQueue.php
 
-    # Store::put() documents int seconds, RoadRunner KV takes null as "no expiration".
-    - identifier: argument.type
-      message: '#put\(\) expects int, null given#'
-      path: src/Cache/RoadRunnerStore.php
-
     # `$this->cache` is always initialized by start() before a job runs.
     - identifier: booleanNot.alwaysFalse
       path: src/Queue/QueueWorker.php
@@ -48,40 +38,20 @@ parameters:
       message: '#getDeclarations\(\)#'
       path: src/Temporal/Config/TemporalConfig.php
 
-    # Temporary: the code below is wrong and is fixed by separate bug fix PRs.
-    # increment()/decrement() store a negative TTL, fixed by #189.
+    # WorkerOptions::$maxTries is documented as int but is untyped and may be null.
+    - identifier: nullCoalesce.property
+      message: '#WorkerOptions::\$maxTries#'
+      path: src/Queue/QueueWorker.php
+
+    # The Store contract leaves the increment step and the stored value untyped; the arithmetic is the same
+    # as in Laravel's own stores.
     - identifier: return.unusedType
+      message: '#increment\(\)#'
       path: src/Cache/RoadRunnerStore.php
     - identifier: binaryOp.invalid
       path: src/Cache/RoadRunnerStore.php
     - identifier: cast.int
       path: src/Cache/RoadRunnerStore.php
     - identifier: argument.type
-      message: '#getTtl\(\)|put\(\) expects int, \(DateInterval#'
+      message: '#getTtl\(\) expects non-empty-string#'
       path: src/Cache/RoadRunnerStore.php
-    # The default of 10 max tries is never applied, fixed by #187.
-    - identifier: nullCoalesce.expr
-      path: src/Queue/QueueWorker.php
-    # An array backoff is cast to "Array", fixed by #188.
-    - identifier: function.alreadyNarrowedType
-      path: src/Queue/QueueWorker.php
-    - identifier: argument.type
-      message: '#explode expects string, mixed given#'
-      path: src/Queue/QueueWorker.php
-    - identifier: cast.string
-      path: src/Queue/QueueWorker.php
-    - identifier: cast.int
-      path: src/Queue/QueueWorker.php
-    # A payload that is not a JSON object throws a TypeError, fixed by #191.
-    - identifier: assign.propertyType
-      message: '#RoadRunnerJob::\$payload#'
-      path: src/Queue/RoadRunnerJob.php
-    - identifier: nullCoalesce.initializedProperty
-      path: src/Queue/RoadRunnerJob.php
-    # release() passes DateTime/DateInterval delays to withDelay(), fixed by #198.
-    - identifier: argument.type
-      message: '#withDelay\(\) expects int<0, max>, int given#'
-      path: src/Queue/RoadRunnerJob.php
-    # failed(null) calls getMessage() on null, fixed by #200.
-    - identifier: method.nonObject
-      path: src/Queue/RoadRunnerJob.php
