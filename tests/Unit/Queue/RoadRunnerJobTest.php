@@ -11,6 +11,7 @@ use Testo\Assert;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\ManuallyFailedException;
 use Spiral\RoadRunner\Jobs\Task\ReceivedTaskInterface;
 use Spiral\RoadRunnerLaravel\Queue\RoadRunnerJob;
 
@@ -148,6 +149,40 @@ final class RoadRunnerJobTest
         Assert::count($handler->failed, 1);
         Assert::same($handler->failed[0][0], ['foo' => 'bar']);
         Assert::same($handler->failed[0][1], $exception);
+    }
+
+    public function test_fail_without_an_exception_marks_the_task_failed(): void
+    {
+        $handler = new class {
+            public array $failed = [];
+
+            public function failed(mixed $data, ?\Throwable $e): void
+            {
+                $this->failed[] = [$data, $e];
+            }
+        };
+
+        $events = \Mockery::mock(Dispatcher::class);
+        $events->shouldReceive('dispatch')->once()->with(\Mockery::on(
+            static fn(mixed $event): bool => $event instanceof JobFailed && $event->exception instanceof ManuallyFailedException,
+        ));
+
+        $app = \Mockery::mock(Application::class);
+        $app->shouldReceive('make')->with('App\\Handler')->andReturn($handler);
+        $app->shouldReceive('make')->with(Dispatcher::class)->andReturn($events);
+
+        $task = self::task('{"job":"App\\\\Handler@handle","data":{"foo":"bar"}}');
+        $task->shouldReceive('getHeaderLine')->with('attempts')->andReturn('1');
+        $task->shouldReceive('withHeader')->once()->with('attempts', '2')->andReturnSelf();
+        $task->shouldReceive('fail')->once()->with(\Mockery::type('string'));
+
+        $job = new RoadRunnerJob($app, $task);
+        $job->fail();
+
+        Assert::true($job->hasFailed());
+        Assert::true($job->isDeleted());
+        Assert::count($handler->failed, 1);
+        Assert::same($handler->failed[0], [['foo' => 'bar'], null]);
     }
 
     #[Skip('Bug: a payload that is not a JSON object makes the constructor assign null to the `array $payload` property and throw a TypeError')]
