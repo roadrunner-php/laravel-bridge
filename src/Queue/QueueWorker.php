@@ -262,12 +262,11 @@ final class QueueWorker implements WorkerInterface
      */
     protected function calculateBackoff(RoadRunnerJob $job, WorkerOptions $options): int
     {
-        $backoff = \explode(
-            ',',
-            \method_exists($job, 'backoff') && !\is_null($job->backoff())
-                ? $job->backoff()
-                : (string) $options->backoff,
-        );
+        $backoff = \method_exists($job, 'backoff') && !\is_null($job->backoff())
+            ? $job->backoff()
+            : $options->backoff;
+
+        $backoff = \is_array($backoff) ? \array_values($backoff) : \explode(',', (string) $backoff);
 
         return (int) ($backoff[$job->attempts()] ?? last($backoff));
     }
