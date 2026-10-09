@@ -296,6 +296,19 @@ final class QueueWorkerTest
         Assert::null($this->cache->get('job-exceptions:job-uuid'));
     }
 
+    public function test_array_backoff_releases_the_job_with_the_delay_for_its_attempt(): void
+    {
+        $job = self::throwingJob(new \RuntimeException('boom'), attempts: 1);
+        $this->processExpectingException($job, new WorkerOptions(backoff: [10, 30, 60], maxTries: 0));
+
+        Assert::same($job->releases, [30]);
+
+        $job = self::throwingJob(new \RuntimeException('boom'), attempts: 5);
+        $this->processExpectingException($job, new WorkerOptions(backoff: [10, 30, 60], maxTries: 0));
+
+        Assert::same($job->releases, [60]);
+    }
+
     public function test_backoff_falls_back_to_the_last_delay_and_the_worker_option(): void
     {
         $job = self::throwingJob(new \RuntimeException('boom'), attempts: 5, payload: ['backoff' => '5,15']);
