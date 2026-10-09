@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
+use Testo\Data\DataProvider;
+use Testo\Test;
+use Testo\Assert;
 use Illuminate\Container\Container;
 use Illuminate\Database\DatabaseTransactionsManager;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use RoadRunner\Jobs\DTO\V1\Job as JobProto;
 use RoadRunner\Jobs\DTO\V1\PushRequest;
 use RoadRunner\Jobs\DTO\V1\Stat;
@@ -16,7 +17,8 @@ use Spiral\Goridge\RPC\RPCInterface;
 use Spiral\RoadRunner\Jobs\Jobs;
 use Spiral\RoadRunnerLaravel\Queue\RoadRunnerQueue;
 
-final class RoadRunnerQueueTest extends TestCase
+#[Test]
+final class RoadRunnerQueueTest
 {
     /**
      * @return array<string, array{int|null}>
@@ -46,21 +48,18 @@ final class RoadRunnerQueueTest extends TestCase
             ],
         ]);
 
-        $rpc = $this->createMock(RPCInterface::class);
-        $rpc->method('withCodec')->willReturnSelf();
-        $rpc->expects(self::exactly(5))
-            ->method('call')
-            ->with('jobs.Stat', self::isInstanceOf(Stats::class), Stats::class)
-            ->willReturn($stats);
+        $rpc = \Mockery::mock(RPCInterface::class)->shouldIgnoreMissing();
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+        $rpc->shouldReceive('call')->times(5)->with('jobs.Stat', \Mockery::type(Stats::class), Stats::class, \Mockery::andAnyOtherArgs())->andReturn($stats);
 
         $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc);
 
-        self::assertSame(10, $queue->size());
-        self::assertSame(5, $queue->pendingSize());
-        self::assertSame(3, $queue->delayedSize());
-        self::assertSame(2, $queue->reservedSize());
-        self::assertSame(7, $queue->pendingSize('secondary'));
-        self::assertNull($queue->creationTimeOfOldestPendingJob());
+        Assert::same($queue->size(), 10);
+        Assert::same($queue->pendingSize(), 5);
+        Assert::same($queue->delayedSize(), 3);
+        Assert::same($queue->reservedSize(), 2);
+        Assert::same($queue->pendingSize('secondary'), 7);
+        Assert::null($queue->creationTimeOfOldestPendingJob());
     }
 
     #[DataProvider('dispatchMethods')]
@@ -85,13 +84,13 @@ final class RoadRunnerQueueTest extends TestCase
 
         $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
 
-        self::assertNull($result);
-        self::assertSame([], $pushed);
+        Assert::null($result);
+        Assert::same($pushed, []);
 
         $transactions->commit('default', 1, 0);
 
-        self::assertCount(1, $pushed);
-        self::assertSame($delay ?? 0, $pushed[0]->getOptions()->getDelay());
+        Assert::count($pushed, 1);
+        Assert::same($pushed[0]->getOptions()->getDelay(), $delay ?? 0);
     }
 
     #[DataProvider('dispatchMethods')]
@@ -116,11 +115,11 @@ final class RoadRunnerQueueTest extends TestCase
 
         $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
 
-        self::assertNull($result);
+        Assert::null($result);
 
         $transactions->rollback('default', 0);
 
-        self::assertSame([], $pushed);
+        Assert::same($pushed, []);
     }
 
     #[DataProvider('dispatchMethods')]
@@ -142,9 +141,9 @@ final class RoadRunnerQueueTest extends TestCase
 
         $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
 
-        self::assertNull($result);
-        self::assertCount(1, $pushed);
-        self::assertSame($delay ?? 0, $pushed[0]->getOptions()->getDelay());
+        Assert::null($result);
+        Assert::count($pushed, 1);
+        Assert::same($pushed[0]->getOptions()->getDelay(), $delay ?? 0);
     }
 
     #[DataProvider('dispatchMethods')]
@@ -166,8 +165,8 @@ final class RoadRunnerQueueTest extends TestCase
 
         $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
 
-        self::assertCount(1, $pushed);
-        self::assertSame($pushed[0]->getId(), $result);
+        Assert::count($pushed, 1);
+        Assert::same($result, $pushed[0]->getId());
     }
 
     public function test_resolve_task_name_uses_display_name_from_json_payload(): void
@@ -180,7 +179,7 @@ final class RoadRunnerQueueTest extends TestCase
 
         $name = $this->invokeResolveTaskName($payload);
 
-        self::assertSame('App\\Jobs\\SendEmail', $name);
+        Assert::same($name, 'App\\Jobs\\SendEmail');
     }
 
     public function test_resolve_task_name_falls_back_to_uuid_when_payload_lacks_display_name(): void
@@ -189,11 +188,7 @@ final class RoadRunnerQueueTest extends TestCase
 
         $name = $this->invokeResolveTaskName($payload);
 
-        self::assertMatchesRegularExpression(
-            '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/',
-            $name,
-            'Expected a v4 UUID fallback when payload has no displayName.',
-        );
+        Assert::string($name)->matchesRegex('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/', 'Expected a v4 UUID fallback when payload has no displayName.');
     }
 
     public function test_resolve_task_name_falls_back_to_uuid_for_empty_display_name(): void
@@ -205,11 +200,7 @@ final class RoadRunnerQueueTest extends TestCase
 
         $name = $this->invokeResolveTaskName($payload);
 
-        self::assertMatchesRegularExpression(
-            '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/',
-            $name,
-            'Empty displayName must fall back to UUID, not produce an empty task name.',
-        );
+        Assert::string($name)->matchesRegex('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/', 'Empty displayName must fall back to UUID, not produce an empty task name.');
     }
 
     public function test_resolve_task_name_falls_back_to_uuid_for_non_json_payload(): void
@@ -218,10 +209,7 @@ final class RoadRunnerQueueTest extends TestCase
         // emit a string-offset warning, must produce a usable task name.
         $name = $this->invokeResolveTaskName('not-json-just-bytes');
 
-        self::assertMatchesRegularExpression(
-            '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/',
-            $name,
-        );
+        Assert::string($name)->matchesRegex('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/');
     }
 
     public function test_push_raw_pushes_with_display_name_and_verbatim_payload(): void
@@ -239,9 +227,9 @@ final class RoadRunnerQueueTest extends TestCase
         $bridge = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q');
         $bridge->pushRaw($payload, 'q');
 
-        self::assertInstanceOf(JobProto::class, $captured);
-        self::assertSame('App\\Jobs\\Foo', $captured->getJob(), 'Task name should come from the payload `displayName`.');
-        self::assertSame($payload, $captured->getPayload(), 'Payload must travel byte-for-byte to RoadRunner.');
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getJob(), 'App\\Jobs\\Foo', 'Task name should come from the payload `displayName`.');
+        Assert::same($captured->getPayload(), $payload, 'Payload must travel byte-for-byte to RoadRunner.');
     }
 
     public function test_later_raw_accepts_string_payload_and_applies_delay(): void
@@ -265,13 +253,13 @@ final class RoadRunnerQueueTest extends TestCase
         $method = new \ReflectionMethod(RoadRunnerQueue::class, 'laterRaw');
         $method->invoke($bridge, 60, $payload, 'q', []);
 
-        self::assertInstanceOf(JobProto::class, $captured);
-        self::assertSame('App\\Jobs\\Delayed', $captured->getJob());
-        self::assertSame($payload, $captured->getPayload());
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getJob(), 'App\\Jobs\\Delayed');
+        Assert::same($captured->getPayload(), $payload);
 
         $options = $captured->getOptions();
-        self::assertNotNull($options, 'Pushed Job must carry an Options proto.');
-        self::assertSame(60, $options->getDelay(), 'withDelay() must propagate to the protobuf Options.');
+        Assert::notNull($options, 'Pushed Job must carry an Options proto.');
+        Assert::same($options->getDelay(), 60, 'withDelay() must propagate to the protobuf Options.');
     }
 
     public function test_available_at_returns_int_for_date_time_interface_delay(): void
@@ -286,10 +274,9 @@ final class RoadRunnerQueueTest extends TestCase
         $future = (new \DateTimeImmutable('+90 seconds'));
         $result = $method->invoke($queue, $future);
 
-        self::assertIsInt($result);
+        Assert::int($result);
         // Allow a small wall-clock slack so the test isn't flaky under load.
-        self::assertGreaterThanOrEqual(85, $result);
-        self::assertLessThanOrEqual(91, $result);
+        Assert::numeric($result)->greaterThanOrEqual(85)->lessThanOrEqual(91);
     }
 
     public function test_available_at_clamps_past_delay_to_zero(): void
@@ -302,7 +289,7 @@ final class RoadRunnerQueueTest extends TestCase
 
         $past = (new \DateTimeImmutable('-30 seconds'));
 
-        self::assertSame(0, $method->invoke($queue, $past));
+        Assert::same($method->invoke($queue, $past), 0);
     }
 
     public function test_available_at_passes_int_delay_through(): void
@@ -310,7 +297,7 @@ final class RoadRunnerQueueTest extends TestCase
         $queue = (new \ReflectionClass(RoadRunnerQueue::class))->newInstanceWithoutConstructor();
         $method = new \ReflectionMethod(RoadRunnerQueue::class, 'availableAt');
 
-        self::assertSame(60, $method->invoke($queue, 60));
+        Assert::same($method->invoke($queue, 60), 60);
     }
 
     public function test_later_raw_parameter_type_admits_string(): void
@@ -323,11 +310,7 @@ final class RoadRunnerQueueTest extends TestCase
         $param = (new \ReflectionMethod(RoadRunnerQueue::class, 'laterRaw'))->getParameters()[1];
         $type = (string) $param->getType();
 
-        self::assertStringContainsString(
-            'string',
-            $type,
-            'laterRaw $payload must accept string (what Queue::enqueueUsing actually delivers).',
-        );
+        Assert::string($type)->contains('string', 'laterRaw $payload must accept string (what Queue::enqueueUsing actually delivers).');
     }
 
     private function invokeResolveTaskName(string $payload): string
@@ -336,7 +319,7 @@ final class RoadRunnerQueueTest extends TestCase
         $method = new \ReflectionMethod(RoadRunnerQueue::class, 'resolveTaskName');
         $result = $method->invoke($queue, $payload);
 
-        self::assertIsString($result);
+        Assert::string($result);
 
         return $result;
     }
@@ -349,30 +332,28 @@ final class RoadRunnerQueueTest extends TestCase
      */
     private function buildRpcMock(string $pipelineName, ?callable $capturePushedJob): RPCInterface
     {
-        $rpc = $this->createMock(RPCInterface::class);
-        $rpc->method('withCodec')->willReturnSelf();
+        $rpc = \Mockery::mock(RPCInterface::class)->shouldIgnoreMissing();
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
 
-        $rpc->method('call')->willReturnCallback(
-            static function (string $method, $payload) use ($pipelineName, $capturePushedJob) {
-                if ($method === 'jobs.Stat') {
-                    $stat = new Stat();
-                    $stat->setPipeline($pipelineName);
-                    $stat->setReady(true);
+        $rpc->shouldReceive('call')->andReturnUsing(static function (string $method, $payload) use ($pipelineName, $capturePushedJob) {
+            if ($method === 'jobs.Stat') {
+                $stat = new Stat();
+                $stat->setPipeline($pipelineName);
+                $stat->setReady(true);
 
-                    $stats = new Stats();
-                    $stats->setStats([$stat]);
+                $stats = new Stats();
+                $stats->setStats([$stat]);
 
-                    return $stats;
-                }
+                return $stats;
+            }
 
-                if ($method === 'jobs.Push' && $capturePushedJob !== null) {
-                    \assert($payload instanceof PushRequest);
-                    $capturePushedJob($payload->getJob());
-                }
+            if ($method === 'jobs.Push' && $capturePushedJob !== null) {
+                \assert($payload instanceof PushRequest);
+                $capturePushedJob($payload->getJob());
+            }
 
-                return null;
-            },
-        );
+            return null;
+        });
 
         return $rpc;
     }
