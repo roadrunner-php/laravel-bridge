@@ -26,6 +26,7 @@ final class ServiceProvider extends \Illuminate\Support\ServiceProvider
         return __DIR__ . '/../config/roadrunner.php';
     }
 
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton(ReaderInterface::class, AttributeReader::class);

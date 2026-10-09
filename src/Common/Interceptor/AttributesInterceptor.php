@@ -43,6 +43,7 @@ class AttributesInterceptor implements InterceptorInterface
     /**
      * @throws \Throwable
      */
+    #[\Override]
     public function intercept(CallContextInterface $context, HandlerInterface $handler): mixed
     {
         $reflection = $context->getTarget()->getReflection();
@@ -52,10 +53,9 @@ class AttributesInterceptor implements InterceptorInterface
 
         $methodAttrs = $reflection->getAttributes(InterceptorInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
 
-        $reflection instanceof \ReflectionMethod and $classAttrs = $reflection
-            ->getDeclaringClass()
-            ?->getAttributes(InterceptorInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
-        $classAttrs ??= [];
+        $classAttrs = $reflection instanceof \ReflectionMethod
+            ? $reflection->getDeclaringClass()->getAttributes(InterceptorInterface::class, \ReflectionAttribute::IS_INSTANCEOF)
+            : [];
 
         if ($methodAttrs === [] && $classAttrs === []) {
             return $handler->handle($context);

@@ -37,6 +37,7 @@ class StartCommand extends Command
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void
     {
         $this->setName('start');
@@ -75,6 +76,7 @@ class StartCommand extends Command
         );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $options = new WorkerOptions(
@@ -137,6 +139,8 @@ class StartCommand extends Command
     }
 
     /**
+     * @return non-empty-string
+     *
      * @throws \InvalidArgumentException
      */
     protected function getRelayDSN(InputInterface $input): string

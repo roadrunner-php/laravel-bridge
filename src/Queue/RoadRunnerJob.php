@@ -11,6 +11,7 @@ use Spiral\RoadRunner\Jobs\Task\ReceivedTaskInterface;
 
 class RoadRunnerJob extends Job implements JobContract
 {
+    /** @var array<mixed> */
     private readonly array $payload;
 
     public function __construct(
@@ -18,29 +19,38 @@ class RoadRunnerJob extends Job implements JobContract
         private readonly ReceivedTaskInterface $task,
     ) {
         $this->container = $container;
-        $this->payload = \json_decode($this->task->getPayload(), true);
+        $payload = \json_decode($this->task->getPayload(), true);
+        $this->payload = \is_array($payload) ? $payload : [];
     }
 
+    #[\Override]
     public function getJobId(): string
     {
         return $this->task->getId();
     }
 
+    #[\Override]
     public function getRawBody(): string
     {
         return $this->task->getPayload();
     }
 
+    /**
+     * @return array<mixed>
+     */
+    #[\Override]
     public function payload(): array
     {
-        return $this->payload ?? [];
+        return $this->payload;
     }
 
+    #[\Override]
     public function attempts(): int
     {
         return (int) $this->task->getHeaderLine('attempts');
     }
 
+    #[\Override]
     public function fire(): void
     {
         parent::fire();
@@ -48,25 +58,27 @@ class RoadRunnerJob extends Job implements JobContract
         $this->task->complete();
     }
 
+    #[\Override]
     public function release($delay = 0): void
     {
         $attempts = $this->attempts();
 
         $this->task
-            ->withDelay($delay)
+            ->withDelay(\max(0, $this->secondsUntil($delay)))
             ->withHeader('attempts', (string) ++$attempts)
             ->requeue('release');
 
         parent::release($delay);
     }
 
+    #[\Override]
     protected function failed($e): void
     {
         $attempts = $this->attempts();
 
         $this->task
             ->withHeader('attempts', (string) ++$attempts)
-            ->fail($e->getMessage());
+            ->fail($e?->getMessage() ?? 'Job was marked as failed manually.');
 
         parent::failed($e);
     }

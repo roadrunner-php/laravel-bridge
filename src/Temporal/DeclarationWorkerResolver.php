@@ -18,6 +18,10 @@ final readonly class DeclarationWorkerResolver
     /**
      * Find the worker name for the given workflow or class declaration. If no worker is assigned, the default task
      * queue name is returned.
+     *
+     * @param \ReflectionClass<object> $declaration
+     *
+     * @return non-empty-list<string>
      */
     public function resolve(\ReflectionClass $declaration): array
     {
@@ -32,6 +36,11 @@ final readonly class DeclarationWorkerResolver
         ];
     }
 
+    /**
+     * @param \ReflectionClass<object> $declaration
+     *
+     * @return list<string>
+     */
     private function resolveTaskQueues(\ReflectionClass $declaration): array
     {
         $assignWorker = $this->reader->getClassMetadata($declaration, AssignWorker::class);

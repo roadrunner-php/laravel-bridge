@@ -23,6 +23,7 @@ final class RoadRunnerLock extends Lock
      *
      * @return bool
      */
+    #[\Override]
     public function acquire()
     {
         if ($this->storage->has($this->name)) {
@@ -41,6 +42,7 @@ final class RoadRunnerLock extends Lock
      *
      * @return bool
      */
+    #[\Override]
     public function release()
     {
         if ($this->isOwnedByCurrentProcess()) {
@@ -54,6 +56,7 @@ final class RoadRunnerLock extends Lock
      * Releases this lock in disregard of ownership.
      *
      */
+    #[\Override]
     public function forceRelease(): void
     {
         $this->storage->delete($this->name);
@@ -64,6 +67,7 @@ final class RoadRunnerLock extends Lock
      *
      * @return mixed
      */
+    #[\Override]
     protected function getCurrentOwner()
     {
         return $this->storage->get($this->name);

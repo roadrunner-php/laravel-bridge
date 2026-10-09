@@ -15,6 +15,7 @@ use Temporal\Worker\WorkerFactoryInterface;
 
 final readonly class TemporalWorker implements WorkerInterface
 {
+    #[\Override]
     public function start(WorkerOptionsInterface $options): void
     {
         $appFactory = new ApplicationFactory($options->getAppBasePath());
@@ -29,7 +30,6 @@ final readonly class TemporalWorker implements WorkerInterface
         $declarations = $app->get(DeclarationRegistryInterface::class)->getDeclarationList();
 
         // factory initiates and runs task queue specific activity and workflow workers
-        /** @var \Spiral\RoadRunnerLaravel\Temporal\Worker\WorkerFactoryInterface $factory */
         $factory = $app->get(WorkerFactoryInterface::class);
         /** @var WorkersRegistryInterface $registry */
         $registry = $app->get(WorkersRegistryInterface::class);

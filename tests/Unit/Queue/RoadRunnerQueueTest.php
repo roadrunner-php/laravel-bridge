@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
+use Testo\Data\DataProvider;
+use Testo\Data\DataSet;
+use Testo\Expect;
+use Testo\Test;
+use Testo\Assert;
+use Spiral\RoadRunner\Jobs\Queue\Driver;
+use Spiral\RoadRunnerLaravel\Tests\Unit\Queue\Fixture\PrioritizedJob;
 use Illuminate\Container\Container;
 use Illuminate\Database\DatabaseTransactionsManager;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use RoadRunner\Jobs\DTO\V1\Job as JobProto;
 use RoadRunner\Jobs\DTO\V1\PushRequest;
 use RoadRunner\Jobs\DTO\V1\Stat;
@@ -16,7 +21,8 @@ use Spiral\Goridge\RPC\RPCInterface;
 use Spiral\RoadRunner\Jobs\Jobs;
 use Spiral\RoadRunnerLaravel\Queue\RoadRunnerQueue;
 
-final class RoadRunnerQueueTest extends TestCase
+#[Test]
+final class RoadRunnerQueueTest
 {
     /**
      * @return array<string, array{int|null}>
@@ -46,21 +52,18 @@ final class RoadRunnerQueueTest extends TestCase
             ],
         ]);
 
-        $rpc = $this->createMock(RPCInterface::class);
-        $rpc->method('withCodec')->willReturnSelf();
-        $rpc->expects(self::exactly(5))
-            ->method('call')
-            ->with('jobs.Stat', self::isInstanceOf(Stats::class), Stats::class)
-            ->willReturn($stats);
+        $rpc = \Mockery::mock(RPCInterface::class)->shouldIgnoreMissing();
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+        $rpc->shouldReceive('call')->times(5)->with('jobs.Stat', \Mockery::type(Stats::class), Stats::class, \Mockery::andAnyOtherArgs())->andReturn($stats);
 
         $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc);
 
-        self::assertSame(10, $queue->size());
-        self::assertSame(5, $queue->pendingSize());
-        self::assertSame(3, $queue->delayedSize());
-        self::assertSame(2, $queue->reservedSize());
-        self::assertSame(7, $queue->pendingSize('secondary'));
-        self::assertNull($queue->creationTimeOfOldestPendingJob());
+        Assert::same($queue->size(), 10);
+        Assert::same($queue->pendingSize(), 5);
+        Assert::same($queue->delayedSize(), 3);
+        Assert::same($queue->reservedSize(), 2);
+        Assert::same($queue->pendingSize('secondary'), 7);
+        Assert::null($queue->creationTimeOfOldestPendingJob());
     }
 
     #[DataProvider('dispatchMethods')]
@@ -85,13 +88,13 @@ final class RoadRunnerQueueTest extends TestCase
 
         $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
 
-        self::assertNull($result);
-        self::assertSame([], $pushed);
+        Assert::null($result);
+        Assert::same($pushed, []);
 
         $transactions->commit('default', 1, 0);
 
-        self::assertCount(1, $pushed);
-        self::assertSame($delay ?? 0, $pushed[0]->getOptions()->getDelay());
+        Assert::count($pushed, 1);
+        Assert::same($pushed[0]->getOptions()->getDelay(), $delay ?? 0);
     }
 
     #[DataProvider('dispatchMethods')]
@@ -116,11 +119,11 @@ final class RoadRunnerQueueTest extends TestCase
 
         $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
 
-        self::assertNull($result);
+        Assert::null($result);
 
         $transactions->rollback('default', 0);
 
-        self::assertSame([], $pushed);
+        Assert::same($pushed, []);
     }
 
     #[DataProvider('dispatchMethods')]
@@ -142,9 +145,9 @@ final class RoadRunnerQueueTest extends TestCase
 
         $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
 
-        self::assertNull($result);
-        self::assertCount(1, $pushed);
-        self::assertSame($delay ?? 0, $pushed[0]->getOptions()->getDelay());
+        Assert::null($result);
+        Assert::count($pushed, 1);
+        Assert::same($pushed[0]->getOptions()->getDelay(), $delay ?? 0);
     }
 
     #[DataProvider('dispatchMethods')]
@@ -166,8 +169,8 @@ final class RoadRunnerQueueTest extends TestCase
 
         $result = $delay === null ? $queue->push($job) : $queue->later($delay, $job);
 
-        self::assertCount(1, $pushed);
-        self::assertSame($pushed[0]->getId(), $result);
+        Assert::count($pushed, 1);
+        Assert::same($result, $pushed[0]->getId());
     }
 
     public function test_resolve_task_name_uses_display_name_from_json_payload(): void
@@ -180,7 +183,7 @@ final class RoadRunnerQueueTest extends TestCase
 
         $name = $this->invokeResolveTaskName($payload);
 
-        self::assertSame('App\\Jobs\\SendEmail', $name);
+        Assert::same($name, 'App\\Jobs\\SendEmail');
     }
 
     public function test_resolve_task_name_falls_back_to_uuid_when_payload_lacks_display_name(): void
@@ -189,11 +192,7 @@ final class RoadRunnerQueueTest extends TestCase
 
         $name = $this->invokeResolveTaskName($payload);
 
-        self::assertMatchesRegularExpression(
-            '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/',
-            $name,
-            'Expected a v4 UUID fallback when payload has no displayName.',
-        );
+        Assert::string($name)->matchesRegex('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/', 'Expected a v4 UUID fallback when payload has no displayName.');
     }
 
     public function test_resolve_task_name_falls_back_to_uuid_for_empty_display_name(): void
@@ -205,11 +204,7 @@ final class RoadRunnerQueueTest extends TestCase
 
         $name = $this->invokeResolveTaskName($payload);
 
-        self::assertMatchesRegularExpression(
-            '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/',
-            $name,
-            'Empty displayName must fall back to UUID, not produce an empty task name.',
-        );
+        Assert::string($name)->matchesRegex('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/', 'Empty displayName must fall back to UUID, not produce an empty task name.');
     }
 
     public function test_resolve_task_name_falls_back_to_uuid_for_non_json_payload(): void
@@ -218,10 +213,7 @@ final class RoadRunnerQueueTest extends TestCase
         // emit a string-offset warning, must produce a usable task name.
         $name = $this->invokeResolveTaskName('not-json-just-bytes');
 
-        self::assertMatchesRegularExpression(
-            '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/',
-            $name,
-        );
+        Assert::string($name)->matchesRegex('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/');
     }
 
     public function test_push_raw_pushes_with_display_name_and_verbatim_payload(): void
@@ -239,9 +231,9 @@ final class RoadRunnerQueueTest extends TestCase
         $bridge = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q');
         $bridge->pushRaw($payload, 'q');
 
-        self::assertInstanceOf(JobProto::class, $captured);
-        self::assertSame('App\\Jobs\\Foo', $captured->getJob(), 'Task name should come from the payload `displayName`.');
-        self::assertSame($payload, $captured->getPayload(), 'Payload must travel byte-for-byte to RoadRunner.');
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getJob(), 'App\\Jobs\\Foo', 'Task name should come from the payload `displayName`.');
+        Assert::same($captured->getPayload(), $payload, 'Payload must travel byte-for-byte to RoadRunner.');
     }
 
     public function test_later_raw_accepts_string_payload_and_applies_delay(): void
@@ -265,13 +257,13 @@ final class RoadRunnerQueueTest extends TestCase
         $method = new \ReflectionMethod(RoadRunnerQueue::class, 'laterRaw');
         $method->invoke($bridge, 60, $payload, 'q', []);
 
-        self::assertInstanceOf(JobProto::class, $captured);
-        self::assertSame('App\\Jobs\\Delayed', $captured->getJob());
-        self::assertSame($payload, $captured->getPayload());
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getJob(), 'App\\Jobs\\Delayed');
+        Assert::same($captured->getPayload(), $payload);
 
         $options = $captured->getOptions();
-        self::assertNotNull($options, 'Pushed Job must carry an Options proto.');
-        self::assertSame(60, $options->getDelay(), 'withDelay() must propagate to the protobuf Options.');
+        Assert::notNull($options, 'Pushed Job must carry an Options proto.');
+        Assert::same($options->getDelay(), 60, 'withDelay() must propagate to the protobuf Options.');
     }
 
     public function test_available_at_returns_int_for_date_time_interface_delay(): void
@@ -286,10 +278,9 @@ final class RoadRunnerQueueTest extends TestCase
         $future = (new \DateTimeImmutable('+90 seconds'));
         $result = $method->invoke($queue, $future);
 
-        self::assertIsInt($result);
+        Assert::int($result);
         // Allow a small wall-clock slack so the test isn't flaky under load.
-        self::assertGreaterThanOrEqual(85, $result);
-        self::assertLessThanOrEqual(91, $result);
+        Assert::numeric($result)->greaterThanOrEqual(85)->lessThanOrEqual(91);
     }
 
     public function test_available_at_clamps_past_delay_to_zero(): void
@@ -302,7 +293,7 @@ final class RoadRunnerQueueTest extends TestCase
 
         $past = (new \DateTimeImmutable('-30 seconds'));
 
-        self::assertSame(0, $method->invoke($queue, $past));
+        Assert::same($method->invoke($queue, $past), 0);
     }
 
     public function test_available_at_passes_int_delay_through(): void
@@ -310,7 +301,7 @@ final class RoadRunnerQueueTest extends TestCase
         $queue = (new \ReflectionClass(RoadRunnerQueue::class))->newInstanceWithoutConstructor();
         $method = new \ReflectionMethod(RoadRunnerQueue::class, 'availableAt');
 
-        self::assertSame(60, $method->invoke($queue, 60));
+        Assert::same($method->invoke($queue, 60), 60);
     }
 
     public function test_later_raw_parameter_type_admits_string(): void
@@ -323,11 +314,149 @@ final class RoadRunnerQueueTest extends TestCase
         $param = (new \ReflectionMethod(RoadRunnerQueue::class, 'laterRaw'))->getParameters()[1];
         $type = (string) $param->getType();
 
-        self::assertStringContainsString(
-            'string',
-            $type,
-            'laterRaw $payload must accept string (what Queue::enqueueUsing actually delivers).',
+        Assert::string($type)->contains('string', 'laterRaw $payload must accept string (what Queue::enqueueUsing actually delivers).');
+    }
+
+    public function test_pop_is_not_supported(): never
+    {
+        $rpc = \Mockery::mock(RPCInterface::class);
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+
+        Expect::exception(\BadMethodCallException::class)->withMessage('Pop is not supported');
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc))->pop();
+    }
+
+    public function test_sizes_are_zero_for_an_unknown_pipeline(): void
+    {
+        $rpc = \Mockery::mock(RPCInterface::class);
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+        $rpc->shouldReceive('call')
+            ->with('jobs.Stat', \Mockery::type(Stats::class), Stats::class)
+            ->andReturn(new Stats(['stats' => [new Stat(['pipeline' => 'other', 'active' => 9])]]));
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc);
+
+        Assert::same($queue->size('missing'), 0);
+        Assert::same($queue->pendingSize('missing'), 0);
+    }
+
+    public function test_push_resumes_a_paused_pipeline(): void
+    {
+        $calls = [];
+        $rpc = \Mockery::mock(RPCInterface::class);
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+        $rpc->shouldReceive('call')->andReturnUsing(
+            static function (string $method, mixed $payload) use (&$calls): ?Stats {
+                $calls[] = $method;
+
+                return $method === 'jobs.Stat'
+                    ? new Stats(['stats' => [new Stat(['pipeline' => 'q', 'ready' => false])]])
+                    : null;
+            },
         );
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q'))->pushRaw('{"displayName":"Foo"}');
+
+        Assert::same($calls, ['jobs.Stat', 'jobs.Resume', 'jobs.Push']);
+    }
+
+    public function test_push_raw_applies_default_queue_options(): void
+    {
+        $captured = null;
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$captured): void {
+            $captured = $job;
+        });
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', ['priority' => 5, 'delay' => 7, 'auto_ack' => true]);
+        $queue->pushRaw('{"displayName":"Foo"}');
+
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getOptions()->getPriority(), 5);
+        Assert::same($captured->getOptions()->getDelay(), 7);
+        Assert::true($captured->getOptions()->getAutoAck());
+        Assert::same($captured->getOptions()->getPipeline(), 'q');
+    }
+
+    public function test_push_raw_sets_the_topic_for_kafka_pipelines(): void
+    {
+        $captured = null;
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$captured): void {
+            $captured = $job;
+        });
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', ['driver' => Driver::Kafka, 'topic' => 'events']);
+        $queue->pushRaw('{"displayName":"Foo"}');
+
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getOptions()->getTopic(), 'events');
+    }
+
+    public function test_push_uses_options_declared_by_the_job(): void
+    {
+        $captured = null;
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$captured): void {
+            $captured = $job;
+        });
+
+        $container = new Container();
+        $container->instance('db.transactions', new DatabaseTransactionsManager());
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', ['priority' => 5]);
+        $queue->setContainer($container);
+        $queue->push(new PrioritizedJob());
+
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getOptions()->getPriority(), 42);
+        Assert::same($captured->getOptions()->getDelay(), 3);
+    }
+
+    public function test_push_raw_connects_to_the_given_queue_instead_of_the_default(): void
+    {
+        $captured = null;
+        $rpc = $this->buildRpcMock('other', static function (JobProto $job) use (&$captured): void {
+            $captured = $job;
+        });
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q'))->pushRaw('{"displayName":"Foo"}', 'other');
+
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getOptions()->getPipeline(), 'other');
+    }
+
+    public function test_push_raw_rejects_an_empty_queue_name(): never
+    {
+        $rpc = $this->buildRpcMock('q', null);
+
+        Expect::exception(\InvalidArgumentException::class)->withMessage('The queue name must not be empty.');
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q'))->pushRaw('{"displayName":"Foo"}', '');
+    }
+
+    #[DataSet([['auto_ack' => 'yes'], 'auto_ack'], 'auto_ack is not a boolean')]
+    #[DataSet([['delay' => -1], 'delay'], 'negative delay')]
+    #[DataSet([['priority' => '5'], 'priority'], 'priority is a string')]
+    #[DataSet([['driver' => Driver::Kafka], 'topic'], 'Kafka without a topic')]
+    #[DataSet([['driver' => Driver::Kafka, 'topic' => ''], 'topic'], 'Kafka with an empty topic')]
+    #[DataSet([['driver' => Driver::Kafka, 'topic' => 5], 'topic'], 'Kafka with a non-string topic')]
+    public function test_invalid_queue_options_are_rejected(array $options, string $option): never
+    {
+        $rpc = $this->buildRpcMock('q', null);
+
+        Expect::exception(\InvalidArgumentException::class)->withMessageContaining("`{$option}`");
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', $options))->pushRaw('{"displayName":"Foo"}');
+    }
+
+    public function test_unexpected_stats_response_is_rejected(): never
+    {
+        $rpc = \Mockery::mock(RPCInterface::class);
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+        $rpc->shouldReceive('call')->andReturn(null);
+
+        Expect::exception(\UnexpectedValueException::class)->withMessageContaining('null');
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q'))->size();
     }
 
     private function invokeResolveTaskName(string $payload): string
@@ -336,7 +465,7 @@ final class RoadRunnerQueueTest extends TestCase
         $method = new \ReflectionMethod(RoadRunnerQueue::class, 'resolveTaskName');
         $result = $method->invoke($queue, $payload);
 
-        self::assertIsString($result);
+        Assert::string($result);
 
         return $result;
     }
@@ -349,30 +478,28 @@ final class RoadRunnerQueueTest extends TestCase
      */
     private function buildRpcMock(string $pipelineName, ?callable $capturePushedJob): RPCInterface
     {
-        $rpc = $this->createMock(RPCInterface::class);
-        $rpc->method('withCodec')->willReturnSelf();
+        $rpc = \Mockery::mock(RPCInterface::class)->shouldIgnoreMissing();
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
 
-        $rpc->method('call')->willReturnCallback(
-            static function (string $method, $payload) use ($pipelineName, $capturePushedJob) {
-                if ($method === 'jobs.Stat') {
-                    $stat = new Stat();
-                    $stat->setPipeline($pipelineName);
-                    $stat->setReady(true);
+        $rpc->shouldReceive('call')->andReturnUsing(static function (string $method, $payload) use ($pipelineName, $capturePushedJob) {
+            if ($method === 'jobs.Stat') {
+                $stat = new Stat();
+                $stat->setPipeline($pipelineName);
+                $stat->setReady(true);
 
-                    $stats = new Stats();
-                    $stats->setStats([$stat]);
+                $stats = new Stats();
+                $stats->setStats([$stat]);
 
-                    return $stats;
-                }
+                return $stats;
+            }
 
-                if ($method === 'jobs.Push' && $capturePushedJob !== null) {
-                    \assert($payload instanceof PushRequest);
-                    $capturePushedJob($payload->getJob());
-                }
+            if ($method === 'jobs.Push' && $capturePushedJob !== null) {
+                \assert($payload instanceof PushRequest);
+                $capturePushedJob($payload->getJob());
+            }
 
-                return null;
-            },
-        );
+            return null;
+        });
 
         return $rpc;
     }

@@ -3,7 +3,7 @@
 on:  # yamllint disable-line rule:truthy
   push:
     branches:
-      - '*'
+      - '**'
 
 name: Fix Code Style
 

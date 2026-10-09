@@ -8,3 +8,5 @@
 /phpstan.*    export-ignore
 /Makefile     export-ignore
 /rector.php   export-ignore
+/testo.php    export-ignore
+/infection.json5 export-ignore

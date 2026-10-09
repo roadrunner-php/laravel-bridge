@@ -15,6 +15,7 @@ use Spiral\RoadRunner\Environment;
 
 final class LoggerServiceProvider extends ServiceProvider
 {
+    #[\Override]
     public function register(): void
     {
         $this->app->singleton(LoggerInterface::class, function () {
