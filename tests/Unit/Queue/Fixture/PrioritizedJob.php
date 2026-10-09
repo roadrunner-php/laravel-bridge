@@ -12,6 +12,6 @@ final class PrioritizedJob implements HasQueueOptions
 {
     public function queueOptions(): OptionsInterface
     {
-        return new Options(priority: 42);
+        return new Options(delay: 3, priority: 42);
     }
 }

@@ -17,21 +17,30 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
         $this->setPrefix($prefix);
     }
 
+    #[\Override]
     public function get($key)
     {
         return $this->storage->get($this->prefix . $key);
     }
 
+    #[\Override]
     public function lock($name, $seconds = 0, $owner = null)
     {
         return new RoadRunnerLock($this->storage, $this->prefix . $name, $seconds, $owner);
     }
 
+    #[\Override]
     public function restoreLock($name, $owner)
     {
         return $this->lock($name, 0, $owner);
     }
 
+    /**
+     * @param array<array-key, string> $keys
+     *
+     * @return array<string, mixed>
+     */
+    #[\Override]
     public function many(array $keys)
     {
         $prefixedKeys = \array_map(fn($key) => $this->prefix . $key, $keys);
@@ -39,11 +48,16 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
         return \array_combine($keys, \iterator_to_array($this->storage->getMultiple($prefixedKeys)));
     }
 
+    #[\Override]
     public function put($key, $value, $seconds)
     {
         return $this->storage->set($this->prefix . $key, $value, $seconds);
     }
 
+    /**
+     * @param array<string, mixed> $values
+     */
+    #[\Override]
     public function putMany(array $values, $seconds)
     {
         $prefixedValues = [];
@@ -58,6 +72,7 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
         );
     }
 
+    #[\Override]
     public function increment($key, $value = 1)
     {
         $prefixedKey = $this->prefix . $key;
@@ -75,16 +90,19 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
         return $newValue;
     }
 
+    #[\Override]
     public function decrement($key, $value = 1)
     {
         return $this->increment($key, $value * -1);
     }
 
+    #[\Override]
     public function forever($key, $value)
     {
         return $this->storage->set($this->prefix . $key, $value, null);
     }
 
+    #[\Override]
     public function touch($key, $seconds): bool
     {
         $value = $this->get($key);
@@ -96,16 +114,19 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
         return $this->put($key, $value, $seconds);
     }
 
+    #[\Override]
     public function forget($key)
     {
         return $this->storage->delete($this->prefix . $key);
     }
 
+    #[\Override]
     public function flush()
     {
         return $this->storage->clear();
     }
 
+    #[\Override]
     public function getPrefix(): string
     {
         return $this->prefix;

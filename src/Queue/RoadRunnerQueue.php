@@ -20,6 +20,10 @@ use Spiral\RoadRunnerLaravel\Queue\Contract\HasQueueOptions;
 
 final class RoadRunnerQueue extends Queue implements QueueContract
 {
+    /**
+     * @param non-empty-string $default
+     * @param array<mixed> $defaultOptions
+     */
     public function __construct(
         private readonly Jobs $jobs,
         private readonly RPCInterface $rpc,
@@ -27,17 +31,24 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         private readonly array $defaultOptions = [],
     ) {}
 
+    #[\Override]
     public function push($job, $data = '', $queue = null): ?string
     {
-        return $this->enqueueUsing(
+        $result = $this->enqueueUsing(
             $job,
             $this->createPayload($job, $queue, $data),
             $queue,
             null,
-            fn($payload, $queue) => $this->pushRaw($payload, $queue, $this->getJobOverrideOptions($job)),
+            fn(string $payload, ?string $queue) => $this->pushRaw($payload, $queue, $this->getJobOverrideOptions($job)),
         );
+
+        return \is_string($result) ? $result : null;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
+    #[\Override]
     public function pushRaw($payload, $queue = null, array $options = []): string
     {
         $queue = $this->getQueue($queue, $options);
@@ -49,22 +60,27 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return $task->getId();
     }
 
+    #[\Override]
     public function later($delay, $job, $data = '', $queue = null): ?string
     {
-        return $this->enqueueUsing(
+        $result = $this->enqueueUsing(
             $job,
             $this->createPayload($job, $queue, $data),
             $queue,
             $delay,
-            fn($payload, $queue) => $this->laterRaw($delay, $payload, $queue, $this->getJobOverrideOptions($job)),
+            fn(string $payload, ?string $queue) => $this->laterRaw($delay, $payload, $queue, $this->getJobOverrideOptions($job)),
         );
+
+        return \is_string($result) ? $result : null;
     }
 
-    public function pop($queue = null): void
+    #[\Override]
+    public function pop($queue = null): never
     {
         throw new \BadMethodCallException('Pop is not supported');
     }
 
+    #[\Override]
     public function size($queue = null): int
     {
         $stats = $this->getStats($queue);
@@ -72,21 +88,25 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return (int) $stats->getActive() + (int) $stats->getDelayed() + (int) $stats->getReserved();
     }
 
+    #[\Override]
     public function pendingSize($queue = null): int
     {
         return (int) $this->getStats($queue)->getActive();
     }
 
+    #[\Override]
     public function delayedSize($queue = null): int
     {
         return (int) $this->getStats($queue)->getDelayed();
     }
 
+    #[\Override]
     public function reservedSize($queue = null): int
     {
         return (int) $this->getStats($queue)->getReserved();
     }
 
+    #[\Override]
     public function creationTimeOfOldestPendingJob($queue = null): ?int
     {
         return null;
@@ -104,8 +124,9 @@ final class RoadRunnerQueue extends Queue implements QueueContract
      * call. Plain timestamp arithmetic is what Laravel's `secondsUntil()`
      * does and avoids the round-trip entirely.
      *
-     * @param mixed $delay
+     * @param \DateTimeInterface|\DateInterval|int $delay
      */
+    #[\Override]
     protected function availableAt($delay = 0): int
     {
         $delay = $this->parseDateInterval($delay);
@@ -123,6 +144,8 @@ final class RoadRunnerQueue extends Queue implements QueueContract
      * on that string, which silently reads byte 0 ({), turning every task
      * name into `{` and emitting an "Illegal string offset" warning on
      * PHP 8.x. Decoding first is what the original code meant to do.
+     *
+     * @return non-empty-string
      */
     private static function resolveTaskName(string $payload): string
     {
@@ -140,9 +163,27 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return Uuid::uuid4()->toString();
     }
 
+    /**
+     * @return int<0, max>
+     */
+    private static function nonNegativeInt(mixed $value, string $option): int
+    {
+        \is_int($value) && $value >= 0 or throw new \InvalidArgumentException(
+            "The `{$option}` queue option must be a non-negative integer.",
+        );
+
+        return $value;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
     private function getQueue(?string $queue = null, array $options = []): QueueInterface
     {
-        $queue = $this->jobs->connect($queue ?? $this->default, $this->getQueueOptions($options));
+        $name = $queue ?? $this->default;
+        $name !== '' or throw new \InvalidArgumentException('The queue name must not be empty.');
+
+        $queue = $this->jobs->connect($name, $this->getQueueOptions($options));
 
         if (!$this->getStats($queue->getName())->getReady()) {
             $queue->resume();
@@ -151,30 +192,44 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return $queue;
     }
 
+    /**
+     * @param array<string, mixed> $overrides
+     */
     private function getQueueOptions(array $overrides = []): OptionsInterface
     {
         $config = array_merge($this->defaultOptions, $overrides);
+        $autoAck = $config['auto_ack'] ?? OptionsInterface::DEFAULT_AUTO_ACK;
+        \is_bool($autoAck) or throw new \InvalidArgumentException('The `auto_ack` queue option must be a boolean.');
+
         $options = new Options(
-            $config['delay'] ?? OptionsInterface::DEFAULT_DELAY,
-            $config['priority'] ?? OptionsInterface::DEFAULT_PRIORITY,
-            $config['auto_ack'] ?? OptionsInterface::DEFAULT_AUTO_ACK,
+            self::nonNegativeInt($config['delay'] ?? OptionsInterface::DEFAULT_DELAY, 'delay'),
+            self::nonNegativeInt($config['priority'] ?? OptionsInterface::DEFAULT_PRIORITY, 'priority'),
+            $autoAck,
         );
 
-        return match ($config['driver'] ?? null) {
-            Driver::Kafka => KafkaOptions::from($options)
-                ->withTopic($config['topic'] ?? ($this->defaultOptions['topic'] ?? '')),
-            default => $options,
-        };
+        if (($config['driver'] ?? null) !== Driver::Kafka) {
+            return $options;
+        }
+
+        $topic = $config['topic'] ?? '';
+        \is_string($topic) && $topic !== '' or throw new \InvalidArgumentException(
+            'The `topic` queue option must be a non-empty string for Kafka pipelines.',
+        );
+
+        return KafkaOptions::from($options)->withTopic($topic);
     }
 
     private function getStats(?string $queue = null): Stat
     {
         $queue ??= $this->default;
 
-        $stats = $this->rpc->call('jobs.Stat', new Stats(), Stats::class)->getStats();
+        $response = $this->rpc->call('jobs.Stat', new Stats(), Stats::class);
+        $response instanceof Stats or throw new \UnexpectedValueException(
+            \sprintf('RoadRunner returned %s instead of the pipeline stats.', \get_debug_type($response)),
+        );
 
         /** @var Stat $stat */
-        foreach ($stats as $stat) {
+        foreach ($response->getStats() as $stat) {
             if ($stat->getPipeline() === $queue) {
                 return $stat;
             }
@@ -183,6 +238,9 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         return new Stat();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getJobOverrideOptions(string|object $job): array
     {
         if (is_string($job) && class_exists($job)) {
@@ -192,13 +250,21 @@ final class RoadRunnerQueue extends Queue implements QueueContract
         if ($job instanceof HasQueueOptions) {
             $options = $job->queueOptions();
             if ($options instanceof Options) {
-                return $options->toArray();
+                $result = [];
+                foreach ($options->toArray() as $name => $value) {
+                    $result[(string) $name] = $value;
+                }
+
+                return $result;
             }
         }
 
         return [];
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     private function laterRaw(
         \DateTimeInterface|\DateInterval|int $delay,
         string $payload,

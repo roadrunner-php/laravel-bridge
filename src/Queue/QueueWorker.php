@@ -33,6 +33,7 @@ final class QueueWorker implements WorkerInterface
         $this->connectionName = 'roadrunner';
     }
 
+    #[\Override]
     public function start(WorkerOptionsInterface $options): void
     {
         $worker = new OctaneWorker(
@@ -262,12 +263,10 @@ final class QueueWorker implements WorkerInterface
      */
     protected function calculateBackoff(RoadRunnerJob $job, WorkerOptions $options): int
     {
-        $backoff = \method_exists($job, 'backoff') && !\is_null($job->backoff())
-            ? $job->backoff()
-            : $options->backoff;
+        $backoff = $job->backoff() ?? $options->backoff;
 
         $backoff = \is_array($backoff) ? \array_values($backoff) : \explode(',', (string) $backoff);
 
-        return (int) ($backoff[$job->attempts()] ?? last($backoff));
+        return (int) ($backoff[$job->attempts()] ?? $backoff[\array_key_last($backoff)] ?? 0);
     }
 }

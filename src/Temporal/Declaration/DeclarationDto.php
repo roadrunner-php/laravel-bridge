@@ -6,6 +6,9 @@ namespace Spiral\RoadRunnerLaravel\Temporal\Declaration;
 
 final readonly class DeclarationDto
 {
+    /**
+     * @param \ReflectionClass<object> $class
+     */
     public function __construct(
         public DeclarationType $type,
         public \ReflectionClass $class,

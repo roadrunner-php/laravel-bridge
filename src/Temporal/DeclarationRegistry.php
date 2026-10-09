@@ -21,16 +21,21 @@ final class DeclarationRegistry implements DeclarationRegistryInterface
         private readonly ReaderInterface $reader,
     ) {}
 
+    #[\Override]
     public function addDeclaration(string $class): void
     {
         $this->prepareDeclaration(new \ReflectionClass($class));
     }
 
+    #[\Override]
     public function getDeclarationList(): iterable
     {
         return $this->declarations;
     }
 
+    /**
+     * @param \ReflectionClass<object> $class
+     */
     private function prepareDeclaration(\ReflectionClass $class): void
     {
         if ($class->isAbstract() || $class->isInterface() || $class->isEnum()) {

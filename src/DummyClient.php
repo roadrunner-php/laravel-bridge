@@ -12,16 +12,22 @@ use Laravel\Octane\RequestContext;
 
 final readonly class DummyClient implements Client
 {
+    /**
+     * @return array<mixed>
+     */
+    #[\Override]
     public function marshalRequest(RequestContext $context): array
     {
         throw new \BadMethodCallException('Cannot marshal request for queue client');
     }
 
+    #[\Override]
     public function respond(RequestContext $context, OctaneResponse $response): void
     {
         throw new \BadMethodCallException('Cannot respond for queue client');
     }
 
+    #[\Override]
     public function error(\Throwable $e, Application $app, Request $request, RequestContext $context): void
     {
         // TODO: Implement error() method.

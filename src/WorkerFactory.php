@@ -31,15 +31,8 @@ class WorkerFactory
 
         if (\array_key_exists($mode, $map = $this->getWorkersMap())) {
             $class = $map[$mode];
-            $worker = new $class(...$args);
 
-            if ($worker instanceof WorkerInterface) {
-                return $worker;
-            }
-
-            throw new \RuntimeException(
-                \sprintf("Class [{$class}] should implements [%s] interface", WorkerInterface::class),
-            );
+            return new $class(...$args);
         }
 
         throw new \InvalidArgumentException("Unsupported worker mode: {$mode}");
@@ -47,6 +40,8 @@ class WorkerFactory
 
     /**
      * @return array<string, class-string<WorkerInterface>>
+     *
+     * @throws \RuntimeException
      */
     protected function getWorkersMap(): array
     {
@@ -55,11 +50,24 @@ class WorkerFactory
         if (\file_exists($path = $this->appBasePath . '/config/' . ServiceProvider::getConfigRootKey() . '.php')) {
             if (\array_key_exists($key, $userDefined = (array) require $path)) {
                 if (\is_array($userDefined[$key])) {
-                    $map = \array_merge($map, $userDefined[$key]);
+                    $map = \array_merge((array) $map, $userDefined[$key]);
                 }
             }
         }
 
-        return $map;
+        $workers = [];
+        foreach ((array) $map as $mode => $class) {
+            if (!\is_string($class) || !\is_a($class, WorkerInterface::class, true)) {
+                throw new \RuntimeException(\sprintf(
+                    'Class [%s] should implements [%s] interface',
+                    \is_string($class) ? $class : \get_debug_type($class),
+                    WorkerInterface::class,
+                ));
+            }
+
+            $workers[(string) $mode] = $class;
+        }
+
+        return $workers;
     }
 }

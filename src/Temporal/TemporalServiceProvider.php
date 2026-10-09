@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Temporal;
 
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Spiral\Attributes\ReaderInterface;
@@ -29,11 +30,15 @@ use Temporal\Worker\WorkerFactoryInterface as TemporalWorkerFactoryInterface;
 
 final class TemporalServiceProvider extends ServiceProvider
 {
+    #[\Override]
     public function register(): void
     {
-        $this->app->singleton(TemporalConfig::class, static fn(Application $app) => new TemporalConfig(
-            config: $app['config']->get('roadrunner.temporal', []),
-        ));
+        $this->app->singleton(TemporalConfig::class, static function (Application $app): TemporalConfig {
+            $config = $app->make(Repository::class)->get('roadrunner.temporal', []);
+            \is_array($config) or throw new \InvalidArgumentException('The `roadrunner.temporal` option must be an array.');
+
+            return new TemporalConfig(config: $config);
+        });
 
         $this->app->singleton(WorkersRegistryInterface::class, WorkersRegistry::class);
         $this->app->singleton(WorkerFactoryInterface::class, WorkerFactory::class);

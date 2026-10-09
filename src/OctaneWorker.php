@@ -19,6 +19,10 @@ final class OctaneWorker extends Worker
         parent::__construct($appFactory, $client ?? new DummyClient());
     }
 
+    /**
+     * @param array<string, mixed> $initialInstances
+     */
+    #[\Override]
     public function boot(array $initialInstances = [], ?Application $application = null): void
     {
         // First we will create an instance of the Laravel application that can serve as

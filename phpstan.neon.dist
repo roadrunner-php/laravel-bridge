@@ -4,9 +4,54 @@ parameters:
     - bin/rr-worker
     - config
     - src
-  reportUnmatchedIgnoredErrors: false
+  reportUnmatchedIgnoredErrors: true
   ignoreErrors:
-    - message: '#Call to protected method bootstrappers\(\) of class.+Kernel#'
-      paths: [src/Application/Factory.php]
-    - message: '#Class Spatie\\.+Ignition.* not found#'
-      paths: [src/Listeners/ResetLaravelIgnitionListener.php]
+    # symfony/console < 7.4 has no addCommand(), 8.0 has no add(): both branches are needed.
+    - identifier: function.alreadyNarrowedType
+      path: bin/rr-worker
+    - identifier: method.notFound
+      message: '#Application::add\(\)#'
+      path: bin/rr-worker
+
+    # The public constructor takes the Application contract; Job::$container is documented as the concrete
+    # Container. Narrowing the parameter would break BC.
+    - identifier: assign.propertyType
+      message: '#Job::\$container#'
+      path: src/Queue/RoadRunnerJob.php
+
+    # Laravel's own queues pass a nullable queue name to createPayload() as well.
+    - identifier: argument.type
+      message: '#createPayload\(\) expects string, string\|null given#'
+      path: src/Queue/RoadRunnerQueue.php
+
+    # `$this->cache` is always initialized by start() before a job runs.
+    - identifier: booleanNot.alwaysFalse
+      path: src/Queue/QueueWorker.php
+
+    # A negative integer delay of later() is passed through unchanged, as before.
+    - identifier: argument.type
+      message: '#withDelay\(\) expects int<0, max>, int given#'
+      path: src/Queue/RoadRunnerQueue.php
+
+    # Declarations are validated by ReflectionClass in DeclarationRegistry.
+    - identifier: return.type
+      message: '#getDeclarations\(\)#'
+      path: src/Temporal/Config/TemporalConfig.php
+
+    # WorkerOptions::$maxTries is documented as int but is untyped and may be null.
+    - identifier: nullCoalesce.property
+      message: '#WorkerOptions::\$maxTries#'
+      path: src/Queue/QueueWorker.php
+
+    # The Store contract leaves the increment step and the stored value untyped; the arithmetic is the same
+    # as in Laravel's own stores.
+    - identifier: return.unusedType
+      message: '#increment\(\)#'
+      path: src/Cache/RoadRunnerStore.php
+    - identifier: binaryOp.invalid
+      path: src/Cache/RoadRunnerStore.php
+    - identifier: cast.int
+      path: src/Cache/RoadRunnerStore.php
+    - identifier: argument.type
+      message: '#getTtl\(\) expects non-empty-string#'
+      path: src/Cache/RoadRunnerStore.php

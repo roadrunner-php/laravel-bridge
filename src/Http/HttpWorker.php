@@ -21,6 +21,7 @@ use Spiral\RoadRunnerLaravel\WorkerOptionsInterface;
 
 final readonly class HttpWorker implements WorkerInterface
 {
+    #[\Override]
     public function start(WorkerOptionsInterface $options): void
     {
         $roadRunnerClient = new RoadRunnerClient(

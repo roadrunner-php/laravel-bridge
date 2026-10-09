@@ -15,18 +15,28 @@ final class RoadRunnerConnector implements ConnectorInterface
 {
     /**
      * Establish a queue connection.
+     *
+     * @param array<string, mixed> $config
      */
+    #[\Override]
     public function connect(array $config): Queue
     {
         $env = Environment::fromGlobals();
 
-        $rpc = RPC::create($env->getRPCAddress())->withCodec(new ProtobufCodec());
+        /** @var non-empty-string $rpcAddress */
+        $rpcAddress = $env->getRPCAddress();
+        $rpc = RPC::create($rpcAddress)->withCodec(new ProtobufCodec());
 
-        return new RoadRunnerQueue(
-            new Jobs($rpc),
-            $rpc,
-            $config['queue'],
-            $config['options'] ?? [],
+        $queue = $config['queue'] ?? null;
+        \is_string($queue) && $queue !== '' or throw new \InvalidArgumentException(
+            'The `queue` option of a RoadRunner queue connection must be a non-empty string.',
         );
+
+        $options = $config['options'] ?? [];
+        \is_array($options) or throw new \InvalidArgumentException(
+            'The `options` option of a RoadRunner queue connection must be an array.',
+        );
+
+        return new RoadRunnerQueue(new Jobs($rpc), $rpc, $queue, $options);
     }
 }
