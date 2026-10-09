@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
 use Testo\Data\DataProvider;
+use Testo\Expect;
 use Testo\Test;
 use Testo\Assert;
+use Spiral\RoadRunner\Jobs\Queue\Driver;
+use Spiral\RoadRunnerLaravel\Tests\Unit\Queue\Fixture\PrioritizedJob;
 use Illuminate\Container\Container;
 use Illuminate\Database\DatabaseTransactionsManager;
 use RoadRunner\Jobs\DTO\V1\Job as JobProto;
@@ -311,6 +314,98 @@ final class RoadRunnerQueueTest
         $type = (string) $param->getType();
 
         Assert::string($type)->contains('string', 'laterRaw $payload must accept string (what Queue::enqueueUsing actually delivers).');
+    }
+
+    public function test_pop_is_not_supported(): never
+    {
+        $rpc = \Mockery::mock(RPCInterface::class);
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+
+        Expect::exception(\BadMethodCallException::class)->withMessage('Pop is not supported');
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc))->pop();
+    }
+
+    public function test_sizes_are_zero_for_an_unknown_pipeline(): void
+    {
+        $rpc = \Mockery::mock(RPCInterface::class);
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+        $rpc->shouldReceive('call')
+            ->with('jobs.Stat', \Mockery::type(Stats::class), Stats::class)
+            ->andReturn(new Stats(['stats' => [new Stat(['pipeline' => 'other', 'active' => 9])]]));
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc);
+
+        Assert::same($queue->size('missing'), 0);
+        Assert::same($queue->pendingSize('missing'), 0);
+    }
+
+    public function test_push_resumes_a_paused_pipeline(): void
+    {
+        $calls = [];
+        $rpc = \Mockery::mock(RPCInterface::class);
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+        $rpc->shouldReceive('call')->andReturnUsing(
+            static function (string $method, mixed $payload) use (&$calls): ?Stats {
+                $calls[] = $method;
+
+                return $method === 'jobs.Stat'
+                    ? new Stats(['stats' => [new Stat(['pipeline' => 'q', 'ready' => false])]])
+                    : null;
+            },
+        );
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q'))->pushRaw('{"displayName":"Foo"}');
+
+        Assert::same($calls, ['jobs.Stat', 'jobs.Resume', 'jobs.Push']);
+    }
+
+    public function test_push_raw_applies_default_queue_options(): void
+    {
+        $captured = null;
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$captured): void {
+            $captured = $job;
+        });
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', ['priority' => 5, 'auto_ack' => true]);
+        $queue->pushRaw('{"displayName":"Foo"}');
+
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getOptions()->getPriority(), 5);
+        Assert::true($captured->getOptions()->getAutoAck());
+        Assert::same($captured->getOptions()->getPipeline(), 'q');
+    }
+
+    public function test_push_raw_sets_the_topic_for_kafka_pipelines(): void
+    {
+        $captured = null;
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$captured): void {
+            $captured = $job;
+        });
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', ['driver' => Driver::Kafka, 'topic' => 'events']);
+        $queue->pushRaw('{"displayName":"Foo"}');
+
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getOptions()->getTopic(), 'events');
+    }
+
+    public function test_push_uses_options_declared_by_the_job(): void
+    {
+        $captured = null;
+        $rpc = $this->buildRpcMock('q', static function (JobProto $job) use (&$captured): void {
+            $captured = $job;
+        });
+
+        $container = new Container();
+        $container->instance('db.transactions', new DatabaseTransactionsManager());
+
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', ['priority' => 5]);
+        $queue->setContainer($container);
+        $queue->push(new PrioritizedJob());
+
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getOptions()->getPriority(), 42);
     }
 
     private function invokeResolveTaskName(string $payload): string
