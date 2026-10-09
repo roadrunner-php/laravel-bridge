@@ -67,7 +67,7 @@ class RoadRunnerJob extends Job implements JobContract
 
         $this->task
             ->withHeader('attempts', (string) ++$attempts)
-            ->fail($e->getMessage());
+            ->fail($e?->getMessage() ?? 'Job was marked as failed manually.');
 
         parent::failed($e);
     }
