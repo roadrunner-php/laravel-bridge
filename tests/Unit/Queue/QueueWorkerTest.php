@@ -127,6 +127,25 @@ final class QueueWorkerTest
         Assert::same($job->releases, [30]);
     }
 
+    public function test_null_max_tries_falls_back_to_ten_attempts(): void
+    {
+        $job = new FakeJob(attempts: 11);
+
+        $thrown = $this->processExpectingException($job, new WorkerOptions(maxTries: null));
+
+        Assert::instanceOf($thrown, MaxAttemptsExceededException::class);
+        Assert::same($job->fired, 0);
+    }
+
+    public function test_null_max_tries_allows_ten_attempts(): void
+    {
+        $job = new FakeJob(attempts: 10);
+
+        $this->worker()->process($job, new WorkerOptions(maxTries: null));
+
+        Assert::same($job->fired, 1);
+    }
+
     public function test_job_that_already_exceeded_max_tries_is_failed_without_firing(): void
     {
         $job = new FakeJob(attempts: 3);
@@ -196,6 +215,23 @@ final class QueueWorkerTest
         $job = self::throwingJob($exception, attempts: 2);
 
         $this->processExpectingException($job, new WorkerOptions(maxTries: 2));
+
+        Assert::same($job->failures, [$exception]);
+        Assert::same($job->releases, []);
+    }
+
+    public function test_failing_job_with_null_max_tries_is_failed_at_ten_attempts(): void
+    {
+        $exception = new \RuntimeException('boom');
+
+        $job = self::throwingJob($exception, attempts: 9);
+        $this->processExpectingException($job, new WorkerOptions(maxTries: null));
+
+        Assert::same($job->failures, []);
+        Assert::same($job->releases, [0]);
+
+        $job = self::throwingJob($exception, attempts: 10);
+        $this->processExpectingException($job, new WorkerOptions(maxTries: null));
 
         Assert::same($job->failures, [$exception]);
         Assert::same($job->releases, []);

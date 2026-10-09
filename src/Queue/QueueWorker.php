@@ -73,7 +73,7 @@ final class QueueWorker implements WorkerInterface
 
             $this->markJobAsFailedIfAlreadyExceedsMaxAttempts(
                 $job,
-                (int) $options->maxTries ?? 10,
+                (int) ($options->maxTries ?? 10),
             );
 
             if ($job->isDeleted()) {
@@ -203,7 +203,7 @@ final class QueueWorker implements WorkerInterface
             // attempts it is allowed to run the next time we process it. If so we will just
             // go ahead and mark it as failed now so we do not have to release this again.
             if (!$job->hasFailed()) {
-                $this->markJobAsFailedIfWillExceedMaxAttempts($job, (int) $options->maxTries, $e);
+                $this->markJobAsFailedIfWillExceedMaxAttempts($job, (int) ($options->maxTries ?? 10), $e);
                 $this->markJobAsFailedIfWillExceedMaxExceptions($job, $e);
             }
 
