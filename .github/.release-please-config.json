@@ -1,0 +1,80 @@
+{
+    "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+    "release-type": "php",
+    "packages": {
+        ".": {
+            "package-name": "roadrunner-php/laravel-bridge",
+            "changelog-path": "/CHANGELOG.md"
+        }
+    },
+    "bootstrap-sha": "6bbc02c569153a355509f5c104b9ab7a7fdad683",
+    "include-component-in-tag": false,
+    "include-v-in-tag": false,
+    "changelog-sections": [
+        {
+            "type": "feat",
+            "section": "Features",
+            "hidden": false
+        },
+        {
+            "type": "fix",
+            "section": "Bug Fixes",
+            "hidden": false
+        },
+        {
+            "type": "perf",
+            "section": "Performance Improvements",
+            "hidden": false
+        },
+        {
+            "type": "docs",
+            "section": "Documentation",
+            "hidden": false
+        },
+        {
+            "type": "deps",
+            "section": "Dependencies",
+            "hidden": false
+        },
+        {
+            "type": "refactor",
+            "section": "Code Refactoring",
+            "hidden": false
+        },
+        {
+            "type": "test",
+            "section": "Tests",
+            "hidden": true
+        },
+        {
+            "type": "tests",
+            "section": "Tests",
+            "hidden": true
+        },
+        {
+            "type": "build",
+            "section": "Build System",
+            "hidden": true
+        },
+        {
+            "type": "ci",
+            "section": "Continuous Integration",
+            "hidden": true
+        },
+        {
+            "type": "chore",
+            "section": "Miscellaneous",
+            "hidden": true
+        },
+        {
+            "type": "style",
+            "section": "Styles",
+            "hidden": true
+        },
+        {
+            "type": "revert",
+            "section": "Reverts",
+            "hidden": true
+        }
+    ]
+}
