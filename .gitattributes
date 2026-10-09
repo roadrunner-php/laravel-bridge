@@ -1,12 +1,26 @@
+# Line-ending normalization for text files.
 * text=auto
 
-/.*           export-ignore
-/tests        export-ignore
-/[Dd]ocker*   export-ignore
-/*.xml        export-ignore
-/*.xml.dist   export-ignore
-/phpstan.*    export-ignore
-/Makefile     export-ignore
-/rector.php   export-ignore
-/testo.php    export-ignore
-/infection.json5 export-ignore
+# PHP-aware hunk headers in `git diff`.
+*.php diff=php
+
+# List-like manifests: concurrent additions to the same list merge instead of conflicting.
+/composer.json merge=union
+
+# Default: nothing goes into the dist archive. Re-include only what the installed package needs.
+* export-ignore
+
+# Manifest and top-level documentation.
+/composer.json   -export-ignore
+/LICENSE         -export-ignore
+/README.md       -export-ignore
+/CHANGELOG.md    -export-ignore
+
+# Autoloaded source code, the `rr-worker` entry point and the default config
+# that ServiceProvider merges and publishes.
+/src             -export-ignore
+/src/**          -export-ignore
+/bin             -export-ignore
+/bin/**          -export-ignore
+/config          -export-ignore
+/config/**       -export-ignore
