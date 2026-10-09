@@ -31,6 +31,30 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 [#147]:https://github.com/roadrunner-php/laravel-bridge/issues/147
 
+## [6.6.2](https://github.com/roadrunner-php/laravel-bridge/compare/6.6.1...6.6.2) (2026-10-09)
+
+
+### Bug Fixes
+
+* **cache:** keep the remaining TTL on increment and decrement ([#194](https://github.com/roadrunner-php/laravel-bridge/issues/194)) ([9c1d017](https://github.com/roadrunner-php/laravel-bridge/commit/9c1d017a24c051baf76b2bab53f34213dffa3577)), closes [#189](https://github.com/roadrunner-php/laravel-bridge/issues/189)
+* convert release() delay to seconds in RoadRunnerJob ([#199](https://github.com/roadrunner-php/laravel-bridge/issues/199)) ([368b84c](https://github.com/roadrunner-php/laravel-bridge/commit/368b84ce5ad273de4319fe1987dccf5e0b75a0f7)), closes [#198](https://github.com/roadrunner-php/laravel-bridge/issues/198)
+* fall back to 10 max tries when WorkerOptions::$maxTries is null ([#190](https://github.com/roadrunner-php/laravel-bridge/issues/190)) ([0cfbd81](https://github.com/roadrunner-php/laravel-bridge/commit/0cfbd81b73466c873e345a1fde993208ef74774b))
+* handle failing RoadRunnerJob without an exception ([#201](https://github.com/roadrunner-php/laravel-bridge/issues/201)) ([ea28ced](https://github.com/roadrunner-php/laravel-bridge/commit/ea28ced606a8f4812088ac266c3bd93586c6dc37)), closes [#200](https://github.com/roadrunner-php/laravel-bridge/issues/200)
+* honour an array WorkerOptions::$backoff when releasing a failed job ([#197](https://github.com/roadrunner-php/laravel-bridge/issues/197)) ([4d8cc17](https://github.com/roadrunner-php/laravel-bridge/commit/4d8cc1758f12e62ab1f44ffc501acc8308e89efc))
+* **temporal:** rethrow exceptions from failed activities ([#195](https://github.com/roadrunner-php/laravel-bridge/issues/195)) ([dde6fc3](https://github.com/roadrunner-php/laravel-bridge/commit/dde6fc3a39c158813c44f568bfcb694c63e4a0ba)), closes [#193](https://github.com/roadrunner-php/laravel-bridge/issues/193)
+* tolerate non-object task payloads in RoadRunnerJob ([#192](https://github.com/roadrunner-php/laravel-bridge/issues/192)) ([e06440e](https://github.com/roadrunner-php/laravel-bridge/commit/e06440ef6440db7e79e51c9e2dcf1db8a4b34d3d)), closes [#191](https://github.com/roadrunner-php/laravel-bridge/issues/191)
+
+
+### Documentation
+
+* refresh README header, installation and outdated examples ([#181](https://github.com/roadrunner-php/laravel-bridge/issues/181)) ([09c5f0f](https://github.com/roadrunner-php/laravel-bridge/commit/09c5f0fc7e16676fe157a67eb67f6aabf7c2916d))
+* remove Documentation badge from README header ([654f99b](https://github.com/roadrunner-php/laravel-bridge/commit/654f99bea129bedc090c1a9e586873e8f98e0376))
+
+
+### Code Refactoring
+
+* pass PHPStan at level max ([#196](https://github.com/roadrunner-php/laravel-bridge/issues/196)) ([836264c](https://github.com/roadrunner-php/laravel-bridge/commit/836264cb674300f00a367faf13e6d7ab41562a51))
+
 ## v5.12.0
 
 ### Added
