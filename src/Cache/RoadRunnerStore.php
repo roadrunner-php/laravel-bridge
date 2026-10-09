@@ -60,13 +60,19 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
 
     public function increment($key, $value = 1)
     {
-        $data = $this->get($key);
+        $prefixedKey = $this->prefix . $key;
+        // TTL before value: a key expiring in between is then read as missing, not as an eternal stale value.
+        $expiresAt = $this->storage->getTtl($prefixedKey);
+        $newValue = ((int) $this->storage->get($prefixedKey)) + $value;
 
-        return tap(((int) $data) + $value, function ($newValue) use ($key): void {
-            $ttl = $this->storage->getTtl($this->prefix . $key);
+        $this->storage->set(
+            $prefixedKey,
+            $newValue,
+            // The storage expects a positive TTL in seconds; an item on the edge of expiry keeps one second.
+            $expiresAt === null ? null : \max(1, $expiresAt->getTimestamp() - \time()),
+        );
 
-            $this->put($key, $newValue, ($ttl ? $ttl->diff(new \DateTimeImmutable()) : null));
-        });
+        return $newValue;
     }
 
     public function decrement($key, $value = 1)
@@ -76,7 +82,7 @@ final class RoadRunnerStore extends TaggableStore implements LockProvider
 
     public function forever($key, $value)
     {
-        return $this->put($key, $value, null);
+        return $this->storage->set($this->prefix . $key, $value, null);
     }
 
     public function touch($key, $seconds): bool

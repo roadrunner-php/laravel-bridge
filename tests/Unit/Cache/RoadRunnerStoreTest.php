@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Cache;
 
-use Testo\Skip;
 use Testo\Test;
 use Testo\Assert;
 use Spiral\RoadRunner\KeyValue\StorageInterface;
@@ -128,7 +127,6 @@ final class RoadRunnerStoreTest
         Assert::same($store->decrement('counter', 2), 3);
     }
 
-    #[Skip('Bug: increment() passes `$ttl->diff(now)` to the storage, a negative interval, so the item expires immediately')]
     public function test_increment_keeps_the_remaining_ttl_of_the_item(): void
     {
         $ttl = null;
@@ -136,8 +134,8 @@ final class RoadRunnerStoreTest
         $storage->shouldReceive('get')->with('cache:counter')->andReturn(1);
         $storage->shouldReceive('getTtl')->with('cache:counter')->andReturn(new \DateTimeImmutable('+60 seconds'));
         $storage->shouldReceive('set')->once()->andReturnUsing(
-            static function (string $key, mixed $value, \DateInterval $interval) use (&$ttl): bool {
-                $ttl = $interval;
+            static function (string $key, mixed $value, null|int|\DateInterval $seconds) use (&$ttl): bool {
+                $ttl = $seconds;
                 return true;
             },
         );
@@ -145,8 +143,23 @@ final class RoadRunnerStoreTest
         $store = new RoadRunnerStore($storage, 'cache:');
         $store->increment('counter');
 
-        $expiresAt = (new \DateTimeImmutable())->add($ttl);
-        Assert::true($expiresAt > new \DateTimeImmutable('+50 seconds'), 'The item must keep its remaining TTL.');
+        Assert::notNull($ttl, 'The item must not become eternal.');
+        $now = new \DateTimeImmutable();
+        $expiresAt = $ttl instanceof \DateInterval ? $now->add($ttl) : $now->modify("+{$ttl} seconds");
+        Assert::true($expiresAt > $now->modify('+50 seconds'), 'The item must keep its remaining TTL.');
+        Assert::true($expiresAt <= $now->modify('+60 seconds'), 'The item must not outlive its original TTL.');
+    }
+
+    public function test_increment_reads_the_ttl_before_the_value(): void
+    {
+        $storage = \Mockery::mock(StorageInterface::class);
+        $storage->shouldReceive('getTtl')->once()->with('cache:counter')->andReturn(null)->ordered();
+        $storage->shouldReceive('get')->once()->with('cache:counter')->andReturn(null)->ordered();
+        $storage->shouldReceive('set')->once()->with('cache:counter', 1, null)->andReturn(true)->ordered();
+
+        $store = new RoadRunnerStore($storage, 'cache:');
+
+        Assert::same($store->increment('counter'), 1);
     }
 
     public function test_forget_deletes_the_prefixed_key(): void

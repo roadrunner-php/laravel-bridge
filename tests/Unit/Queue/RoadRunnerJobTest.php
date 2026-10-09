@@ -6,7 +6,6 @@ namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
 use Mockery\MockInterface;
 use Testo\Data\DataProvider;
-use Testo\Skip;
 use Testo\Test;
 use Testo\Assert;
 use Illuminate\Support\Carbon;
@@ -28,6 +27,17 @@ final class RoadRunnerJobTest
             'future DateTimeInterface' => [new \DateTimeImmutable('@' . (self::NOW + 45)), 45],
             'past DateTimeInterface' => [new \DateTimeImmutable('@' . (self::NOW - 10)), 0],
             'negative seconds' => [-5, 0],
+        ];
+    }
+
+    public static function nonObjectPayloads(): array
+    {
+        return [
+            'invalid JSON' => ['not-json'],
+            'empty body' => [''],
+            'JSON null' => ['null'],
+            'JSON string' => ['"text"'],
+            'JSON number' => ['42'],
         ];
     }
 
@@ -185,10 +195,10 @@ final class RoadRunnerJobTest
         Assert::same($handler->failed[0][1], $exception);
     }
 
-    #[Skip('Bug: a payload that is not a JSON object makes the constructor assign null to the `array $payload` property and throw a TypeError')]
-    public function test_payload_is_empty_for_a_non_json_body(): void
+    #[DataProvider('nonObjectPayloads')]
+    public function test_payload_is_empty_for_a_non_object_body(string $body): void
     {
-        $job = new RoadRunnerJob(\Mockery::mock(Application::class), self::task('not-json'));
+        $job = new RoadRunnerJob(\Mockery::mock(Application::class), self::task($body));
 
         Assert::same($job->payload(), []);
     }
