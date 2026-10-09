@@ -4,40 +4,33 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Cache;
 
-use PHPUnit\Framework\TestCase;
+use Testo\Test;
+use Testo\Assert;
 use Spiral\RoadRunner\KeyValue\StorageInterface;
 use Spiral\RoadRunnerLaravel\Cache\RoadRunnerStore;
 
-final class RoadRunnerStoreTest extends TestCase
+#[Test]
+final class RoadRunnerStoreTest
 {
     public function test_touch_updates_the_expiration_of_an_existing_item(): void
     {
-        $storage = $this->createMock(StorageInterface::class);
-        $storage->expects(self::once())
-            ->method('get')
-            ->with('cache:key')
-            ->willReturn('value');
-        $storage->expects(self::once())
-            ->method('set')
-            ->with('cache:key', 'value', 60)
-            ->willReturn(true);
+        $storage = \Mockery::mock(StorageInterface::class)->shouldIgnoreMissing();
+        $storage->shouldReceive('get')->once()->with('cache:key', \Mockery::andAnyOtherArgs())->andReturn('value');
+        $storage->shouldReceive('set')->once()->with('cache:key', 'value', 60, \Mockery::andAnyOtherArgs())->andReturn(true);
 
         $store = new RoadRunnerStore($storage, 'cache:');
 
-        self::assertTrue($store->touch('key', 60));
+        Assert::true($store->touch('key', 60));
     }
 
     public function test_touch_returns_false_when_the_item_does_not_exist(): void
     {
-        $storage = $this->createMock(StorageInterface::class);
-        $storage->expects(self::once())
-            ->method('get')
-            ->with('cache:key')
-            ->willReturn(null);
-        $storage->expects(self::never())->method('set');
+        $storage = \Mockery::mock(StorageInterface::class)->shouldIgnoreMissing();
+        $storage->shouldReceive('get')->once()->with('cache:key', \Mockery::andAnyOtherArgs())->andReturn(null);
+        $storage->shouldReceive('set')->never();
 
         $store = new RoadRunnerStore($storage, 'cache:');
 
-        self::assertFalse($store->touch('key', 60));
+        Assert::false($store->touch('key', 60));
     }
 }

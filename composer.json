@@ -53,7 +53,8 @@
         "guzzlehttp/guzzle": "^7.0",
         "mockery/mockery": "^1.6",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^10.0"
+        "testo/testo": "^0.10.55",
+        "testo/bridge-mockery": "^0.1.2"
     },
     "autoload": {
         "psr-4": {
@@ -76,17 +77,10 @@
         "cs:fix": "php-cs-fixer fix -v",
         "refactor": "rector process --config=rector.php",
         "refactor:ci": "rector process --config=rector.php --dry-run --ansi",
-        "phpunit": "phpunit --no-coverage",
-        "phpunit-cover": "phpunit",
         "phpstan": "phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",
-        "test": "phpunit --color=always --testdox",
-        "test:unit": "phpunit --color=always --testsuite=Unit",
-        "test:feat": "phpunit --color=always --testsuite=Feature",
-        "test-cover": [
-            "phpstan",
-            "@putenv XDEBUG_MODE=coverage",
-            "phpunit --coverage-clover=runtime/phpunit/logs/clover.xml --color=always"
-        ]
+        "test": "testo",
+        "test:unit": "testo --suite=Unit",
+        "test:feat": "testo --suite=Feature"
     },
     "config": {
         "audit": {

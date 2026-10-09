@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
+use Testo\Test;
+use Testo\Assert;
 use Illuminate\Contracts\Foundation\Application;
-use PHPUnit\Framework\TestCase;
 use Spiral\RoadRunner\Jobs\Task\ReceivedTaskInterface;
 use Spiral\RoadRunnerLaravel\Queue\RoadRunnerJob;
 
-final class RoadRunnerJobTest extends TestCase
+#[Test]
+final class RoadRunnerJobTest
 {
     public function test_get_raw_body_returns_the_wire_payload_string_verbatim(): void
     {
@@ -18,22 +20,15 @@ final class RoadRunnerJobTest extends TestCase
         // produce different bytes and fail the byte-identity assertion below.
         $wirePayload = '{"job": "Illuminate\\\\Queue\\\\CallQueuedHandler@call", "data": {"commandName": "App\\\\Jobs\\\\Demo"}}';
 
-        $task = $this->createMock(ReceivedTaskInterface::class);
-        $task->method('getPayload')->willReturn($wirePayload);
+        $task = \Mockery::mock(ReceivedTaskInterface::class)->shouldIgnoreMissing();
+        $task->shouldReceive('getPayload')->andReturn($wirePayload);
 
-        $job = new RoadRunnerJob($this->createMock(Application::class), $task);
+        $job = new RoadRunnerJob(\Mockery::mock(Application::class)->shouldIgnoreMissing(), $task);
 
         $body = $job->getRawBody();
 
-        self::assertIsString(
-            $body,
-            'getRawBody() is part of the Illuminate\\Contracts\\Queue\\Job contract and MUST return a string.',
-        );
-        self::assertSame(
-            $wirePayload,
-            $body,
-            'getRawBody() should return the raw bytes the task carried on the wire, not a re-encoded version.',
-        );
+        Assert::true(\is_string($body), 'getRawBody() is part of the Illuminate\\Contracts\\Queue\\Job contract and MUST return a string.');
+        Assert::same($body, $wirePayload, 'getRawBody() should return the raw bytes the task carried on the wire, not a re-encoded version.');
     }
 
     public function test_get_raw_body_is_consistent_with_decoded_payload(): void
@@ -45,15 +40,12 @@ final class RoadRunnerJobTest extends TestCase
         // different pictures of the same job.
         $wirePayload = '{"job":"X","data":{"foo":"bar"},"attempts":0}';
 
-        $task = $this->createMock(ReceivedTaskInterface::class);
-        $task->method('getPayload')->willReturn($wirePayload);
+        $task = \Mockery::mock(ReceivedTaskInterface::class)->shouldIgnoreMissing();
+        $task->shouldReceive('getPayload')->andReturn($wirePayload);
 
-        $job = new RoadRunnerJob($this->createMock(Application::class), $task);
+        $job = new RoadRunnerJob(\Mockery::mock(Application::class)->shouldIgnoreMissing(), $task);
 
-        self::assertSame($wirePayload, $job->getRawBody());
-        self::assertSame(
-            \json_decode($job->getRawBody(), true),
-            $job->payload(),
-        );
+        Assert::same($job->getRawBody(), $wirePayload);
+        Assert::same($job->payload(), \json_decode($job->getRawBody(), true));
     }
 }
