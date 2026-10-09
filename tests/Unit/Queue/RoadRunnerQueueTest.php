@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
 use Testo\Data\DataProvider;
+use Testo\Data\DataSet;
 use Testo\Expect;
 use Testo\Test;
 use Testo\Assert;
@@ -367,11 +368,12 @@ final class RoadRunnerQueueTest
             $captured = $job;
         });
 
-        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', ['priority' => 5, 'auto_ack' => true]);
+        $queue = new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', ['priority' => 5, 'delay' => 7, 'auto_ack' => true]);
         $queue->pushRaw('{"displayName":"Foo"}');
 
         Assert::instanceOf($captured, JobProto::class);
         Assert::same($captured->getOptions()->getPriority(), 5);
+        Assert::same($captured->getOptions()->getDelay(), 7);
         Assert::true($captured->getOptions()->getAutoAck());
         Assert::same($captured->getOptions()->getPipeline(), 'q');
     }
@@ -406,6 +408,55 @@ final class RoadRunnerQueueTest
 
         Assert::instanceOf($captured, JobProto::class);
         Assert::same($captured->getOptions()->getPriority(), 42);
+        Assert::same($captured->getOptions()->getDelay(), 3);
+    }
+
+    public function test_push_raw_connects_to_the_given_queue_instead_of_the_default(): void
+    {
+        $captured = null;
+        $rpc = $this->buildRpcMock('other', static function (JobProto $job) use (&$captured): void {
+            $captured = $job;
+        });
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q'))->pushRaw('{"displayName":"Foo"}', 'other');
+
+        Assert::instanceOf($captured, JobProto::class);
+        Assert::same($captured->getOptions()->getPipeline(), 'other');
+    }
+
+    public function test_push_raw_rejects_an_empty_queue_name(): never
+    {
+        $rpc = $this->buildRpcMock('q', null);
+
+        Expect::exception(\InvalidArgumentException::class)->withMessage('The queue name must not be empty.');
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q'))->pushRaw('{"displayName":"Foo"}', '');
+    }
+
+    #[DataSet([['auto_ack' => 'yes'], 'auto_ack'], 'auto_ack is not a boolean')]
+    #[DataSet([['delay' => -1], 'delay'], 'negative delay')]
+    #[DataSet([['priority' => '5'], 'priority'], 'priority is a string')]
+    #[DataSet([['driver' => Driver::Kafka], 'topic'], 'Kafka without a topic')]
+    #[DataSet([['driver' => Driver::Kafka, 'topic' => ''], 'topic'], 'Kafka with an empty topic')]
+    #[DataSet([['driver' => Driver::Kafka, 'topic' => 5], 'topic'], 'Kafka with a non-string topic')]
+    public function test_invalid_queue_options_are_rejected(array $options, string $option): never
+    {
+        $rpc = $this->buildRpcMock('q', null);
+
+        Expect::exception(\InvalidArgumentException::class)->withMessageContaining("`{$option}`");
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q', $options))->pushRaw('{"displayName":"Foo"}');
+    }
+
+    public function test_unexpected_stats_response_is_rejected(): never
+    {
+        $rpc = \Mockery::mock(RPCInterface::class);
+        $rpc->shouldReceive('withCodec')->andReturnSelf();
+        $rpc->shouldReceive('call')->andReturn(null);
+
+        Expect::exception(\UnexpectedValueException::class)->withMessageContaining('null');
+
+        (new RoadRunnerQueue(new Jobs($rpc), $rpc, 'q'))->size();
     }
 
     private function invokeResolveTaskName(string $payload): string

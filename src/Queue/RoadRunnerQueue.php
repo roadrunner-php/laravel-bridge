@@ -211,7 +211,7 @@ final class RoadRunnerQueue extends Queue implements QueueContract
             return $options;
         }
 
-        $topic = $config['topic'] ?? ($this->defaultOptions['topic'] ?? '');
+        $topic = $config['topic'] ?? '';
         \is_string($topic) && $topic !== '' or throw new \InvalidArgumentException(
             'The `topic` queue option must be a non-empty string for Kafka pipelines.',
         );

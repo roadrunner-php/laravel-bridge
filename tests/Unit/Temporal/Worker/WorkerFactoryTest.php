@@ -13,6 +13,7 @@ use Temporal\Worker\WorkerFactoryInterface;
 use Temporal\Worker\WorkerInterface;
 use Temporal\Worker\WorkerOptions;
 use Testo\Assert;
+use Testo\Expect;
 use Testo\Test;
 
 #[Test]
@@ -63,6 +64,23 @@ final class WorkerFactoryTest
         $factory = new WorkerFactory($temporal, $container, $pipeline, new TemporalConfig([
             'workers' => ['queue' => ['options' => $options, 'exception_interceptor' => 'App\\Interceptor']],
         ]));
+
+        $factory->create('queue');
+    }
+
+    public function test_exception_interceptor_alias_must_resolve_to_an_interceptor(): never
+    {
+        $container = \Mockery::mock(FactoryInterface::class);
+        $container->shouldReceive('make')->once()->with('interceptor.alias')->andReturn(new \stdClass());
+
+        $factory = new WorkerFactory(
+            \Mockery::mock(WorkerFactoryInterface::class),
+            $container,
+            \Mockery::mock(PipelineProvider::class),
+            new TemporalConfig(['workers' => ['queue' => ['exception_interceptor' => 'interceptor.alias']]]),
+        );
+
+        Expect::exception(\InvalidArgumentException::class)->withMessageContaining('must implement');
 
         $factory->create('queue');
     }

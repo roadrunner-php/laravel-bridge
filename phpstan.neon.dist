@@ -34,8 +34,22 @@ parameters:
       message: '#put\(\) expects int, null given#'
       path: src/Cache/RoadRunnerStore.php
 
+    # `$this->cache` is always initialized by start() before a job runs.
+    - identifier: booleanNot.alwaysFalse
+      path: src/Queue/QueueWorker.php
+
+    # A negative integer delay of later() is passed through unchanged, as before.
+    - identifier: argument.type
+      message: '#withDelay\(\) expects int<0, max>, int given#'
+      path: src/Queue/RoadRunnerQueue.php
+
+    # Declarations are validated by ReflectionClass in DeclarationRegistry.
+    - identifier: return.type
+      message: '#getDeclarations\(\)#'
+      path: src/Temporal/Config/TemporalConfig.php
+
     # Temporary: the code below is wrong and is fixed by separate bug fix PRs.
-    # increment()/decrement() store a negative TTL (see bug fix PR).
+    # increment()/decrement() store a negative TTL, fixed by #189.
     - identifier: return.unusedType
       path: src/Cache/RoadRunnerStore.php
     - identifier: binaryOp.invalid
@@ -58,26 +72,16 @@ parameters:
       path: src/Queue/QueueWorker.php
     - identifier: cast.int
       path: src/Queue/QueueWorker.php
-    # `$this->cache` is read before start() initializes it only in unit-level calls of process() (see bug fix PR).
-    - identifier: booleanNot.alwaysFalse
-      path: src/Queue/QueueWorker.php
-    # A payload that is not a JSON object throws a TypeError (see bug fix PR).
+    # A payload that is not a JSON object throws a TypeError, fixed by #191.
     - identifier: assign.propertyType
       message: '#RoadRunnerJob::\$payload#'
       path: src/Queue/RoadRunnerJob.php
     - identifier: nullCoalesce.initializedProperty
       path: src/Queue/RoadRunnerJob.php
-    # release() passes DateTime/DateInterval and negative delays to withDelay() (see bug fix PR).
+    # release() passes DateTime/DateInterval delays to withDelay(), fixed by #198.
     - identifier: argument.type
       message: '#withDelay\(\) expects int<0, max>, int given#'
-      paths: [src/Queue/RoadRunnerJob.php, src/Queue/RoadRunnerQueue.php]
-    # failed(null) calls getMessage() on null (see bug fix PR).
+      path: src/Queue/RoadRunnerJob.php
+    # failed(null) calls getMessage() on null, fixed by #200.
     - identifier: method.nonObject
       path: src/Queue/RoadRunnerJob.php
-    # An activity exception is swallowed: TaskExceptionResult has no `result` (see bug fix PR).
-    - identifier: property.nonObject
-      path: src/Temporal/Interceptor/HandleActivityInterceptor.php
-    # Declarations are validated by ReflectionClass in DeclarationRegistry.
-    - identifier: return.type
-      message: '#getDeclarations\(\)#'
-      path: src/Temporal/Config/TemporalConfig.php
