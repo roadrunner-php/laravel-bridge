@@ -10,5 +10,7 @@ return \Spiral\CodeStyle\Builder::create()
     ->include(__DIR__ . '/config')
     ->include(__DIR__ . '/tests')
     ->include(__DIR__ . '/rector.php')
+    ->include(__FILE__)
+    ->cache('./runtime/php-cs-fixer.cache')
     ->allowRisky(false)
     ->build();
