@@ -54,7 +54,7 @@ class RoadRunnerJob extends Job implements JobContract
         $attempts = $this->attempts();
 
         $this->task
-            ->withDelay($delay)
+            ->withDelay(\max(0, $this->secondsUntil($delay)))
             ->withHeader('attempts', (string) ++$attempts)
             ->requeue('release');
 

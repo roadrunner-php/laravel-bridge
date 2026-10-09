@@ -8,6 +8,7 @@ use Mockery\MockInterface;
 use Testo\Data\DataProvider;
 use Testo\Test;
 use Testo\Assert;
+use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Queue\Events\JobFailed;
@@ -17,6 +18,18 @@ use Spiral\RoadRunnerLaravel\Queue\RoadRunnerJob;
 #[Test]
 final class RoadRunnerJobTest
 {
+    private const NOW = 1_700_000_000;
+
+    public static function releaseDelays(): array
+    {
+        return [
+            'DateInterval' => [new \DateInterval('PT30S'), 30],
+            'future DateTimeInterface' => [new \DateTimeImmutable('@' . (self::NOW + 45)), 45],
+            'past DateTimeInterface' => [new \DateTimeImmutable('@' . (self::NOW - 10)), 0],
+            'negative seconds' => [-5, 0],
+        ];
+    }
+
     public static function nonObjectPayloads(): array
     {
         return [
@@ -121,6 +134,27 @@ final class RoadRunnerJobTest
 
         $job = new RoadRunnerJob(\Mockery::mock(Application::class), $task);
         $job->release(30);
+
+        Assert::true($job->isReleased());
+    }
+
+    #[DataProvider('releaseDelays')]
+    public function test_release_converts_the_delay_to_non_negative_seconds(\DateInterval|\DateTimeInterface|int $delay, int $seconds): void
+    {
+        $task = self::task('{"job":"X","data":{}}');
+        $task->shouldReceive('getHeaderLine')->with('attempts')->andReturn('1');
+        $task->shouldReceive('withDelay')->once()->with($seconds)->andReturnSelf();
+        $task->shouldReceive('withHeader')->once()->with('attempts', '2')->andReturnSelf();
+        $task->shouldReceive('requeue')->once()->with('release');
+
+        $job = new RoadRunnerJob(\Mockery::mock(Application::class), $task);
+
+        Carbon::setTestNow(Carbon::createFromTimestamp(self::NOW));
+        try {
+            $job->release($delay);
+        } finally {
+            Carbon::setTestNow();
+        }
 
         Assert::true($job->isReleased());
     }
