@@ -6,6 +6,9 @@ on:
 
 name: testo
 
+permissions:
+  contents: read
+
 jobs:
   testo:
     uses: spiral/gh-actions/.github/workflows/testo.yml@master
