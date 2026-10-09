@@ -20,6 +20,7 @@ final class WorkersRegistry implements WorkersRegistryInterface
         private readonly TemporalConfig $config,
     ) {}
 
+    #[\Override]
     public function register(string $name, ?WorkerOptions $options): void
     {
         \assert($name !== '');
@@ -33,6 +34,7 @@ final class WorkersRegistry implements WorkersRegistryInterface
         $this->workers[$name] = $this->workerFactory->newWorker($name, $options);
     }
 
+    #[\Override]
     public function get(string $name): WorkerInterface
     {
         \assert($name !== '');
@@ -46,6 +48,7 @@ final class WorkersRegistry implements WorkersRegistryInterface
         return $this->workers[$name];
     }
 
+    #[\Override]
     public function has(string $name): bool
     {
         \assert($name !== '');

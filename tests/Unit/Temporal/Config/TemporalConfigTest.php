@@ -98,11 +98,11 @@ final class TemporalConfigTest
         $config = new TemporalConfig([
             'interceptors' => ['App\\FirstInterceptor'],
             'declarations' => ['App\\Workflow'],
-            'workers' => ['queue' => ['options' => null]],
+            'workers' => ['queue' => ['exception_interceptor' => 'App\\Interceptor']],
         ]);
 
         Assert::same($config->getInterceptors(), ['App\\FirstInterceptor', HandleActivityInterceptor::class]);
         Assert::same($config->getDeclarations(), ['App\\Workflow']);
-        Assert::same($config->getWorkers(), ['queue' => ['options' => null]]);
+        Assert::same($config->getWorkers(), ['queue' => ['exception_interceptor' => 'App\\Interceptor']]);
     }
 }

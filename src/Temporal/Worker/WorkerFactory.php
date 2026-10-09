@@ -32,6 +32,7 @@ final class WorkerFactory implements WorkerFactoryInterface
     /**
      * @param non-empty-string $name
      */
+    #[\Override]
     public function create(string $name): WorkerInterface
     {
         /** @psalm-suppress TooManyArguments */
@@ -52,7 +53,7 @@ final class WorkerFactory implements WorkerFactoryInterface
 
         return match (true) {
             $worker instanceof WorkerOptions => $worker,
-            isset($worker['options']) && $worker['options'] instanceof WorkerOptions => $worker['options'],
+            isset($worker['options']) => $worker['options'],
             default => null,
         };
     }
@@ -67,17 +68,17 @@ final class WorkerFactory implements WorkerFactoryInterface
             return null;
         }
 
-        $exceptionInterceptor = $this->wire($worker['exception_interceptor']);
-        \assert($exceptionInterceptor instanceof ExceptionInterceptorInterface);
+        $interceptor = $worker['exception_interceptor'];
+        if (\is_string($interceptor)) {
+            $interceptor = $this->factory->make($interceptor);
+        }
 
-        return $exceptionInterceptor;
-    }
-
-    private function wire(mixed $alias): object
-    {
-        return match (true) {
-            \is_string($alias) => $this->factory->make($alias),
-            default => $alias,
-        };
+        return $interceptor instanceof ExceptionInterceptorInterface
+            ? $interceptor
+            : throw new \InvalidArgumentException(\sprintf(
+                'Exception interceptor of Temporal worker `%s` must implement %s.',
+                $name,
+                ExceptionInterceptorInterface::class,
+            ));
     }
 }

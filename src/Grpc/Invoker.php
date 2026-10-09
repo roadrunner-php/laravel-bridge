@@ -24,6 +24,7 @@ final class Invoker implements InvokerInterface
         private readonly HandlerInterface $handler,
     ) {}
 
+    #[\Override]
     public function invoke(ServiceInterface $service, Method $method, ContextInterface $ctx, ?string $input): string
     {
         $message = $this->makeInput($method, $input);

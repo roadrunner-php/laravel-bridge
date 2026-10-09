@@ -13,6 +13,7 @@ use Temporal\Interceptor\ActivityInboundInterceptor;
 
 final readonly class HandleActivityInterceptor implements ActivityInboundInterceptor
 {
+    #[\Override]
     public function handleActivityInbound(ActivityInput $input, callable $next): mixed
     {
         /** @var Application $app */

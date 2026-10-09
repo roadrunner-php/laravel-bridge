@@ -11,6 +11,7 @@ use Spiral\RoadRunner\Jobs\Task\ReceivedTaskInterface;
 
 class RoadRunnerJob extends Job implements JobContract
 {
+    /** @var array<mixed> */
     private readonly array $payload;
 
     public function __construct(
@@ -21,26 +22,34 @@ class RoadRunnerJob extends Job implements JobContract
         $this->payload = \json_decode($this->task->getPayload(), true);
     }
 
+    #[\Override]
     public function getJobId(): string
     {
         return $this->task->getId();
     }
 
+    #[\Override]
     public function getRawBody(): string
     {
         return $this->task->getPayload();
     }
 
+    /**
+     * @return array<mixed>
+     */
+    #[\Override]
     public function payload(): array
     {
         return $this->payload ?? [];
     }
 
+    #[\Override]
     public function attempts(): int
     {
         return (int) $this->task->getHeaderLine('attempts');
     }
 
+    #[\Override]
     public function fire(): void
     {
         parent::fire();
@@ -48,6 +57,7 @@ class RoadRunnerJob extends Job implements JobContract
         $this->task->complete();
     }
 
+    #[\Override]
     public function release($delay = 0): void
     {
         $attempts = $this->attempts();
@@ -60,6 +70,7 @@ class RoadRunnerJob extends Job implements JobContract
         parent::release($delay);
     }
 
+    #[\Override]
     protected function failed($e): void
     {
         $attempts = $this->attempts();

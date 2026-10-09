@@ -33,6 +33,7 @@ final class QueueWorker implements WorkerInterface
         $this->connectionName = 'roadrunner';
     }
 
+    #[\Override]
     public function start(WorkerOptionsInterface $options): void
     {
         $worker = new OctaneWorker(

@@ -12,17 +12,24 @@ use Spiral\RoadRunner\KeyValue\Factory;
 
 final class CacheServiceProvider extends ServiceProvider
 {
+    #[\Override]
     public function register(): void
     {
         $this->app->booting(static function (): void {
             Cache::extend('roadrunner', function () {
                 $env = Environment::fromGlobals();
-                $factory = new Factory(RPC::create($env->getRPCAddress()));
+
+                /** @var non-empty-string $rpcAddress */
+                $rpcAddress = $env->getRPCAddress();
+                $factory = new Factory(RPC::create($rpcAddress));
+
+                $storage = config('roadrunner.cache.storage', 'cache');
+                \is_string($storage) && $storage !== '' or throw new \InvalidArgumentException(
+                    'The `roadrunner.cache.storage` option must be a non-empty string.',
+                );
 
                 return Cache::repository(
-                    new RoadRunnerStore(
-                        $factory->select(config('roadrunner.cache.storage', 'cache')),
-                    ),
+                    new RoadRunnerStore($factory->select($storage)),
                 );
             });
         });

@@ -64,7 +64,7 @@ final class Server
      *
      * @param class-string<T> $interface Generated service interface.
      * @param T $service Must implement interface.
-     * @param array<InterceptorInterface|class-string<InterceptorInterface>> $interceptors for this service. Must implement InterceptorInterface.
+     * @param array<InterceptorInterface|non-empty-string> $interceptors for this service: instances, class names or container aliases. Must implement InterceptorInterface.
      *
      * @throws ServiceException
      */
@@ -169,7 +169,7 @@ final class Server
      * Create interceptor instance using container or direct instantiation.
      * Converts resolution errors into ServiceException for proper gRPC reporting.
      *
-     * @param class-string<InterceptorInterface>|object $interceptor
+     * @param non-empty-string|object $interceptor Class name, container alias or instance.
      *
      * @throws \Throwable
      */
@@ -181,7 +181,11 @@ final class Server
                 : throw new \InvalidArgumentException(sprintf("Invalid interceptor instance of class %s.", $interceptor::class));
         }
 
-        return $this->container === null ? new $interceptor() : $this->container->get($interceptor);
+        $instance = $this->container === null ? new $interceptor() : $this->container->get($interceptor);
+
+        return $instance instanceof InterceptorInterface
+            ? $instance
+            : throw new \InvalidArgumentException(\sprintf("Interceptor %s must implement %s.", $interceptor, InterceptorInterface::class));
     }
 
     private function workerError(WorkerInterface $worker, string $message): void
