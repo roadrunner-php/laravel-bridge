@@ -1,18 +1,24 @@
 <p align="center">
-  <img src="https://hsto.org/webt/xl/pr/89/xlpr891cyv9ux3gm7dtzwjse_5a.png" alt="logo" width="420" />
+    <a href="https://roadrunner.dev"><picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/roadrunner-server/.github/assets/8040338/e6bde856-4ec6-4a52-bd5b-bfe78736c1ff">
+        <img alt="RoadRunner" src="https://github.com/roadrunner-server/.github/assets/8040338/040fb694-1dd3-4865-9d29-8e0748c2c8b8" style="width: 6in; display: block">
+    </picture></a>
 </p>
 
-# [RoadRunner][roadrunner] ⇆ [Laravel][laravel] bridge
+<p align="center">RoadRunner ⇆ Laravel bridge</p>
 
-[![Version][badge_packagist_version]][link_packagist]
-[![Version][badge_php_version]][link_packagist]
-[![License][badge_license]][link_license]
+<div align="center">
 
-Easy way for connecting [RoadRunner][roadrunner] and [Laravel][laravel] applications (community integration).
+[![Documentation](https://img.shields.io/badge/Documentation-blue?style=for-the-badge&logo=gitbook&logoColor=white)](https://docs.roadrunner.dev/docs/integrations/laravel)
+[![Sponsor](https://img.shields.io/static/v1?style=for-the-badge&label=&message=Sponsor&logo=githubsponsors&logoColor=white&color=%23EA4AAA)](https://github.com/sponsors/roadrunner-server)
 
-## Why Use This Package?
+</div>
 
-This package provides complete Laravel integration with RoadRunner, offering:
+<br />
+
+Run [Laravel][laravel] applications on [RoadRunner][roadrunner]: serve HTTP and gRPC, process queues, and run Temporal workflows and activities in long-living workers, with the application state reset between tasks by [Octane][octane].
+
+The package provides complete Laravel integration with RoadRunner:
 
 - Support for HTTP and other RoadRunner plugins like gRPC, Queue, KeyValue, and more.
 - [Temporal](https://temporal.io/) integration
@@ -24,33 +30,18 @@ This package provides complete Laravel integration with RoadRunner, offering:
 > [!TIP]
 > [There is an article][rr-plugins-article] that explains all the RoadRunner plugins.
 
-## Table of Contents
-
-- [Get Started](#get-started)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-  - [Starting the Server](#starting-the-server)
-- [How It Works](#how-it-works)
-- [Supported Plugins](#supported-plugins)
-  - [HTTP Plugin](#http-plugin)
-  - [Jobs (Queue) Plugin](#jobs-queue-plugin)
-  - [gRPC Plugin](#grpc-plugin)
-  - [gRPC Client](#grpc-client)
-  - [Temporal](#temporal)
-- [Logging](#logging)
-- [Custom Workers](#custom-workers)
-- [Support](#support)
-- [License](#license)
-
 ## Get Started
 
 ### Installation
 
-First, install the Laravel Bridge package via Composer:
-
-```shell
+```bash
 composer require roadrunner-php/laravel-bridge
 ```
+
+[![PHP](https://img.shields.io/packagist/php-v/roadrunner-php/laravel-bridge.svg?style=flat-square&logo=php)](https://packagist.org/packages/roadrunner-php/laravel-bridge)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/roadrunner-php/laravel-bridge.svg?style=flat-square&logo=packagist)](https://packagist.org/packages/roadrunner-php/laravel-bridge)
+[![License](https://img.shields.io/packagist/l/roadrunner-php/laravel-bridge.svg?style=flat-square)](LICENSE)
+[![Total Downloads](https://img.shields.io/packagist/dt/roadrunner-php/laravel-bridge.svg?style=flat-square)](https://packagist.org/packages/roadrunner-php/laravel-bridge/stats)
 
 Publish the configuration file:
 
@@ -148,16 +139,10 @@ without additional services like Redis or a database.
 
 #### Configuration
 
-First, add the Queue Service Provider in `config/app.php`:
+The `roadrunner` queue driver is registered by `Spiral\RoadRunnerLaravel\Queue\QueueServiceProvider`,
+which Laravel loads automatically via package discovery.
 
-```php
-'providers' => [
-    // ... other providers
-    Spiral\RoadRunnerLaravel\Queue\QueueServiceProvider::class,
-],
-```
-
-Then, configure a new connection in `config/queue.php`:
+Configure a new connection in `config/queue.php`:
 
 ```php
 'connections' => [
@@ -248,7 +233,7 @@ class LoggingInterceptor implements InterceptorInterface
 {
     public function intercept(CallContextInterface $context, HandlerInterface $handler): mixed
     {
-        $method = $context->getTarget()->getPath();
+        $method = implode('.', $context->getTarget()->getPath());
         \Log::info("gRPC call: {$method}");
 
         $response = $handler->handle($context);
@@ -448,7 +433,7 @@ return [
     // ... other configuration
     'temporal' => [
         'address' => env('TEMPORAL_ADDRESS', '127.0.0.1:7233'),
-        'namespace' => 'default',
+        'temporalNamespace' => 'default',
         'declarations' => [
             \App\Temporal\Workflows\MyWorkflow::class,
             \App\Temporal\Activities\MyActivity::class,
@@ -596,50 +581,48 @@ set by the RoadRunner server for your plugin.
 
 ### Example: Centrifugo Worker
 
-Here's an example of a custom worker for the [Centrifugo](https://docs.roadrunner.dev/docs/plugins/centrifuge) plugin:
+Here's an example of a custom worker for the [Centrifuge](https://docs.roadrunner.dev/docs/plugins/centrifuge) plugin,
+built on the [roadrunner-php/centrifugo](https://github.com/roadrunner-php/centrifugo) package:
 
 ```php
 namespace App\Workers;
 
+use Laravel\Octane\ApplicationFactory;
+use RoadRunner\Centrifugo\CentrifugoWorker as RRCentrifugoWorker;
+use RoadRunner\Centrifugo\Payload;
+use RoadRunner\Centrifugo\Request;
+use RoadRunner\Centrifugo\Request\RequestFactory;
+use Spiral\RoadRunner\Worker;
 use Spiral\RoadRunnerLaravel\WorkerInterface;
 use Spiral\RoadRunnerLaravel\WorkerOptionsInterface;
-use Spiral\RoadRunner\Centrifugo\CentrifugoWorker as RRCentrifugoWorker;
-use Spiral\RoadRunner\Centrifugo\CentrifugoWorkerInterface;
 
 class CentrifugoWorker implements WorkerInterface
 {
     public function start(WorkerOptionsInterface $options): void
     {
-        $worker = RRCentrifugoWorker::create();
+        $app = (new ApplicationFactory($options->getAppBasePath()))->createApplication();
+        // Resolve your handlers from the booted Laravel application, e.g. $app->make(...)
 
-        $worker->onConnect(function (CentrifugoWorkerInterface $worker, string $client, array $request): array {
-            // Handle client connection
-            $app = $options->getAppContainer();
+        $worker = Worker::create();
+        $centrifugo = new RRCentrifugoWorker($worker, new RequestFactory($worker));
 
-            // Your connection handling logic
-
-            return ['status' => 200];
-        });
-
-        $worker->onSubscribe(function (CentrifugoWorkerInterface $worker, string $client, array $request): array {
-            // Handle client subscription
-            $app = $options->getAppContainer();
-
-            // Your subscription handling logic
-
-            return ['status' => 200];
-        });
-
-        $worker->onPublish(function (CentrifugoWorkerInterface $worker, string $client, array $request): array {
-            // Handle client publish
-            $app = $options->getAppContainer();
-
-            // Your publish handling logic
-
-            return ['status' => 200];
-        });
-
-        $worker->start();
+        while ($request = $centrifugo->waitRequest()) {
+            try {
+                match (true) {
+                    // Handle client connection
+                    $request instanceof Request\Connect => $request->respond(new Payload\ConnectResponse(
+                        user: 'user-id',
+                    )),
+                    // Handle client subscription
+                    $request instanceof Request\Subscribe => $request->respond(new Payload\SubscribeResponse()),
+                    // Handle client publish
+                    $request instanceof Request\Publish => $request->respond(new Payload\PublishResponse()),
+                    default => null,
+                };
+            } catch (\Throwable $e) {
+                $request->error((int) $e->getCode(), $e->getMessage());
+            }
+        }
     }
 }
 ```
@@ -647,20 +630,22 @@ class CentrifugoWorker implements WorkerInterface
 Then register it in your configuration:
 
 ```php
+use Spiral\RoadRunner\Environment\Mode;
+
 return [
     'workers' => [
         // ... other workers
-        'centrifugo' => \App\Workers\CentrifugoWorker::class,
+        Mode::MODE_CENTRIFUGE => \App\Workers\CentrifugoWorker::class,
     ],
 ];
 ```
 
-And update your `.rr.yaml` with the Centrifugo plugin configuration:
+And update your `.rr.yaml` with the Centrifuge plugin configuration:
 
 ```yaml
-centrifugo:
-  address: "tcp://localhost:8000"
-  api_key: "your-api-key"
+centrifuge:
+  proxy_address: "tcp://0.0.0.0:10001"
+  grpc_api_address: "localhost:10000"
 ```
 
 ## Support
@@ -675,74 +660,26 @@ If you find any package errors, please, [make an issue][link_create_issue] in a 
 
 You can also [sponsor this project][link_sponsor] to help ensure its continued development and maintenance.
 
-## License
-
-MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information.
-
-[badge_packagist_version]:https://img.shields.io/packagist/v/roadrunner-php/laravel-bridge.svg?maxAge=180
-
-[badge_php_version]:https://img.shields.io/packagist/php-v/roadrunner-php/laravel-bridge.svg?longCache=true
-
-[badge_build_status]:https://img.shields.io/github/actions/workflow/status/roadrunner-php/laravel-bridge/tests.yml?branch=master&maxAge=30
-
-[badge_chat]:https://img.shields.io/badge/discord-chat-magenta.svg
-
-[badge_coverage]:https://img.shields.io/codecov/c/github/roadrunner-php/laravel-bridge/master.svg?maxAge=180
-
-[badge_downloads_count]:https://img.shields.io/packagist/dt/roadrunner-php/laravel-bridge.svg?maxAge=180
-
-[badge_license]:https://img.shields.io/packagist/l/roadrunner-php/laravel-bridge.svg?maxAge=256
-
-[badge_release_date]:https://img.shields.io/github/release-date/roadrunner-php/laravel-bridge.svg?style=flat-square&maxAge=180
-
-[badge_commits_since_release]:https://img.shields.io/github/commits-since/roadrunner-php/laravel-bridge/latest.svg?style=flat-square&maxAge=180
-
 [badge_issues]:https://img.shields.io/github/issues/roadrunner-php/laravel-bridge.svg?style=flat-square&maxAge=180
 
 [badge_pulls]:https://img.shields.io/github/issues-pr/roadrunner-php/laravel-bridge.svg?style=flat-square&maxAge=180
-
-[link_releases]:https://github.com/roadrunner-php/laravel-bridge/releases
-
-[link_packagist]:https://packagist.org/packages/roadrunner-php/laravel-bridge
-
-[link_build_status]:https://github.com/roadrunner-php/laravel-bridge/actions
-
-[link_chat]:https://discord.gg/Y3df23vJDw
-
-[link_coverage]:https://codecov.io/gh/roadrunner-php/laravel-bridge/
-
-[link_changes_log]:https://github.com/roadrunner-php/laravel-bridge/blob/master/CHANGELOG.md
 
 [link_issues]:https://github.com/roadrunner-php/laravel-bridge/issues
 
 [link_create_issue]:https://github.com/roadrunner-php/laravel-bridge/issues/new/choose
 
-[link_commits]:https://github.com/roadrunner-php/laravel-bridge/commits
-
 [link_pulls]:https://github.com/roadrunner-php/laravel-bridge/pulls
 
 [link_sponsor]:https://github.com/sponsors/roadrunner-server
 
-[link_license]:https://github.com/roadrunner-php/laravel-bridge/blob/master/LICENSE
-
-[getcomposer]:https://getcomposer.org/download/
-
-[dload]:https://github.com/php-internal/dload
-
 [roadrunner]:https://github.com/roadrunner-server/roadrunner
 
-[roadrunner_config]:https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml
-
 [laravel]:https://laravel.com
-
-[laravel_events]:https://laravel.com/docs/events
-
-[roadrunner-binary-releases]:https://github.com/roadrunner-server/roadrunner/releases
 
 [roadrunner-docs-jobs]:https://docs.roadrunner.dev/docs/queues-and-jobs/overview-queues
 
 [roadrunner-docs-http]:https://docs.roadrunner.dev/docs/http/http
 
-[octane]:https://laravel.com/docs/12.x/octane
+[octane]:https://laravel.com/docs/octane
 
 [rr-plugins-article]:https://butschster.medium.com/roadrunner-an-underrated-powerhouse-for-php-applications-46410b0abc
