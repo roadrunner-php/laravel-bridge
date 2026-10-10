@@ -69,7 +69,7 @@ foreach (['../../../..', '../../..', '../..', '..', '../vendor/laravel/laravel']
 */
 $app = new ApplicationAlias(
     'RoadRunner worker',
-    InstalledVersions::getPrettyVersion('roadrunner-php/laravel-bridge') ?? 'unknown',
+    InstalledVersions::getPrettyVersion('roadrunner/laravel-bridge') ?? 'unknown',
 );
 
 $command = new StartCommand($basePath);
