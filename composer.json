@@ -1,11 +1,12 @@
 {
-    "name": "roadrunner-php/laravel-bridge",
+    "name": "roadrunner/laravel-bridge",
     "type": "library",
     "description": "Laravel integration for RoadRunner with support for HTTP, Jobs, gRPC, and Temporal plugins - going beyond Octane's capabilities",
     "keywords": [
+        "roadrunner",
         "laravel",
         "bridge",
-        "roadrunner",
+        "octane",
         "temporal",
         "grpc",
         "queue",
@@ -21,11 +22,11 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "butschster",
+            "name": "Pavel Buchnev",
             "homepage": "https://github.com/butschster"
         },
         {
-            "name": "roxblnfk",
+            "name": "Aleksei Gagarin",
             "homepage": "https://github.com/roxblnfk"
         },
         {
@@ -33,18 +34,19 @@
             "homepage": "https://github.com/tarampampam"
         }
     ],
+    "homepage": "https://roadrunner.dev/",
     "require": {
         "php": "^8.2",
-        "spiral/roadrunner-kv": "^4.4",
-        "spiral/roadrunner-jobs": "^4.8",
-        "spiral/roadrunner-grpc": "^3.7",
+        "roadrunner/kv": "^4.5",
+        "roadrunner/jobs": "^4.9",
+        "roadrunner/grpc": "^3.8",
         "laravel/octane": "^2.9",
-        "spiral/roadrunner-http": "^4.2",
-        "spiral/roadrunner-worker": "^3.7",
+        "roadrunner/http": "^4.2",
+        "roadrunner/worker": "^3.8",
         "temporal/sdk": "^2.0",
         "internal/dload": "^1.1",
         "spiral/grpc-client": "^1.0.0-rc1",
-        "roadrunner/psr-logger": "^1.1"
+        "roadrunner/psr-logger": "^1.2"
     },
     "require-dev": {
         "laravel/framework": "^12.0|^13.0",
@@ -55,6 +57,9 @@
         "phpstan/phpstan": "^2.1",
         "testo/testo": "^0.10.55",
         "testo/bridge-mockery": "^0.1.2"
+    },
+    "replace": {
+        "roadrunner-php/laravel-bridge": "self.version"
     },
     "autoload": {
         "psr-4": {
@@ -101,7 +106,9 @@
         }
     },
     "support": {
+        "docs": "https://docs.roadrunner.dev/docs/integrations/laravel",
         "issues": "https://github.com/roadrunner-php/laravel-bridge/issues",
-        "source": "https://github.com/roadrunner-php/laravel-bridge"
+        "source": "https://github.com/roadrunner-php/laravel-bridge",
+        "chat": "https://discord.gg/V6EK4he"
     }
 }
