@@ -8,10 +8,10 @@ use Illuminate\Contracts\Config\Repository;
 use Laravel\Octane\ApplicationFactory;
 use Spiral\Interceptors\InterceptorInterface;
 use Spiral\RoadRunner\GRPC\ServiceInterface;
+use Spiral\RoadRunner\Worker;
 use Spiral\RoadRunnerLaravel\OctaneWorker;
 use Spiral\RoadRunnerLaravel\WorkerInterface;
 use Spiral\RoadRunnerLaravel\WorkerOptionsInterface;
-use Spiral\RoadRunner\Worker;
 
 final class GrpcWorker implements WorkerInterface
 {

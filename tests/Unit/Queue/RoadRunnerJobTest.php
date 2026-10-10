@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
-use Mockery\MockInterface;
-use Testo\Data\DataProvider;
-use Testo\Test;
-use Testo\Assert;
-use Illuminate\Support\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\ManuallyFailedException;
+use Illuminate\Support\Carbon;
+use Mockery\MockInterface;
 use Spiral\RoadRunner\Jobs\Task\ReceivedTaskInterface;
 use Spiral\RoadRunnerLaravel\Queue\RoadRunnerJob;
+use Testo\Assert;
+use Testo\Data\DataProvider;
+use Testo\Test;
 
 #[Test]
 final class RoadRunnerJobTest

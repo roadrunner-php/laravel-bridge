@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Cache;
 
-use Testo\Test;
-use Testo\Assert;
 use Spiral\RoadRunner\KeyValue\StorageInterface;
 use Spiral\RoadRunnerLaravel\Cache\RoadRunnerLock;
 use Spiral\RoadRunnerLaravel\Cache\RoadRunnerStore;
+use Testo\Assert;
+use Testo\Test;
 
 #[Test]
 final class RoadRunnerStoreTest
