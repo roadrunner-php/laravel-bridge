@@ -4,13 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\RoadRunnerLaravel\Tests\Unit\Queue;
 
-use Testo\Data\DataProvider;
-use Testo\Data\DataSet;
-use Testo\Expect;
-use Testo\Test;
-use Testo\Assert;
-use Spiral\RoadRunner\Jobs\Queue\Driver;
-use Spiral\RoadRunnerLaravel\Tests\Unit\Queue\Fixture\PrioritizedJob;
 use Illuminate\Container\Container;
 use Illuminate\Database\DatabaseTransactionsManager;
 use RoadRunner\Jobs\DTO\V1\Job as JobProto;
@@ -19,7 +12,14 @@ use RoadRunner\Jobs\DTO\V1\Stat;
 use RoadRunner\Jobs\DTO\V1\Stats;
 use Spiral\Goridge\RPC\RPCInterface;
 use Spiral\RoadRunner\Jobs\Jobs;
+use Spiral\RoadRunner\Jobs\Queue\Driver;
 use Spiral\RoadRunnerLaravel\Queue\RoadRunnerQueue;
+use Spiral\RoadRunnerLaravel\Tests\Unit\Queue\Fixture\PrioritizedJob;
+use Testo\Assert;
+use Testo\Data\DataProvider;
+use Testo\Data\DataSet;
+use Testo\Expect;
+use Testo\Test;
 
 #[Test]
 final class RoadRunnerQueueTest

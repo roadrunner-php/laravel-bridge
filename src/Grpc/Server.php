@@ -8,6 +8,7 @@ use Google\Protobuf\Any;
 use Google\Rpc\Status;
 use Psr\Container\ContainerInterface;
 use Spiral\Interceptors\Handler\CallableHandler;
+use Spiral\Interceptors\Handler\InterceptorPipeline;
 use Spiral\Interceptors\InterceptorInterface;
 use Spiral\RoadRunner\GRPC\Context;
 use Spiral\RoadRunner\GRPC\ContextInterface;
@@ -15,17 +16,16 @@ use Spiral\RoadRunner\GRPC\Exception\GRPCException;
 use Spiral\RoadRunner\GRPC\Exception\GRPCExceptionInterface;
 use Spiral\RoadRunner\GRPC\Exception\NotFoundException;
 use Spiral\RoadRunner\GRPC\Exception\ServiceException;
+use Spiral\RoadRunner\GRPC\Internal\CallContext;
 use Spiral\RoadRunner\GRPC\Internal\Json;
 use Spiral\RoadRunner\GRPC\ResponseHeaders;
 use Spiral\RoadRunner\GRPC\ResponseTrailers;
 use Spiral\RoadRunner\GRPC\ServiceInterface;
 use Spiral\RoadRunner\GRPC\ServiceWrapper;
 use Spiral\RoadRunner\GRPC\StatusCode;
-use Spiral\RoadRunner\GRPC\Internal\CallContext;
 use Spiral\RoadRunner\Payload;
 use Spiral\RoadRunner\Worker;
 use Spiral\RoadRunner\WorkerInterface;
-use Spiral\Interceptors\Handler\InterceptorPipeline;
 
 /**
  * Manages group of services and communication with RoadRunner server.
