@@ -1,28 +1,16 @@
-# Composer lock file
-composer.lock
+/.*/
+!/.github/
+/runtime/
+/vendor/
+/composer.lock
+/.env
+*.log
 
-# IDEs
-/nbproject
-/.idea
-/.vscode
-
-# Vendors
-/vendor
-
-# Temp dirs & trash
-/temp
-/tmp
-/coverage
-.DS_Store
-*.cache
-/runtime
-
-# Binaries
 /rr
 /rr.exe
+/temporal
+/temporal.exe
 /protoc
 /protoc.exe
 /protoc-gen-php-grpc
 /protoc-gen-php-grpc.exe
-/temporal
-/temporal.exe
