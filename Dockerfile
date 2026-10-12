@@ -7,7 +7,7 @@ ENV COMPOSER_HOME="/tmp/composer"
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
 # Image page: <https://hub.docker.com/r/spiralscout/roadrunner>
-COPY --from=spiralscout/roadrunner:2.12.1 /usr/bin/rr /usr/bin/rr
+COPY --from=spiralscout/roadrunner:3.0.0 /usr/bin/rr /usr/bin/rr
 
 RUN set -x \
     && apk add --no-cache binutils git \

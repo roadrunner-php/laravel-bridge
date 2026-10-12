@@ -36,13 +36,13 @@ The package provides complete Laravel integration with RoadRunner:
 ### Installation
 
 ```bash
-composer require roadrunner-php/laravel-bridge
+composer require roadrunner/laravel-bridge
 ```
 
-[![PHP](https://img.shields.io/packagist/php-v/roadrunner-php/laravel-bridge.svg?style=flat-square&logo=php)](https://packagist.org/packages/roadrunner-php/laravel-bridge)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/roadrunner-php/laravel-bridge.svg?style=flat-square&logo=packagist)](https://packagist.org/packages/roadrunner-php/laravel-bridge)
-[![License](https://img.shields.io/packagist/l/roadrunner-php/laravel-bridge.svg?style=flat-square)](LICENSE)
-[![Total Downloads](https://img.shields.io/packagist/dt/roadrunner-php/laravel-bridge.svg?style=flat-square)](https://packagist.org/packages/roadrunner-php/laravel-bridge/stats)
+[![PHP](https://img.shields.io/packagist/php-v/roadrunner/laravel-bridge.svg?style=flat-square&logo=php)](https://packagist.org/packages/roadrunner/laravel-bridge)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/roadrunner/laravel-bridge.svg?style=flat-square&logo=packagist)](https://packagist.org/packages/roadrunner/laravel-bridge)
+[![License](https://img.shields.io/packagist/l/roadrunner/laravel-bridge.svg?style=flat-square)](LICENSE)
+[![Total Downloads](https://img.shields.io/packagist/dt/roadrunner/laravel-bridge.svg?style=flat-square)](https://packagist.org/packages/roadrunner/laravel-bridge/stats)
 
 Publish the configuration file:
 
