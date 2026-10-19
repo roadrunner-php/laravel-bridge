@@ -3,7 +3,7 @@
     "release-type": "php",
     "packages": {
         ".": {
-            "package-name": "roadrunner/laravel-bridge",
+            "package-name": "roadrunner-php/laravel-bridge",
             "changelog-path": "/CHANGELOG.md"
         }
     },

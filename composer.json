@@ -1,5 +1,5 @@
 {
-    "name": "roadrunner/laravel-bridge",
+    "name": "roadrunner-php/laravel-bridge",
     "type": "library",
     "description": "Laravel integration for RoadRunner with support for HTTP, Jobs, gRPC, and Temporal plugins - going beyond Octane's capabilities",
     "keywords": [
@@ -59,9 +59,6 @@
         "testo/bridge-mockery": "^0.1.2",
         "roxblnfk/unpoly": "^1.8",
         "llm/skills": "^1.14"
-    },
-    "replace": {
-        "roadrunner-php/laravel-bridge": "self.version"
     },
     "autoload": {
         "psr-4": {
