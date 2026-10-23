@@ -91,11 +91,6 @@
     "config": {
         "allow-plugins": {
             "llm/skills": true
-        },
-        "audit": {
-            "ignore": {
-                "GHSA-g9pc-8g42-g6vq": "False positive: the range < 2025.1.0 also matches RoadRunner 3.x, which is not affected"
-            }
         }
     },
     "extra": {
