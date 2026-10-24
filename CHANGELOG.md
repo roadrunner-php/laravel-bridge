@@ -31,6 +31,13 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 [#147]:https://github.com/roadrunner-php/laravel-bridge/issues/147
 
+## [6.7.0](https://github.com/roadrunner-php/laravel-bridge/compare/6.6.2...6.7.0) (2026-10-23)
+
+
+### Features
+
+* support RoadRunner v3 ([#178](https://github.com/roadrunner-php/laravel-bridge/issues/178)) ([5879f27](https://github.com/roadrunner-php/laravel-bridge/commit/5879f2765e370e20c29252ceaa1d4f163e5243b4))
+
 ## [6.6.2](https://github.com/roadrunner-php/laravel-bridge/compare/6.6.1...6.6.2) (2026-10-09)
 
 
