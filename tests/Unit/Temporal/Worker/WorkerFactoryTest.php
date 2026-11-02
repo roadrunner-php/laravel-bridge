@@ -49,6 +49,22 @@ final class WorkerFactoryTest
         $factory->create('queue');
     }
 
+    public function test_explicit_options_override_config_without_dropping_interceptors(): void
+    {
+        $options = WorkerOptions::new()->withMaxConcurrentActivityExecutionSize(2);
+        $pipeline = \Mockery::mock(PipelineProvider::class);
+        $interceptor = \Mockery::mock(ExceptionInterceptorInterface::class);
+        $temporal = \Mockery::mock(WorkerFactoryInterface::class);
+        $temporal->shouldReceive('newWorker')->once()->with('queue', $options, $interceptor, $pipeline)
+            ->andReturn(\Mockery::mock(WorkerInterface::class));
+
+        $factory = new WorkerFactory($temporal, \Mockery::mock(FactoryInterface::class), $pipeline, new TemporalConfig([
+            'workers' => ['queue' => ['options' => WorkerOptions::new(), 'exception_interceptor' => $interceptor]],
+        ]));
+
+        $factory->createWithOptions('queue', $options);
+    }
+
     public function test_exception_interceptor_class_is_built_by_the_container(): void
     {
         $options = WorkerOptions::new();

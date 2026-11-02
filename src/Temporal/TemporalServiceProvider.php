@@ -40,7 +40,11 @@ final class TemporalServiceProvider extends ServiceProvider
             return new TemporalConfig(config: $config);
         });
 
-        $this->app->singleton(WorkersRegistryInterface::class, WorkersRegistry::class);
+        $this->app->singleton(WorkersRegistryInterface::class, static fn(Application $app) => new WorkersRegistry(
+            $app->get(TemporalWorkerFactoryInterface::class),
+            $app->get(TemporalConfig::class),
+            $app->get(WorkerFactory::class),
+        ));
         $this->app->singleton(WorkerFactoryInterface::class, WorkerFactory::class);
         $this->app->singleton(DeclarationRegistryInterface::class, static function (Application $app) {
             $config = $app->get(TemporalConfig::class);
