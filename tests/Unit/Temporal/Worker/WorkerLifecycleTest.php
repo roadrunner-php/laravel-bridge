@@ -33,6 +33,8 @@ final class WorkerLifecycleTest
     {
         $previous = Container::getInstance();
         $previousFacadeApplication = Facade::getFacadeApplication();
+        $facadeCache = new \ReflectionProperty(Facade::class, 'resolvedInstance');
+        $previousFacadeCache = $facadeCache->getValue();
         $app = new Application(\sys_get_temp_dir());
         $interceptor = new class implements ActivityInboundInterceptor {
             public int $calls = 0;
@@ -88,8 +90,8 @@ final class WorkerLifecycleTest
             Assert::same($interceptor->calls, 3);
             Assert::same(Container::getInstance(), $app);
         } finally {
-            Facade::clearResolvedInstances();
             Facade::setFacadeApplication($previousFacadeApplication);
+            $facadeCache->setValue(null, $previousFacadeCache);
             Container::setInstance($previous);
         }
     }
