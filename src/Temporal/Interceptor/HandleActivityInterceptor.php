@@ -13,19 +13,14 @@ use Spiral\RoadRunnerLaravel\OctaneWorker;
 use Temporal\Interceptor\ActivityInbound\ActivityInput;
 use Temporal\Interceptor\ActivityInboundInterceptor;
 
-final readonly class HandleActivityInterceptor implements ActivityInboundInterceptor
+final class HandleActivityInterceptor implements ActivityInboundInterceptor
 {
+    private ?OctaneWorker $worker = null;
+
     #[\Override]
     public function handleActivityInbound(ActivityInput $input, callable $next): mixed
     {
-        /** @var Application $app */
-        $app = Container::getInstance();
-
-        $worker = new OctaneWorker(
-            appFactory: new ApplicationFactory($app->basePath()),
-        );
-
-        $worker->boot(application: $app);
+        $worker = $this->getWorker();
 
         /** @var \Throwable|null $exception */
         $exception = null;
@@ -45,5 +40,24 @@ final readonly class HandleActivityInterceptor implements ActivityInboundInterce
         }
 
         return $result->result;
+    }
+
+    /**
+     * Boots once per base application, so `WorkerStarting` is not dispatched for every activity.
+     */
+    private function getWorker(): OctaneWorker
+    {
+        /** @var Application $app */
+        $app = Container::getInstance();
+
+        if ($this->worker?->application() === $app) {
+            return $this->worker;
+        }
+
+        // Cache only after a successful boot, so a failing WorkerStarting listener is retried.
+        $worker = new OctaneWorker(appFactory: new ApplicationFactory($app->basePath()));
+        $worker->boot(application: $app);
+
+        return $this->worker = $worker;
     }
 }

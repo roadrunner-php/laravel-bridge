@@ -186,4 +186,18 @@ final class TemporalConfigTest
         Assert::same($config->getDeclarations(), ['App\\Workflow']);
         Assert::same($config->getWorkers(), ['queue' => ['exception_interceptor' => 'App\\Interceptor']]);
     }
+
+    public function test_listed_activity_interceptor_is_not_added_again(): void
+    {
+        $instance = new HandleActivityInterceptor();
+
+        Assert::same(
+            (new TemporalConfig(['interceptors' => [HandleActivityInterceptor::class, 'App\\Interceptor']]))->getInterceptors(),
+            [HandleActivityInterceptor::class, 'App\\Interceptor'],
+        );
+        Assert::same(
+            (new TemporalConfig(['interceptors' => ['App\\Interceptor', $instance]]))->getInterceptors(),
+            ['App\\Interceptor', $instance],
+        );
+    }
 }
