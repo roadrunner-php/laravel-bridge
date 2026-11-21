@@ -1,0 +1,12 @@
+blank_issues_enabled: true
+
+contact_links:
+  - name: 💬 Discord
+    url: https://discord.gg/spiralphp
+    about: Ask questions and chat with the community.
+  - name: 🗨️ RoadRunner Forum
+    url: https://forum.roadrunner.dev
+    about: Ask and answer questions on the forum.
+  - name: 📖 Documentation
+    url: https://docs.roadrunner.dev
+    about: Read the RoadRunner documentation.

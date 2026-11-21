@@ -26,9 +26,11 @@ labels: type:bug
 
 Key                     | Value
 ----------------------- | ----
-PHP version             | <!-- e.g. `8.0.3` -->
-Current package version | <!-- e.g. `4.0.0` -->
-RoadRunner version      | <!-- e.g. `2.0.1` -->
+PHP version             | <!-- e.g. `8.4.1` -->
+Laravel version         | <!-- e.g. `12.10.0` -->
+Laravel Octane version  | <!-- e.g. `2.9.1` -->
+Current package version | <!-- e.g. `6.8.0` -->
+RoadRunner version      | <!-- e.g. `2025.1.0` -->
 Environment             | <!-- e.g. `docker`, `local`, `aws` -->
 
 ### RoadRunner configuration file content
