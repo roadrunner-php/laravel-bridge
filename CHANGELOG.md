@@ -31,6 +31,24 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 [#147]:https://github.com/roadrunner-php/laravel-bridge/issues/147
 
+## [6.8.0](https://github.com/roadrunner-php/laravel-bridge/compare/6.7.0...6.8.0) (2026-11-21)
+
+
+### Features
+
+* **temporal:** let workers registry use any configured worker factory ([0b35221](https://github.com/roadrunner-php/laravel-bridge/commit/0b352212aeed23d9c6fb0cb9f8991e038901fa58))
+
+
+### Bug Fixes
+
+* **temporal:** do not add HandleActivityInterceptor again when it is listed in interceptors ([6371ad7](https://github.com/roadrunner-php/laravel-bridge/commit/6371ad781423b360c846b2f8f3f6eab6ba906c8a))
+* **temporal:** preserve interceptors and configured worker options ([cb8eb05](https://github.com/roadrunner-php/laravel-bridge/commit/cb8eb053ceed415c1142e27e537242d6702b6a59)), closes [#204](https://github.com/roadrunner-php/laravel-bridge/issues/204)
+
+
+### Performance Improvements
+
+* **temporal:** boot the Octane worker once per application ([6371ad7](https://github.com/roadrunner-php/laravel-bridge/commit/6371ad781423b360c846b2f8f3f6eab6ba906c8a))
+
 ## [6.7.0](https://github.com/roadrunner-php/laravel-bridge/compare/6.6.2...6.7.0) (2026-10-23)
 
 
