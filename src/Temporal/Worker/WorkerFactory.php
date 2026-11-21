@@ -35,10 +35,22 @@ final class WorkerFactory implements WorkerFactoryInterface
     #[\Override]
     public function create(string $name): WorkerInterface
     {
+        return $this->createWithOptions($name, $this->getWorkerOptions($name));
+    }
+
+    /**
+     * Creates a worker with explicit options while preserving configured interceptors.
+     *
+     * Pass null or omit the options to use SDK defaults.
+     *
+     * @param non-empty-string $name
+     */
+    public function createWithOptions(string $name, ?WorkerOptions $options = null): WorkerInterface
+    {
         /** @psalm-suppress TooManyArguments */
         return $this->workerFactory->newWorker(
             $name,
-            $this->getWorkerOptions($name),
+            $options,
             $this->getExceptionInterceptor($name),
             $this->pipelineProvider,
         );
