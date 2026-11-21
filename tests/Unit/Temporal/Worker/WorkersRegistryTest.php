@@ -8,6 +8,8 @@ use Spiral\Core\FactoryInterface;
 use Spiral\RoadRunnerLaravel\Temporal\Config\TemporalConfig;
 use Spiral\RoadRunnerLaravel\Temporal\Exception\WorkersRegistryException;
 use Spiral\RoadRunnerLaravel\Temporal\Worker\WorkerFactory;
+use Spiral\RoadRunnerLaravel\Temporal\Worker\WorkerFactoryInterface;
+use Spiral\RoadRunnerLaravel\Temporal\Worker\WorkerFactoryWithOptionsInterface;
 use Spiral\RoadRunnerLaravel\Temporal\Worker\WorkersRegistry;
 use Temporal\Exception\ExceptionInterceptorInterface;
 use Temporal\Interceptor\PipelineProvider;
@@ -29,7 +31,7 @@ final class WorkersRegistryTest
         $factory = \Mockery::mock(TemporalWorkerFactory::class);
         $factory->shouldReceive('newWorker')->once()->with('queue', $options)->andReturn($worker);
 
-        $registry = new WorkersRegistry($factory, new TemporalConfig());
+        $registry = self::legacyRegistry($factory, new TemporalConfig());
 
         Assert::false($registry->has('queue'));
         $registry->register('queue', $options);
@@ -42,13 +44,30 @@ final class WorkersRegistryTest
         $factory = \Mockery::mock(TemporalWorkerFactory::class);
         $factory->shouldReceive('newWorker')->once()->andReturn(\Mockery::mock(WorkerInterface::class));
 
-        $registry = new WorkersRegistry($factory, new TemporalConfig());
+        $registry = self::legacyRegistry($factory, new TemporalConfig());
         $registry->register('queue', null);
 
         Expect::exception(WorkersRegistryException::class)
             ->withMessage('Temporal worker with given name `queue` has already been registered.');
 
         $registry->register('queue', null);
+    }
+
+    public function test_two_argument_constructor_is_deprecated(): void
+    {
+        $deprecations = [];
+        \set_error_handler(static function (int $level) use (&$deprecations): bool {
+            $deprecations[] = $level;
+            return true;
+        });
+
+        try {
+            new WorkersRegistry(\Mockery::mock(TemporalWorkerFactory::class), new TemporalConfig());
+        } finally {
+            \restore_error_handler();
+        }
+
+        Assert::same($deprecations, [\E_USER_DEPRECATED]);
     }
 
     public function test_get_preserves_configured_options_and_interceptors(): void
@@ -70,13 +89,68 @@ final class WorkersRegistryTest
         Assert::same($registry->get('queue'), $worker);
     }
 
+    public function test_get_delegates_to_a_custom_worker_factory(): void
+    {
+        $worker = \Mockery::mock(WorkerInterface::class);
+        $temporal = \Mockery::mock(TemporalWorkerFactory::class);
+        $temporal->shouldNotReceive('newWorker');
+        $factory = \Mockery::mock(WorkerFactoryInterface::class);
+        $factory->shouldReceive('create')->once()->with('queue')->andReturn($worker);
+
+        $registry = new WorkersRegistry($temporal, new TemporalConfig(), $factory);
+
+        Assert::same($registry->get('queue'), $worker);
+        Assert::same($registry->get('queue'), $worker);
+    }
+
+    public function test_register_passes_explicit_options_to_a_custom_worker_factory(): void
+    {
+        $options = WorkerOptions::new();
+        $worker = \Mockery::mock(WorkerInterface::class);
+        $temporal = \Mockery::mock(TemporalWorkerFactory::class);
+        $temporal->shouldNotReceive('newWorker');
+        $factory = \Mockery::mock(WorkerFactoryWithOptionsInterface::class);
+        $factory->shouldReceive('createWithOptions')->once()->with('queue', $options)->andReturn($worker);
+
+        $registry = new WorkersRegistry($temporal, new TemporalConfig(), $factory);
+        $registry->register('queue', $options);
+
+        Assert::same($registry->get('queue'), $worker);
+    }
+
+    public function test_register_with_a_factory_ignoring_options_falls_back_to_sdk_and_is_deprecated(): void
+    {
+        $options = WorkerOptions::new();
+        $worker = \Mockery::mock(WorkerInterface::class);
+        $temporal = \Mockery::mock(TemporalWorkerFactory::class);
+        $temporal->shouldReceive('newWorker')->once()->with('queue', $options)->andReturn($worker);
+        $factory = \Mockery::mock(WorkerFactoryInterface::class);
+        $factory->shouldNotReceive('create');
+        $registry = new WorkersRegistry($temporal, new TemporalConfig(), $factory);
+
+        $deprecations = [];
+        \set_error_handler(static function (int $level) use (&$deprecations): bool {
+            $deprecations[] = $level;
+            return true;
+        });
+
+        try {
+            $registry->register('queue', $options);
+        } finally {
+            \restore_error_handler();
+        }
+
+        Assert::same($deprecations, [\E_USER_DEPRECATED]);
+        Assert::same($registry->get('queue'), $worker);
+    }
+
     public function test_get_creates_a_missing_worker_once(): void
     {
         $worker = \Mockery::mock(WorkerInterface::class);
         $factory = \Mockery::mock(TemporalWorkerFactory::class);
         $factory->shouldReceive('newWorker')->once()->with('queue', null)->andReturn($worker);
 
-        $registry = new WorkersRegistry($factory, new TemporalConfig());
+        $registry = self::legacyRegistry($factory, new TemporalConfig());
 
         Assert::same($registry->get('queue'), $worker);
         Assert::same($registry->get('queue'), $worker);
@@ -92,7 +166,7 @@ final class WorkersRegistryTest
         $temporal->shouldReceive('newWorker')->once()->with('queue', $options)->andReturn($worker);
         $config = new TemporalConfig(['workers' => ['queue' => $shape === 'direct' ? $options : ['options' => $options]]]);
 
-        $registry = new WorkersRegistry(workerFactory: $temporal, config: $config);
+        $registry = self::legacyRegistry($temporal, $config);
 
         Assert::same($registry->get('queue'), $worker);
         Assert::same($registry->get('queue'), $worker);
@@ -117,5 +191,16 @@ final class WorkersRegistryTest
         $registry->register('queue', $options);
 
         Assert::same($registry->get('queue'), $worker);
+    }
+
+    private static function legacyRegistry(TemporalWorkerFactory $factory, TemporalConfig $config): WorkersRegistry
+    {
+        \set_error_handler(static fn(): bool => true, \E_USER_DEPRECATED);
+
+        try {
+            return new WorkersRegistry($factory, $config);
+        } finally {
+            \restore_error_handler();
+        }
     }
 }

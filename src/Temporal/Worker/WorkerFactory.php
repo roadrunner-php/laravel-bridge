@@ -15,7 +15,7 @@ use Temporal\Worker\WorkerOptions;
 /**
  * @psalm-import-type TWorker from TemporalConfig
  */
-final class WorkerFactory implements WorkerFactoryInterface
+final class WorkerFactory implements WorkerFactoryWithOptionsInterface
 {
     /** @var array<non-empty-string, WorkerOptions|TWorker> */
     private array $workers = [];
@@ -39,12 +39,9 @@ final class WorkerFactory implements WorkerFactoryInterface
     }
 
     /**
-     * Creates a worker with explicit options while preserving configured interceptors.
-     *
-     * Pass null or omit the options to use SDK defaults.
-     *
      * @param non-empty-string $name
      */
+    #[\Override]
     public function createWithOptions(string $name, ?WorkerOptions $options = null): WorkerInterface
     {
         /** @psalm-suppress TooManyArguments */
