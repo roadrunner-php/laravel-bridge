@@ -18,6 +18,7 @@ final class WorkersRegistry implements WorkersRegistryInterface
     public function __construct(
         private readonly TemporalWorkerFactory $workerFactory,
         private readonly TemporalConfig $config,
+        private readonly ?WorkerFactory $configuredWorkerFactory = null,
     ) {}
 
     #[\Override]
@@ -31,7 +32,9 @@ final class WorkersRegistry implements WorkersRegistryInterface
             );
         }
 
-        $this->workers[$name] = $this->workerFactory->newWorker($name, $options);
+        $this->workers[$name] = $this->configuredWorkerFactory !== null
+            ? $this->configuredWorkerFactory->createWithOptions($name, $options)
+            : $this->workerFactory->newWorker($name, $options);
     }
 
     #[\Override]
@@ -39,10 +42,9 @@ final class WorkersRegistry implements WorkersRegistryInterface
     {
         \assert($name !== '');
 
-        $options = $this->config->getWorkers()[$name] ?? null;
-
         if (!$this->has($name)) {
-            $this->register($name, $options instanceof WorkerOptions ? $options : null);
+            $worker = $this->config->getWorkers()[$name] ?? null;
+            $this->register($name, $worker instanceof WorkerOptions ? $worker : ($worker['options'] ?? null));
         }
 
         return $this->workers[$name];

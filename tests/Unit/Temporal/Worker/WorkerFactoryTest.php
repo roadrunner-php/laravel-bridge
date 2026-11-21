@@ -13,6 +13,7 @@ use Temporal\Worker\WorkerFactoryInterface;
 use Temporal\Worker\WorkerInterface;
 use Temporal\Worker\WorkerOptions;
 use Testo\Assert;
+use Testo\Data\DataSet;
 use Testo\Expect;
 use Testo\Test;
 
@@ -47,6 +48,41 @@ final class WorkerFactoryTest
         );
 
         $factory->create('queue');
+    }
+
+    public function test_explicit_options_override_config_without_dropping_interceptors(): void
+    {
+        $options = WorkerOptions::new()->withMaxConcurrentActivityExecutionSize(2);
+        $pipeline = \Mockery::mock(PipelineProvider::class);
+        $interceptor = \Mockery::mock(ExceptionInterceptorInterface::class);
+        $temporal = \Mockery::mock(WorkerFactoryInterface::class);
+        $temporal->shouldReceive('newWorker')->once()->with('queue', $options, $interceptor, $pipeline)
+            ->andReturn(\Mockery::mock(WorkerInterface::class));
+
+        $factory = new WorkerFactory($temporal, \Mockery::mock(FactoryInterface::class), $pipeline, new TemporalConfig([
+            'workers' => ['queue' => ['options' => WorkerOptions::new(), 'exception_interceptor' => $interceptor]],
+        ]));
+
+        $factory->createWithOptions('queue', $options);
+    }
+
+    #[DataSet([true], 'explicit null')]
+    #[DataSet([false], 'omitted options')]
+    public function test_create_with_options_uses_sdk_defaults_without_dropping_interceptors(bool $passNull): void
+    {
+        $pipeline = \Mockery::mock(PipelineProvider::class);
+        $interceptor = \Mockery::mock(ExceptionInterceptorInterface::class);
+        $worker = \Mockery::mock(WorkerInterface::class);
+        $temporal = \Mockery::mock(WorkerFactoryInterface::class);
+        $temporal->shouldReceive('newWorker')->once()->with('queue', null, $interceptor, $pipeline)->andReturn($worker);
+
+        $factory = new WorkerFactory($temporal, \Mockery::mock(FactoryInterface::class), $pipeline, new TemporalConfig([
+            'workers' => ['queue' => ['options' => WorkerOptions::new(), 'exception_interceptor' => $interceptor]],
+        ]));
+
+        $actual = $passNull ? $factory->createWithOptions('queue', null) : $factory->createWithOptions('queue');
+
+        Assert::same($actual, $worker);
     }
 
     public function test_exception_interceptor_class_is_built_by_the_container(): void
