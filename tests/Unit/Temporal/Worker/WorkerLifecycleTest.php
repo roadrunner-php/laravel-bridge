@@ -13,8 +13,7 @@ use Spiral\RoadRunnerLaravel\Temporal\Config\ClientConfig;
 use Spiral\RoadRunnerLaravel\Temporal\Config\ConnectionConfig;
 use Spiral\RoadRunnerLaravel\Temporal\TemporalServiceProvider;
 use Spiral\RoadRunnerLaravel\Temporal\Worker\WorkersRegistryInterface;
-use Temporal\Activity\ActivityInterface;
-use Temporal\Activity\ActivityMethod;
+use Spiral\RoadRunnerLaravel\Tests\Unit\Temporal\Fixture\SandboxProbe;
 use Temporal\DataConverter\EncodedValues;
 use Temporal\DataConverter\ValuesInterface;
 use Temporal\Interceptor\ActivityInbound\ActivityInput;
@@ -93,6 +92,7 @@ final class WorkerLifecycleTest
             Facade::setFacadeApplication($previousFacadeApplication);
             $facadeCache->setValue(null, $previousFacadeCache);
             Container::setInstance($previous);
+            $app->flush();
         }
     }
 
@@ -120,23 +120,5 @@ final class WorkerLifecycleTest
         Assert::true(\is_int($result));
 
         return $result;
-    }
-}
-
-#[ActivityInterface(prefix: 'probe.')]
-final class SandboxProbe
-{
-    public function __construct(private readonly \DomainException $failure) {}
-
-    #[ActivityMethod]
-    public function sandbox(): int
-    {
-        return \spl_object_id(Container::getInstance());
-    }
-
-    #[ActivityMethod]
-    public function fail(): never
-    {
-        throw $this->failure;
     }
 }
