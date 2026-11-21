@@ -155,6 +155,14 @@ final class TemporalConfig
     public function getInterceptors(): array
     {
         $interceptors = (array) ($this->config['interceptors'] ?? []);
+
+        // A listed activity interceptor keeps its position; a second copy would nest the sandbox.
+        foreach ($interceptors as $interceptor) {
+            if ($interceptor === HandleActivityInterceptor::class || $interceptor instanceof HandleActivityInterceptor) {
+                return $interceptors;
+            }
+        }
+
         $interceptors[] = HandleActivityInterceptor::class;
 
         return $interceptors;
